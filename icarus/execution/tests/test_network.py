@@ -2,13 +2,12 @@
 
 import unittest
 
-import networkx as nx
 import fnss
-
-from icarus.scenarios import IcnTopology
-from icarus.execution.collectors import DummyCollector
+import networkx as nx
 
 import icarus.execution.network as network
+from icarus.execution.collectors import DummyCollector
+from icarus.scenarios import IcnTopology
 
 
 class TestSymmetrifyPaths(unittest.TestCase):
@@ -20,6 +19,7 @@ class TestSymmetrifyPaths(unittest.TestCase):
         self.assertNotEqual(list(path[1][5]), list(reversed(path[5][1])))
         network.symmetrify_paths(path)
         self.assertEqual(list(path[1][5]), list(reversed(path[5][1])))
+
 
 class TestNetworkMvc(unittest.TestCase):
 

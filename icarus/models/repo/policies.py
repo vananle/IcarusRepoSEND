@@ -2,14 +2,7 @@
 
 
 import time
-from collections import deque, defaultdict
-import random
-import abc
-import copy
 
-import numpy as np
-
-from icarus.util import inheritdoc, apportionment
 from icarus.registry import register_repo_policy
 
 __all__ = [
@@ -104,6 +97,7 @@ class RepoStorage(object):
 
     def getMessages(self):
         return self.Messages
+
     # @profile
     def addToStoredMessages(self, sm):
         """
@@ -383,7 +377,7 @@ class RepoStorage(object):
         return answer
 
     def deleteMessage(self, MessageId):
-        for i in range(0, len(self.Messages)-1):
+        for i in range(0, len(self.Messages) - 1):
             if (self.Messages[i]["content"] == MessageId):
                 self.Size -= self.Messages[i]['msg_size']
                 self.Messages.remove(i)
@@ -401,7 +395,7 @@ class RepoStorage(object):
 	"""
 
     def deleteProcMessage(self, MessageId):
-        for i in (0, len(self.processMessages)-1):
+        for i in (0, len(self.processMessages) - 1):
             if (self.processMessages[i]['content'] == MessageId):
                 self.processSize -= self.processMessages[i]['msg_size']
                 self.processMessages.remove(self.processMessages[i])
@@ -460,7 +454,7 @@ class RepoStorage(object):
 		TODO: Check the ifs in original code - make code right. did not report every message.
 			Reporting is not done right.
 		"""
-        for i in range(0, len(self.processedMessages)-1):
+        for i in range(0, len(self.processedMessages) - 1):
             if self.processedMessages[i]['content'] == MessageId:
                 self.depletedCloudProcMessages += 1
                 self.depletedCloudProcMessagesSize += self.processedMessages[i]['msg_size']
@@ -802,11 +796,13 @@ class RepoStorage(object):
         for m in self.processMessages:
             if (oldest is None):
                 if (m["service_type"] is not None and m['Fresh'] is None):
-                    if not (m["service_type"]).lower() == "unprocessed" and not (m["service_type"]).lower() == "processed":
+                    if not (m["service_type"]).lower() == "unprocessed" and not (m[
+                        "service_type"]).lower() == "processed":
                         oldest = m
 
                 elif oldest['receiveTime'] > m['receiveTime'] and m["service_type"] is not None and m['Fresh'] is None:
-                    if not m["service_type"].lower() == "unprocessed" and not (m["service_type"]).lower() == "processed":
+                    if not m["service_type"].lower() == "unprocessed" and not (
+                                                                              m["service_type"]).lower() == "processed":
                         oldest = m
 
         return oldest
@@ -1003,6 +999,7 @@ class RepoStorage(object):
 
         return newest
     """
+
     @property
     def getOldestMessage(self):
         oldest = None
@@ -1037,8 +1034,6 @@ class RepoStorage(object):
 
 # TODO: NEED TO REVIEW AND REVISE ALL OF THE CODE BELOWnot not not not not not not not not not not not
 #  \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
-
-
 
 
 @register_repo_policy('NULL_REPO')
@@ -1082,17 +1077,17 @@ class RepoNull(RepoStorage):
         return 0
 
     def addToStoredMessages(self, sm):
-
-       return 0
+        return 0
 
     def addToDeplMessages(self, sm):
-       return 0
+        return 0
 
     def addToDeplProcMessages(self, sm):
-       return 0
+        return 0
 
     def addToCloudDeplMessages(self, sm):
         return 0
+
     def addToDeplUnProcMessages(self, sm):
         return 0
 
@@ -1119,7 +1114,6 @@ class RepoNull(RepoStorage):
 
     @property
     def getNrofMessages(self):
-
         return 0
 
     def getNrofProcessMessages(self):
@@ -1210,15 +1204,12 @@ class RepoNull(RepoStorage):
         return 0
 
     def getDepletedCloudProcMessagesBW(self, reporting):
-
         return 0
 
     def getDepletedUnProcMessagesBW(self, reporting):
-
         return 0
 
     def getDepletedPUnProcMessagesBW(self, reporting):
-
         return 0
 
     def getDepletedCloudMessagesBW(self, reporting):
@@ -1252,6 +1243,7 @@ class RepoNull(RepoStorage):
     @property
     def getOldestValidProcessMessage(self):
         return 0
+
     @property
     def getOldestInvalidProcessMessage(self):
         return 0
@@ -1263,29 +1255,25 @@ class RepoNull(RepoStorage):
     @property
     def getNewestProcessMessage(self):
         return 0
+
     @property
     def getOldestProcessedMessage(self):
-
         return 0
 
     @property
     def getOldestFreshMessage(self):
-
         return 0
 
     @property
     def GetNewestFreshMessage(self):
-
         return 0
 
     @property
     def getOldestShelfMessage(self):
-
         return 0
 
     @property
     def getNewestShelfMessage(self):
-
         return 0
 
     @property
@@ -1301,4 +1289,3 @@ class RepoNull(RepoStorage):
 
     # TODO: NEED TO REVIEW AND REVISE ALL OF THE CODE BELOWnot not not not not not not not not not not not
     #  \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
-

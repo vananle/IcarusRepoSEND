@@ -9,11 +9,11 @@ and providing them to a strategy instance.
 from icarus.execution import NetworkModel, NetworkView, NetworkController, CollectorProxy
 from icarus.registry import DATA_COLLECTOR, STRATEGY
 
-
 __all__ = ['exec_experiment']
 
 
-def exec_experiment(topology, workload, netconf, strategy, cache_policy, repo_policy, collectors, warmup_strategy, sched_policy = {'name': 'EDF'}):
+def exec_experiment(topology, workload, netconf, strategy, cache_policy, repo_policy, collectors, warmup_strategy,
+                    sched_policy={'name': 'EDF'}):
     """Execute the simulation of a specific scenario.
 
     Parameters
@@ -44,7 +44,8 @@ def exec_experiment(topology, workload, netconf, strategy, cache_policy, repo_po
     results : Tree
         A tree with the aggregated simulation results from all collectors
     """
-    model = NetworkModel(topology, cache_policy, repo_policy, sched_policy['name'], workload.n_services, workload.rate, **netconf)
+    model = NetworkModel(topology, cache_policy, repo_policy, sched_policy['name'], workload.n_services, workload.rate,
+                         **netconf)
     workload.model = model
     view = NetworkView(model)
     controller = NetworkController(model)
@@ -62,7 +63,7 @@ def exec_experiment(topology, workload, netconf, strategy, cache_policy, repo_po
 
     n = 0
     for time, event in workload:
-        #continue
+        # continue
         strategy_inst.process_event(time, **event)
         if n % 500 == 0 and n:
             collector.results()

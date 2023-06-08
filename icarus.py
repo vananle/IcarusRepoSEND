@@ -5,9 +5,10 @@ This script automatically adds Icarus source folder to the PYTHONPATH and then
 executes the simulator according to the settings specified in the provided
 configuration file.
 """
-import sys
-import os
 import argparse
+import os
+import sys
+
 
 def main():
     src_dir = os.path.abspath(os.path.dirname(__file__))
@@ -27,8 +28,9 @@ def main():
                         version="icarus {}".format(__version__))
     args = parser.parse_args()
     config_override = dict(c.split("=") for c in args.config_override) \
-                      if args.config_override else None
+        if args.config_override else None
     run(args.config, args.results, config_override)
+
 
 if __name__ == "__main__":
     main()

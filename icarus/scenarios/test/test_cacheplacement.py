@@ -81,10 +81,10 @@ class TestOptimalHashroutingCachePlacement(unittest.TestCase):
         cache_nodes = 1
         cacheplacement.optimal_hashrouting_cache_placement(self.topo, cache_budget,
                                                            cache_nodes, 0.5)
-        if'cache_size' in self.topo.node["c1"]['stack'][1]:
+        if 'cache_size' in self.topo.node["c1"]['stack'][1]:
             self.assertEqual(0, self.topo.node["c1"]['stack'][1]['cache_size'])
         self.assertEqual(30, self.topo.node["c2"]['stack'][1]['cache_size'])
-        if'cache_size' in self.topo.node["c3"]['stack'][1]:
+        if 'cache_size' in self.topo.node["c3"]['stack'][1]:
             self.assertEqual(0, self.topo.node["c3"]['stack'][1]['cache_size'])
 
     def test_optimal_hashrouting_cache_placement_b(self):
@@ -94,7 +94,7 @@ class TestOptimalHashroutingCachePlacement(unittest.TestCase):
                                                            cache_nodes, 0.5)
         self.assertEqual(15, self.topo.node["c1"]['stack'][1]['cache_size'])
         self.assertEqual(15, self.topo.node["c2"]['stack'][1]['cache_size'])
-        if'cache_size' in self.topo.node["c3"]['stack'][1]:
+        if 'cache_size' in self.topo.node["c3"]['stack'][1]:
             self.assertEqual(0, self.topo.node["c3"]['stack'][1]['cache_size'])
 
     def test_optimal_hashrouting_cache_placement_c(self):
@@ -142,10 +142,10 @@ class TestOptimalMedianCachePlacement(unittest.TestCase):
         cache_nodes = 1
         cacheplacement.optimal_median_cache_placement(self.topo, cache_budget,
                                                       cache_nodes, 0.5)
-        if'cache_size' in self.topo.node["c1"]['stack'][1]:
+        if 'cache_size' in self.topo.node["c1"]['stack'][1]:
             self.assertEqual(0, self.topo.node["c1"]['stack'][1]['cache_size'])
         self.assertEqual(30, self.topo.node["c2"]['stack'][1]['cache_size'])
-        if'cache_size' in self.topo.node["c3"]['stack'][1]:
+        if 'cache_size' in self.topo.node["c3"]['stack'][1]:
             self.assertEqual(0, self.topo.node["c3"]['stack'][1]['cache_size'])
         self.assertDictEqual({'r1': 'c2', 'r2': 'c2', 'r3': 'c2', 'r4': 'c2', 'r5': 'c2', 'r6': 'c2'},
                              self.topo.graph['cache_assignment'])
@@ -154,10 +154,10 @@ class TestOptimalMedianCachePlacement(unittest.TestCase):
         cache_budget = 30
         cache_nodes = 2
         cacheplacement.optimal_median_cache_placement(self.topo, cache_budget,
-                                                           cache_nodes, 0.5)
+                                                      cache_nodes, 0.5)
         self.assertEqual(15, self.topo.node["c1"]['stack'][1]['cache_size'])
         self.assertEqual(15, self.topo.node["c2"]['stack'][1]['cache_size'])
-        if'cache_size' in self.topo.node["c3"]['stack'][1]:
+        if 'cache_size' in self.topo.node["c3"]['stack'][1]:
             self.assertEqual(0, self.topo.node["c3"]['stack'][1]['cache_size'])
         self.assertDictEqual({'r1': 'c1', 'r2': 'c1', 'r3': 'c2', 'r4': 'c2', 'r5': 'c2', 'r6': 'c2'},
                              self.topo.graph['cache_assignment'])
@@ -166,7 +166,7 @@ class TestOptimalMedianCachePlacement(unittest.TestCase):
         cache_budget = 30
         cache_nodes = 3
         cacheplacement.optimal_median_cache_placement(self.topo, cache_budget,
-                                                           cache_nodes, 0.5)
+                                                      cache_nodes, 0.5)
         self.assertEqual(10, self.topo.node["c1"]['stack'][1]['cache_size'])
         self.assertEqual(10, self.topo.node["c2"]['stack'][1]['cache_size'])
         self.assertEqual(10, self.topo.node["c3"]['stack'][1]['cache_size'])
@@ -196,7 +196,7 @@ class TestClusteredHashroutingCachePlacement(unittest.TestCase):
         n_clusters = 2
         cache_budget = 60
         cacheplacement.clustered_hashrouting_cache_placement(self.topo,
-                            cache_budget, n_clusters, 'cluster_const')
+                                                             cache_budget, n_clusters, 'cluster_const')
         clusters = self.topo.graph['clusters']
         self.assertEqual(n_clusters, len(clusters))
         self.assertEqual(len(self.topo.graph['icr_candidates']), sum(len(c) for c in clusters))
@@ -212,7 +212,7 @@ class TestClusteredHashroutingCachePlacement(unittest.TestCase):
         n_clusters = 2
         cache_budget = 50
         cacheplacement.clustered_hashrouting_cache_placement(self.topo,
-                            cache_budget, n_clusters, 'node_const')
+                                                             cache_budget, n_clusters, 'node_const')
         clusters = self.topo.graph['clusters']
         self.assertEqual(n_clusters, len(clusters))
         self.assertEqual(len(self.topo.graph['icr_candidates']), sum(len(c) for c in clusters))

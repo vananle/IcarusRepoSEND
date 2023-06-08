@@ -2,13 +2,11 @@
 """Various algorithms used for optimal cache placement."""
 import random
 
-import numpy as np
-import networkx as nx
-
 import fnss
+import networkx as nx
+import numpy as np
 
 from icarus.util import path_links
-
 
 __all__ = [
     'pam',
@@ -16,7 +14,7 @@ __all__ = [
     'deploy_clusters',
     'compute_clusters',
     'compute_p_median',
-           ]
+]
 
 
 def pam(distances, k, n_iter=10):
@@ -48,6 +46,7 @@ def pam(distances, k, n_iter=10):
     Implementation based on:
     https://github.com/salspaugh/machine_learning/blob/master/clustering/kmedoids.py
     """
+
     def assign_points_to_clusters(medoids, distances):
         """Return a 1-d array having for at each index the medoid the element
         belongs to.

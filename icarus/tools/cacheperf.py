@@ -9,26 +9,25 @@ from scipy.optimize import fsolve
 
 from icarus.tools import TruncatedZipfDist, DiscreteDist
 
-
 __all__ = [
-       'che_characteristic_time',
-       'che_per_content_cache_hit_ratio',
-       'che_cache_hit_ratio',
-       'che_characteristic_time_simplified',
-       'che_per_content_cache_hit_ratio_simplified',
-       'che_cache_hit_ratio_simplified',
-       'che_characteristic_time_generalized',
-       'che_per_content_cache_hit_ratio_generalized',
-       'che_cache_hit_ratio_generalized',
-       'laoutaris_characteristic_time',
-       'laoutaris_per_content_cache_hit_ratio',
-       'laoutaris_cache_hit_ratio',
-       'optimal_cache_hit_ratio',
-       'numeric_per_content_cache_hit_ratio',
-       'numeric_cache_hit_ratio',
-       'numeric_cache_hit_ratio_2_layers',
-       'trace_driven_cache_hit_ratio'
-          ]
+    'che_characteristic_time',
+    'che_per_content_cache_hit_ratio',
+    'che_cache_hit_ratio',
+    'che_characteristic_time_simplified',
+    'che_per_content_cache_hit_ratio_simplified',
+    'che_cache_hit_ratio_simplified',
+    'che_characteristic_time_generalized',
+    'che_per_content_cache_hit_ratio_generalized',
+    'che_cache_hit_ratio_generalized',
+    'laoutaris_characteristic_time',
+    'laoutaris_per_content_cache_hit_ratio',
+    'laoutaris_cache_hit_ratio',
+    'optimal_cache_hit_ratio',
+    'numeric_per_content_cache_hit_ratio',
+    'numeric_cache_hit_ratio',
+    'numeric_cache_hit_ratio_2_layers',
+    'trace_driven_cache_hit_ratio'
+]
 
 
 def che_characteristic_time(pdf, cache_size, target=None):
@@ -53,9 +52,11 @@ def che_characteristic_time(pdf, cache_size, target=None):
         all items in the population. If a target is specified, then it returns
         the characteristic time of only the specified item.
     """
+
     def func_r(r, i):
         return sum(math.exp(-pdf[j] * r) for j in range(len(pdf)) if j != i) \
-               - len(pdf) + 1 + cache_size
+            - len(pdf) + 1 + cache_size
+
     items = list(range(len(pdf))) if target is None else [target - 1]
     r = [fsolve(func_r, x0=cache_size, args=(i)) for i in items]
     return r if target is None else r[0]
@@ -128,9 +129,11 @@ def che_characteristic_time_simplified(pdf, cache_size):
     r : float
         The characteristic time.
     """
+
     def func_r(r):
         return sum(math.exp(-pdf[j] * r) for j in range(len(pdf))) \
-               - len(pdf) + cache_size
+            - len(pdf) + cache_size
+
     return fsolve(func_r, x0=cache_size)[0]
 
 
@@ -238,8 +241,10 @@ def che_characteristic_time_generalized(pdf, cache_size, policy, **policy_args):
     IEEE Conference on Computer Communications (INFOCOM'14), April 2014
     """
     p_in = che_p_in_func(pdf, cache_size, policy, **policy_args)
+
     def func_t(t):
         return np.sum(p_in(pdf, t)) - cache_size
+
     return fsolve(func_t, x0=cache_size)[0]
 
 
@@ -328,6 +333,7 @@ def laoutaris_characteristic_time(alpha, population, cache_size, order=3):
     ----------
     http://arxiv.org/pdf/0705.1970.pdf
     """
+
     def H(N, alpha):
         return sum(1.0 / l ** alpha for l in range(1, N + 1))
 
@@ -397,6 +403,7 @@ def laoutaris_characteristic_time(alpha, population, cache_size, order=3):
             r3 = x_N + 2 * delta * np.cos(2 * np.pi / 3 + Theta)
             r_x = (r1, r2, r3)
         return r_x
+
     # Get parameters
     C = cache_size
     N = population
@@ -408,7 +415,8 @@ def laoutaris_characteristic_time(alpha, population, cache_size, order=3):
     Lambda = 1.0 / H_N_a
     # Find values of r
     if order == 2:
-        alpha_2 = (0.5 * Lambda ** 2 * H_N_2a) - (0.5 * Lambda ** 3 * C * H_N_3a) + (0.25 * Lambda ** 4 * C ** 2 * H_N_4a)
+        alpha_2 = (0.5 * Lambda ** 2 * H_N_2a) - (0.5 * Lambda ** 3 * C * H_N_3a) + (
+                    0.25 * Lambda ** 4 * C ** 2 * H_N_4a)
         alpha_1 = -(Lambda * H_N_a) + (0.5 * Lambda ** 3 * C ** 2 * H_N_3a) - (0.5 * Lambda ** 4 * C ** 3 * H_N_4a)
         alpha_0 = C + (0.25 * Lambda ** 4 * C ** 4 * H_N_4a)
         # Calculate discriminant to verify if there are real solutions
@@ -691,7 +699,7 @@ def numeric_cache_hit_ratio_2_layers(pdf, l1_cache, l2_cache,
         'l1_hits': l1_hits / measure,
         'l2_hits': l2_hits / measure,
         'total_hits': (l1_hits + l2_hits) / measure
-           }
+    }
 
 
 def trace_driven_cache_hit_ratio(workload, cache, warmup_ratio=0.25):

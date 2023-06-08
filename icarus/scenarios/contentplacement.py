@@ -8,12 +8,12 @@ TODO: Work on the content generation and all the labels, characteristics and
     associated statistics.
 
 """
-import random
 import collections
+import random
 
 from fnss.util import random_from_pdf
-from icarus.registry import register_content_placement
 
+from icarus.registry import register_content_placement
 
 __all__ = ['uniform_content_placement', 'uniform_repo_content_placement',
            'weighted_content_placement', 'weighted_repo_content_placement']
@@ -30,7 +30,8 @@ def apply_content_placement(placement, topology):
         The topology
     """
     for v, contents in list(placement.items()):
-        topology.nodes[v]['stack'][1].update(contents = contents)
+        topology.nodes[v]['stack'][1].update(contents=contents)
+
 
 def apply_service_association(association, data):
     """
@@ -49,6 +50,7 @@ def apply_service_association(association, data):
                 data[c].update(service_type=service_type)
     return data
 
+
 def apply_labels_association(association, data):
     """
     Apply association of labels to contents
@@ -66,8 +68,10 @@ def apply_labels_association(association, data):
                 data[c]['labels'].append(label)
     return data
 
+
 def get_sources(topology):
     return [v for v in topology if topology.node[v]['stack'][0] == 'source']
+
 
 def get_sources_repos(topology):
     try:
@@ -77,6 +81,7 @@ def get_sources_repos(topology):
         err_type = str(type(e)).split("'")[1].split(".")[1]
         if err_type == "KeyError":
             return [v for v in topology if topology.node[v]['stack'][0] == 'source']
+
 
 @register_content_placement('UNIFORM')
 def uniform_content_placement(topology, contents, seed=None):
@@ -108,6 +113,7 @@ def uniform_content_placement(topology, contents, seed=None):
     for c in contents:
         content_placement[random.choice(source_nodes)].add(c)
     apply_content_placement(content_placement, topology)
+
 
 @register_content_placement('UNIFORM_REPO')
 def uniform_repo_content_placement(topology, contents, seed=None):
@@ -281,7 +287,7 @@ def weighted_repo_content_placement(topology, contents, freshness_per, shelf_lif
                     labels_association[random_from_pdf(topics_labels_pdf)].add(c)
 
     placed_data = apply_labels_association(labels_association, placed_data)
-    #placed_data = apply_service_association(service_association, placed_data)
+    # placed_data = apply_service_association(service_association, placed_data)
     for d in placed_data:
         rand = random_from_pdf(source_pdf)
         if not content_placement[rand]:

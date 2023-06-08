@@ -9,36 +9,33 @@ TODO: Add the feedback handling functions in the RepoStorage class definition.
     classes within those files. FIND THEM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 """
 
-
-import time
-from collections import deque, defaultdict
-import random
 import abc
 import copy
+import random
+from collections import deque, defaultdict
 
 import numpy as np
 
-from icarus.util import inheritdoc, apportionment
 from icarus.registry import register_cache_policy
-
+from icarus.util import inheritdoc, apportionment
 
 __all__ = [
-        'LinkedSet',
-        'Cache',
-        'NullCache',
-        'BeladyMinCache',
-        'LruCache',
-        'SegmentedLruCache',
-        'InCacheLfuCache',
-        'PerfectLfuCache',
-        'FifoCache',
-        'ClimbCache',
-        'RandEvictionCache',
-        'insert_after_k_hits_cache',
-        'rand_insert_cache',
-        'keyval_cache',
-        'ttl_cache',
-           ]
+    'LinkedSet',
+    'Cache',
+    'NullCache',
+    'BeladyMinCache',
+    'LruCache',
+    'SegmentedLruCache',
+    'InCacheLfuCache',
+    'PerfectLfuCache',
+    'FifoCache',
+    'ClimbCache',
+    'RandEvictionCache',
+    'insert_after_k_hits_cache',
+    'rand_insert_cache',
+    'keyval_cache',
+    'ttl_cache',
+]
 
 
 class LinkedSet(object):
@@ -52,6 +49,7 @@ class LinkedSet(object):
     remove from any position, move to top, move to bottom, insert after or
     before a given item.
     """
+
     class _Node(object):
         """Class implementing a node of the linked list"""
 
@@ -456,11 +454,6 @@ class LinkedSet(object):
         self._map.clear
 
 
-
-
-
-
-
 class Cache(object):
     """Base implementation of a cache object"""
 
@@ -534,11 +527,11 @@ class Cache(object):
             otherwise.
         """
         res = {
-            'GET':    self.get,
-            'PUT':    self.put,
+            'GET': self.get,
+            'PUT': self.put,
             'UPDATE': self.put,
             'DELETE': self.remove
-                }[op](k, *args, **kwargs)
+        }[op](k, *args, **kwargs)
         return res if res is not None else False
 
     @abc.abstractmethod
@@ -747,6 +740,7 @@ class NullCache(Cache):
     @inheritdoc(Cache)
     def clear(self):
         pass
+
 
 @register_cache_policy('MIN')
 class BeladyMinCache(Cache):
@@ -1184,7 +1178,6 @@ class InCacheLfuCache(Cache):
         self._cache.clear
 
 
-
 @register_cache_policy('PERFECT_LFU')
 class PerfectLfuCache(Cache):
     """Perfect Least Frequently Used (LFU) cache implementation
@@ -1477,6 +1470,7 @@ class ClimbCache(Cache):
     def clear(self):
         self._cache.clear
 
+
 @register_cache_policy('RAND')
 class RandEvictionCache(Cache):
     """Random eviction cache implementation.
@@ -1653,9 +1647,11 @@ def rand_insert_cache(cache, p, seed=None):
     cache = copy.deepcopy(cache)
     random.seed(seed)
     c_put = cache.put
+
     def put(k, *args, **kwargs):
         if random.random < p:
             return c_put(k)
+
     cache.put = put
     cache.put.__doc__ = c_put.__doc__
     return cache
@@ -1869,7 +1865,7 @@ def ttl_cache(cache, f_time):
             Cutoff expiration time
         """
         while cache._exp_list.bottom is not None and \
-              cache.expiry[cache._exp_list.bottom] < expiry:
+                cache.expiry[cache._exp_list.bottom] < expiry:
             expired = cache._exp_list.pop_bottom
             cache.expiry.pop(expired)
             c_remove(expired)
@@ -1912,7 +1908,7 @@ def ttl_cache(cache, f_time):
         if ttl is not None:
             if expires is not None:
                 raise ValueError('Both expires and ttl parameters provided. '
-                             'Only one can be provided.')
+                                 'Only one can be provided.')
             if ttl <= 0:
                 # if TTL is not positive, then do not cache the content at all
                 return None
@@ -1984,6 +1980,7 @@ def ttl_cache(cache, f_time):
     cache.clear.__doc__ = c_clear.__doc__
 
     return cache
+
 
 def ttl_keyval_cache():
     pass

@@ -1,8 +1,9 @@
 """This module contains all configuration information used to run simulations
 """
-from multiprocessing import cpu_count
-from collections import deque
 import copy
+from collections import deque
+from multiprocessing import cpu_count
+
 from icarus.util import Tree
 
 # GENERAL SETTINGS
@@ -17,7 +18,7 @@ PARALLEL_EXECUTION = True
 
 # Number of processes used to run simulations in parallel.
 # This option is ignored if PARALLEL_EXECUTION = False
-N_PROCESSES = cpu_count()/4
+N_PROCESSES = cpu_count() / 4
 
 # Granularity of caching.
 # Currently, only OBJECT is supported
@@ -54,44 +55,44 @@ ALPHA = [0.6, 0.8, 1.0, 1.2]
 NETWORK_CACHE = [0.004, 0.002, 0.01, 0.05]
 
 # Number of content objects
-N_CONTENTS = 3*10**5
+N_CONTENTS = 3 * 10 ** 5
 
 # Number of requests per second (over the whole network)
 NETWORK_REQUEST_RATE = 12.0
 
 # Number of content requests generated to prepopulate the caches
 # These requests are not logged
-N_WARMUP_REQUESTS = 3*10**5
+N_WARMUP_REQUESTS = 3 * 10 ** 5
 
 # Number of content requests generated after the warmup and logged
 # to generate results. 
-N_MEASURED_REQUESTS = 6*10**5
+N_MEASURED_REQUESTS = 6 * 10 ** 5
 
 # List of all implemented topologies
 # Topology implementations are located in ./icarus/scenarios/topology.py
-TOPOLOGIES =  [
-        'GEANT',
-        'WIDE',
-        'GARR',
-        'TISCALI',
-              ]
+TOPOLOGIES = [
+    'GEANT',
+    'WIDE',
+    'GARR',
+    'TISCALI',
+]
 
 # List of caching and routing strategies
 # The code is located in ./icarus/models/strategy.py
 STRATEGIES = [
-     'LCE',             # Leave Copy Everywhere
-     'NO_CACHE',        # No caching, shorest-path routing
-     'HR_SYMM',         # Symmetric hash-routing
-     'HR_ASYMM',        # Asymmetric hash-routing
-     'HR_MULTICAST',    # Multicast hash-routing
-     'HR_HYBRID_AM',    # Hybrid Asymm-Multicast hash-routing
-     'HR_HYBRID_SM',    # Hybrid Symm-Multicast hash-routing
-     'CL4M',            # Cache less for more
-     'PROB_CACHE',      # ProbCache
-     'LCD',             # Leave Copy Down
-     'RAND_CHOICE',     # Random choice: cache in one random cache on path
-     'RAND_BERNOULLI',  # Random Bernoulli: cache randomly in caches on path
-             ]
+    'LCE',  # Leave Copy Everywhere
+    'NO_CACHE',  # No caching, shorest-path routing
+    'HR_SYMM',  # Symmetric hash-routing
+    'HR_ASYMM',  # Asymmetric hash-routing
+    'HR_MULTICAST',  # Multicast hash-routing
+    'HR_HYBRID_AM',  # Hybrid Asymm-Multicast hash-routing
+    'HR_HYBRID_SM',  # Hybrid Symm-Multicast hash-routing
+    'CL4M',  # Cache less for more
+    'PROB_CACHE',  # ProbCache
+    'LCD',  # Leave Copy Down
+    'RAND_CHOICE',  # Random choice: cache in one random cache on path
+    'RAND_BERNOULLI',  # Random Bernoulli: cache randomly in caches on path
+]
 
 # Cache replacement policy used by the network caches.
 # Supported policies are: 'LRU', 'LFU', 'FIFO', 'RAND' and 'NULL'
@@ -101,11 +102,11 @@ CACHE_POLICY = 'LRU'
 # Queue of experiments
 EXPERIMENT_QUEUE = deque()
 default = Tree()
-default['workload'] = {'name':       'STATIONARY',
+default['workload'] = {'name': 'STATIONARY',
                        'n_contents': N_CONTENTS,
-                       'n_warmup':   N_WARMUP_REQUESTS,
+                       'n_warmup': N_WARMUP_REQUESTS,
                        'n_measured': N_MEASURED_REQUESTS,
-                       'rate':       NETWORK_REQUEST_RATE
+                       'rate': NETWORK_REQUEST_RATE
                        }
 default['cache_placement']['name'] = 'UNIFORM'
 default['content_placement']['name'] = 'UNIFORM'

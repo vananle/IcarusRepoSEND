@@ -196,9 +196,10 @@ can inspect the source code which is well organized and documented:
  * Caching and routing strategies located in ./icarus/models/strategy.py
  * Cache eviction policy implementations are located in ./icarus/models/cache.py
 """
-from multiprocessing import cpu_count
-from collections import deque
 import copy
+from collections import deque
+from multiprocessing import cpu_count
+
 from icarus.util import Tree
 
 ############################## GENERAL SETTINGS ##############################
@@ -232,27 +233,25 @@ N_REPLICATIONS = 3
 # The implementation of data collectors are located in ./icaurs/execution/collectors.py
 # Remove collectors not needed
 DATA_COLLECTORS = [
-           'CACHE_HIT_RATIO',   # Measure cache hit ratio 
-           'LATENCY',           # Measure request and response latency (based on static link delays)
-           'LINK_LOAD',         # Measure link loads
-           'PATH_STRETCH',      # Measure path stretch
-                   ]
-
-
+    'CACHE_HIT_RATIO',  # Measure cache hit ratio
+    'LATENCY',  # Measure request and response latency (based on static link delays)
+    'LINK_LOAD',  # Measure link loads
+    'PATH_STRETCH',  # Measure path stretch
+]
 
 ########################## EXPERIMENTS CONFIGURATION ##########################
 
 # Default experiment values, i.e. values shared by all experiments
 
 # Number of content objects
-N_CONTENTS = 3*10**5
+N_CONTENTS = 3 * 10 ** 5
 
 # Number of content requests generated to pre-populate the caches
 # These requests are not logged
-N_WARMUP_REQUESTS = 3*10**5
+N_WARMUP_REQUESTS = 3 * 10 ** 5
 
 # Number of content requests that are measured after warmup
-N_MEASURED_REQUESTS = 6*10**5
+N_MEASURED_REQUESTS = 6 * 10 ** 5
 
 # Number of requests per second (over the whole network)
 REQ_RATE = 1.0
@@ -267,34 +266,33 @@ ALPHA = [0.6, 0.8, 1.0]
 # Remove sizes not needed
 NETWORK_CACHE = [0.004, 0.002]
 
-
 # List of topologies tested
 # Topology implementations are located in ./icarus/scenarios/topology.py
 # Remove topologies not needed
-TOPOLOGIES =  [
-        'GEANT',
-        'WIDE',
-        'GARR',
-        'TISCALI',
-              ]
+TOPOLOGIES = [
+    'GEANT',
+    'WIDE',
+    'GARR',
+    'TISCALI',
+]
 
 # List of caching and routing strategies
 # The code is located in ./icarus/models/strategy.py
 # Remove strategies not needed
 STRATEGIES = [
-     'LCE',             # Leave Copy Everywhere
-     'NO_CACHE',        # No caching, shortest-path routing
-     'HR_SYMM',         # Symmetric hash-routing
-     'HR_ASYMM',        # Asymmetric hash-routing
-     'HR_MULTICAST',    # Multicast hash-routing
-     'HR_HYBRID_AM',    # Hybrid Asymm-Multicast hash-routing
-     'HR_HYBRID_SM',    # Hybrid Symm-Multicast hash-routing
-     'CL4M',            # Cache less for more
-     'PROB_CACHE',      # ProbCache
-     'LCD',             # Leave Copy Down
-     'RAND_CHOICE',     # Random choice: cache in one random cache on path
-     'RAND_BERNOULLI',  # Random Bernoulli: cache randomly in caches on path
-             ]
+    'LCE',  # Leave Copy Everywhere
+    'NO_CACHE',  # No caching, shortest-path routing
+    'HR_SYMM',  # Symmetric hash-routing
+    'HR_ASYMM',  # Asymmetric hash-routing
+    'HR_MULTICAST',  # Multicast hash-routing
+    'HR_HYBRID_AM',  # Hybrid Asymm-Multicast hash-routing
+    'HR_HYBRID_SM',  # Hybrid Symm-Multicast hash-routing
+    'CL4M',  # Cache less for more
+    'PROB_CACHE',  # ProbCache
+    'LCD',  # Leave Copy Down
+    'RAND_CHOICE',  # Random choice: cache in one random cache on path
+    'RAND_BERNOULLI',  # Random Bernoulli: cache randomly in caches on path
+]
 
 # Instantiate experiment queue
 EXPERIMENT_QUEUE = deque()
@@ -302,11 +300,11 @@ EXPERIMENT_QUEUE = deque()
 # Build a default experiment configuration which is going to be used by all
 # experiments of the campaign
 default = Tree()
-default['workload'] = {'name':       'STATIONARY',
+default['workload'] = {'name': 'STATIONARY',
                        'n_contents': N_CONTENTS,
-                       'n_warmup':   N_WARMUP_REQUESTS,
+                       'n_warmup': N_WARMUP_REQUESTS,
                        'n_measured': N_MEASURED_REQUESTS,
-                       'rate':       REQ_RATE}
+                       'rate': REQ_RATE}
 default['cache_placement']['name'] = 'UNIFORM'
 default['content_placement']['name'] = 'UNIFORM'
 default['cache_policy']['name'] = CACHE_POLICY

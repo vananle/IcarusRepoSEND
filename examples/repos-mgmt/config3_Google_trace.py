@@ -1,11 +1,11 @@
 # -*- codi# -*- coding: utf-8 -*-
 """This module contains all configuration information used to run simulations
 """
-from multiprocessing import cpu_count
-from collections import deque
 import copy
 import os
+from collections import deque
 from math import pow
+
 from icarus.util import Tree
 
 # GENERAL SETTINGS
@@ -63,7 +63,7 @@ NETWORK_CACHE = 0.05
 
 # Number of content objects
 N_CONTENTS = 150
-#N_CONTENTS = 1000
+# N_CONTENTS = 1000
 
 N_SERVICES = N_CONTENTS
 

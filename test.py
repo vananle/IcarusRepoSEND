@@ -3,6 +3,7 @@
 import sys
 from os import path, getcwd
 
+
 def main():
     """Run all tests"""
     try:
@@ -21,6 +22,6 @@ def main():
     res = pytest.main(['icarus'])
     return res
 
+
 if __name__ == "__main__":
     sys.exit(main())
-

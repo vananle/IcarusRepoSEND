@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 """Simple networks of caches modeled as single caches."""
 import random
+
 import numpy as np
 
-from icarus.util import inheritdoc
-from icarus.tools import DiscreteDist
 from icarus.registry import register_cache_policy, CACHE_POLICY
-
+from icarus.tools import DiscreteDist
+from icarus.util import inheritdoc
 from .policies import Cache
-
 
 __all__ = [
     'PathCache',
     'TreeCache',
     'ArrayCache',
     'ShardedCache',
-           ]
+]
 
 """
 So let me get this straight, these "systems" do not implement ANY delay or 
@@ -23,6 +22,7 @@ any kind of change between fetching or adding data to or from specific nodes?!
     - as it says at the end of the document, modeled as single caches - 
  
 """
+
 
 @register_cache_policy('PATH')
 class PathCache(object):
@@ -242,9 +242,9 @@ class ArrayCache(object):
             if len(weights) != self._n_caches:
                 raise ValueError("weights must have as many elements as nr of caches")
             randvar = DiscreteDist(weights)
-            self.select_cache = lambda : self._caches[randvar.rv() - 1]
+            self.select_cache = lambda: self._caches[randvar.rv() - 1]
         else:
-            self.select_cache = lambda : random.choice(self._caches)
+            self.select_cache = lambda: random.choice(self._caches)
 
     def __len__(self):
         return self._len

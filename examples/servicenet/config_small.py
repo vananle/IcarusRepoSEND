@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """This module contains all configuration information used to run simulations
 """
-from multiprocessing import cpu_count
-from collections import deque
 import copy
+from collections import deque
+
 from icarus.util import Tree
 
 # GENERAL SETTINGS
@@ -18,15 +18,15 @@ PARALLEL_EXECUTION = True
 
 # Number of processes used to run simulations in parallel.
 # This option is ignored if PARALLEL_EXECUTION = False
-N_PROCESSES = 1 #cpu_count()
+N_PROCESSES = 1  # cpu_count()
 
 # Granularity of caching.
 # Currently, only OBJECT is supported
 CACHING_GRANULARITY = 'OBJECT'
 
 # Warm-up strategy
-#WARMUP_STRATEGY = 'MFU' #'HYBRID'
-WARMUP_STRATEGY = 'HYBRID' #'HYBRID'
+# WARMUP_STRATEGY = 'MFU' #'HYBRID'
+WARMUP_STRATEGY = 'HYBRID'  # 'HYBRID'
 
 # Format in which results are saved.
 # Result readers and writers are located in module ./icarus/results/readwrite.py
@@ -54,33 +54,33 @@ DATA_COLLECTORS = ['LATENCY']
 # example I wanted to filter experiment with alpha=0.8, experiments with
 # alpha = 0.799999999999 would not be recognized 
 ALPHA = [0.7]
-#ALPHA = [0.7]
+# ALPHA = [0.7]
 
 # Total size of network cache as a fraction of content population
 NETWORK_CACHE = [0.05]
 
 # Number of content objects
-#N_CONTENTS = 8
+# N_CONTENTS = 8
 N_CONTENTS = 10
 
 N_SERVICES = N_CONTENTS
 
 # Number of requests per second (over the whole network)
-#NETWORK_REQUEST_RATE = 10.0
+# NETWORK_REQUEST_RATE = 10.0
 NETWORK_REQUEST_RATE = 100.0
 
 # Number of content requests generated to prepopulate the caches
 # These requests are not logged
-N_WARMUP_REQUESTS = 0 #30000
+N_WARMUP_REQUESTS = 0  # 30000
 
 # Number of content requests generated after the warmup and logged
 # to generate results. 
-#N_MEASURED_REQUESTS = 1000 #60*30000 #100000
-N_MEASURED_REQUESTS = 100*60*10 #60*30000 #100000
+# N_MEASURED_REQUESTS = 1000 #60*30000 #100000
+N_MEASURED_REQUESTS = 100 * 60 * 10  # 60*30000 #100000
 
 # List of all implemented topologies
 # Topology implementations are located in ./icarus/scenarios/topology.py
-TOPOLOGIES =  ['TREE']
+TOPOLOGIES = ['TREE']
 TREE_DEPTH = 3
 BRANCH_FACTOR = 2
 
@@ -89,10 +89,10 @@ REPLACEMENT_INTERVAL = 10
 
 # List of caching and routing strategies
 # The code is located in ./icarus/models/strategy.py
-#STRATEGIES = ['MFU'] #['HYBRID']  # service-based routing
+# STRATEGIES = ['MFU'] #['HYBRID']  # service-based routing
 STRATEGIES = ['HYBRID']  # service-based routing
-#STRATEGIES = ['SDF']  # service-based routing
-#STRATEGIES = ['SDF', 'HYBRID', 'MFU']  # service-based routing
+# STRATEGIES = ['SDF']  # service-based routing
+# STRATEGIES = ['SDF', 'HYBRID', 'MFU']  # service-based routing
 
 # Cache replacement policy used by the network caches.
 # Supported policies are: 'LRU', 'LFU', 'FIFO', 'RAND' and 'NULL'
@@ -103,18 +103,18 @@ CACHE_POLICY = 'LRU'
 EXPERIMENT_QUEUE = deque()
 default = Tree()
 
-default['workload'] = {'name':       'STATIONARY',
+default['workload'] = {'name': 'STATIONARY',
                        'n_contents': N_CONTENTS,
-                       'n_warmup':   N_WARMUP_REQUESTS,
+                       'n_warmup': N_WARMUP_REQUESTS,
                        'n_measured': N_MEASURED_REQUESTS,
-                       'rate':       NETWORK_REQUEST_RATE,
-                       'seed':  0,
+                       'rate': NETWORK_REQUEST_RATE,
+                       'seed': 0,
                        'n_services': N_SERVICES
-                      }
+                       }
 default['cache_placement']['name'] = 'UNIFORM'
 default['computation_placement']['name'] = 'CENTRALITY'
 default['computation_placement']['n_services'] = N_SERVICES
-default['computation_placement']['computation_budget'] = N_SERVICES*2
+default['computation_placement']['computation_budget'] = N_SERVICES * 2
 default['content_placement']['name'] = 'UNIFORM'
 default['cache_policy']['name'] = CACHE_POLICY
 

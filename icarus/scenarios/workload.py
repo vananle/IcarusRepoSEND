@@ -18,18 +18,18 @@ following attributes:
 Each workload must expose the `contents` attribute which is an iterable of
 all content identifiers. This is needed for content placement.
 """
-import random
 import csv
+import heapq
+import math
+import random
+from collections import Counter
 
 import networkx as nx
 import numpy as np
-import math
-import heapq
-
 from fnss.util import random_from_pdf
-from icarus.tools import TruncatedZipfDist
+
 from icarus.registry import register_workload
-from collections import Counter
+from icarus.tools import TruncatedZipfDist
 
 __all__ = [
     'StationaryWorkload',
@@ -735,7 +735,7 @@ class StationaryRepoWorkload(object):
                     if labels_zipf < len(self.labels['topics']):
                         labels.append(self.labels['topics'][labels_zipf])
                     elif labels_zipf >= len(self.labels['topics']):
-                        labels.append(self.labels['types'][labels_zipf - len(self.labels['topics'])-1])
+                        labels.append(self.labels['types'][labels_zipf - len(self.labels['topics']) - 1])
 
             else:
                 if self.alpha_labels == 0 or self.alter is True:
@@ -812,7 +812,7 @@ class StationaryRepoWorkload(object):
             # NOTE: STOPPED HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             neighbors = self.topology.neighbors(receiver)
-            #s = str(t_event) + "\t" + str(neighbors[0]) + "\t" + str(content) + "\n"
+            # s = str(t_event) + "\t" + str(neighbors[0]) + "\t" + str(content) + "\n"
             # aFile.write(s)
             yield (t_event, event)
             req_counter += 1
@@ -820,8 +820,6 @@ class StationaryRepoWorkload(object):
         print(("End of iteration: len(eventObj): " + repr(len(self.model.eventQ))))
         # aFile.close()
         raise StopIteration()
-
-
 
 
 @register_workload('BURSTY_MORE_LABEL_REQS')
@@ -1020,11 +1018,10 @@ class BurstyRepoWorkload(object):
                     self.receivers_down[d_node] = self.last_event[d_node] + self.receivers_downtime[d_node]
                 elif self.receivers_down[d_node] and t_event < self.receivers_down[d_node]:
                     t_event = self.receivers_down[d_node]
-                elif self.receivers_down[d_node] and t_event > self.receivers_down[d_node] + self.receivers_uptime[d_node]:
+                elif self.receivers_down[d_node] and t_event > self.receivers_down[d_node] + self.receivers_uptime[
+                    d_node]:
                     self.receivers_down[d_node] = None
                 self.last_event[d_node] = t_event
-                    
-            
 
             labels = []
             content = None
@@ -1037,7 +1034,7 @@ class BurstyRepoWorkload(object):
                     if labels_zipf < len(self.labels['topics']):
                         labels.append(self.labels['topics'][labels_zipf])
                     elif labels_zipf >= len(self.labels['topics']):
-                        labels.append(self.labels['types'][labels_zipf - len(self.labels['topics'])-1])
+                        labels.append(self.labels['types'][labels_zipf - len(self.labels['topics']) - 1])
 
             else:
                 if self.alpha_labels == 0 or self.alter is True:
@@ -1114,7 +1111,7 @@ class BurstyRepoWorkload(object):
             # NOTE: STOPPED HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             neighbors = self.topology.neighbors(receiver)
-            #s = str(t_event) + "\t" + str(neighbors[0]) + "\t" + str(content) + "\n"
+            # s = str(t_event) + "\t" + str(neighbors[0]) + "\t" + str(content) + "\n"
             # aFile.write(s)
             yield (t_event, event)
             req_counter += 1
@@ -1122,8 +1119,6 @@ class BurstyRepoWorkload(object):
         print(("End of iteration: len(eventObj): " + repr(len(self.model.eventQ))))
         # aFile.close()
         raise StopIteration()
-
-
 
 
 @register_workload('TRACE_DRIVEN_REPO')
@@ -1227,7 +1222,7 @@ class TraceDrivenRepoWorkload(object):
         self.n_measured = n_measured
         self.contents_file = contents_file
         self.labels_file = labels_file
-        self.content_locations =content_locations
+        self.content_locations = content_locations
         self.rates_file = rates_file
         self.coeffs = []
         with open(rates_file, 'r') as f:
@@ -1236,7 +1231,7 @@ class TraceDrivenRepoWorkload(object):
                 first = True
                 for coeff in co:
                     if first:
-                        self.rate = float(coeff) #+ float(coeff)*0.1
+                        self.rate = float(coeff)  # + float(coeff)*0.1
                         first = False
                     else:
                         self.coeffs.append(float(coeff))
@@ -1250,8 +1245,8 @@ class TraceDrivenRepoWorkload(object):
             for content in data:
                 for cont in content:
                     if first:
-                         first = False
-                         continue
+                        first = False
+                        continue
                     contents.append(cont)
         self.labels = []
         labels = []
@@ -1261,8 +1256,8 @@ class TraceDrivenRepoWorkload(object):
             for label in data:
                 for l in label:
                     if first:
-                         first = False
-                         continue
+                        first = False
+                        continue
                     labels.append(l)
         locations = []
         with open(self.content_locations, 'r', buffering=self.buffering) as loc:
@@ -1271,8 +1266,8 @@ class TraceDrivenRepoWorkload(object):
             for cont_loc in data:
                 for c_loc in cont_loc:
                     if first:
-                         first = False
-                         continue
+                        first = False
+                        continue
                     locations.append(int(float(c_loc)))
         alt = True
         no_contents = 0
@@ -1291,7 +1286,6 @@ class TraceDrivenRepoWorkload(object):
         for label in labels:
             if label not in global_unique_labels:
                 global_unique_labels.append(label)
-
 
         unique_labels = []
         label_counts = Counter()
@@ -1319,7 +1313,6 @@ class TraceDrivenRepoWorkload(object):
         contents_norm_factor = float(sum(contents_weights.values()))
         self.rates_pdf = dict((k, v / contents_norm_factor) for k, v in list(contents_weights.items()))
 
-
         self.data = dict()
 
         for content in self.contents:
@@ -1334,7 +1327,6 @@ class TraceDrivenRepoWorkload(object):
             datum.update(shelf_life=[])
             datum.update(freshness_per=freshness_pers)
             self.data[content] = datum
-
 
         self.beta = beta
         if beta != 0:
@@ -1389,11 +1381,12 @@ class TraceDrivenRepoWorkload(object):
                 # TODO: Might need to revise this, programming-wise, to account for no content association to selected
                 #  label\/\/\/\/\/\/\/\/
                 for i in range(0, self.max_labels):
-                        labels.append(random_from_pdf(self.labels_pdf))
+                    labels.append(random_from_pdf(self.labels_pdf))
 
             else:
                 if self.alpha_labels == 0 or self.alter is True:
-                    content = int(random_from_pdf(self.rates_pdf))  # TODO: THIS is where the content identifier requests are generated!
+                    content = int(random_from_pdf(
+                        self.rates_pdf))  # TODO: THIS is where the content identifier requests are generated!
 
                 # TODO: Might need to revise this, programming-wise, to account for no content association to selected
                 #  label\/\/\/\/\/\/\/\/
@@ -1463,7 +1456,7 @@ class TraceDrivenRepoWorkload(object):
             # NOTE: STOPPED HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             neighbors = self.topology.neighbors(receiver)
-            #s = str(t_event) + "\t" + str(neighbors[0]) + "\t" + str(content) + "\n"
+            # s = str(t_event) + "\t" + str(neighbors[0]) + "\t" + str(content) + "\n"
             # aFile.write(s)
             yield (t_event, event)
             req_counter += 1
@@ -1471,6 +1464,7 @@ class TraceDrivenRepoWorkload(object):
         print(("End of iteration: len(eventObj): " + repr(len(self.model.eventQ))))
         # aFile.close()
         raise StopIteration()
+
 
 @register_workload('BURSTY_TRACE_DRIVEN_REPO')
 class BurstyTraceRepoWorkload(object):
@@ -1581,7 +1575,7 @@ class BurstyTraceRepoWorkload(object):
             self.disrupt_weights = {}
             if mu and sigma > 0:
                 for rec in self.receivers:
-                    weight = np.exp(-0.5*np.power(rec-mu, 2)) / (sigma*math.sqrt(2*math.pi))
+                    weight = np.exp(-0.5 * np.power(rec - mu, 2)) / (sigma * math.sqrt(2 * math.pi))
                     self.disrupt_weights[rec] = weight
 
         if self.disrupt_mode == 'WEIGHTED':
@@ -1603,7 +1597,7 @@ class BurstyTraceRepoWorkload(object):
         self.n_measured = n_measured
         self.contents_file = contents_file
         self.labels_file = labels_file
-        self.content_locations =content_locations
+        self.content_locations = content_locations
         self.rates_file = rates_file
         self.coeffs = []
         with open(rates_file, 'r') as f:
@@ -1612,7 +1606,7 @@ class BurstyTraceRepoWorkload(object):
                 first = True
                 for coeff in co:
                     if first:
-                        self.rate = float(coeff) + float(coeff)*0.1
+                        self.rate = float(coeff) + float(coeff) * 0.1
                         first = False
                     else:
                         self.coeffs.append(float(coeff))
@@ -1655,11 +1649,11 @@ class BurstyTraceRepoWorkload(object):
         labels_norm_factor = float(sum(self.labels_weights.values()))
         self.labels_pdf = dict((k, v / labels_norm_factor) for k, v in list(self.labels_weights.items()))
 
-        for number in range(0, len(self.contents)-1):
+        for number in range(0, len(self.contents) - 1):
             self.contents[number] = number
         self.rates_pdf = {}
         for content in self.contents:
-            for i in range(0, len(self.contents)-1):
+            for i in range(0, len(self.contents) - 1):
                 if self.contents[i] == content:
                     self.rates_pdf[content] = self.coeffs[i]
         contents_weights = {}
@@ -1721,11 +1715,12 @@ class BurstyTraceRepoWorkload(object):
                 # TODO: Might need to revise this, programming-wise, to account for no content association to selected
                 #  label\/\/\/\/\/\/\/\/
                 for i in range(0, self.max_labels):
-                        labels.append(random_from_pdf(self.labels_pdf))
+                    labels.append(random_from_pdf(self.labels_pdf))
 
             else:
                 if self.alpha_labels == 0 or self.alter is True:
-                    content = int(random_from_pdf(self.rates_pdf))  # TODO: THIS is where the content identifier requests are generated!
+                    content = int(random_from_pdf(
+                        self.rates_pdf))  # TODO: THIS is where the content identifier requests are generated!
 
                 # TODO: Might need to revise this, programming-wise, to account for no content association to selected
                 #  label\/\/\/\/\/\/\/\/
@@ -1794,7 +1789,7 @@ class BurstyTraceRepoWorkload(object):
             # NOTE: STOPPED HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             neighbors = self.topology.neighbors(receiver)
-            #s = str(t_event) + "\t" + str(neighbors[0]) + "\t" + str(content) + "\n"
+            # s = str(t_event) + "\t" + str(neighbors[0]) + "\t" + str(content) + "\n"
             # aFile.write(s)
             yield (t_event, event)
             req_counter += 1
@@ -1932,7 +1927,7 @@ class BurstyRepoDataAndWorkload(object):
             self.disrupt_weights = {}
             if mu and sigma > 0:
                 for rec in self.receivers:
-                    weight = np.exp(-0.5*np.power(rec-mu, 2)) / (sigma*math.sqrt(2*math.pi))
+                    weight = np.exp(-0.5 * np.power(rec - mu, 2)) / (sigma * math.sqrt(2 * math.pi))
                     self.disrupt_weights[rec] = weight
 
         if self.disrupt_mode == 'WEIGHTED':
@@ -1955,7 +1950,7 @@ class BurstyRepoDataAndWorkload(object):
                 self.data_gen_dist = {}
                 if mu and sigma > 0:
                     for rec in self.receivers:
-                        weight = np.exp(-0.5*np.power(rec-mu, 2)) / (sigma*math.sqrt(2*math.pi))
+                        weight = np.exp(-0.5 * np.power(rec - mu, 2)) / (sigma * math.sqrt(2 * math.pi))
                         self.data_weights[rec] = weight
 
         if beta != 0:
@@ -2037,7 +2032,8 @@ class BurstyRepoDataAndWorkload(object):
                     self.receivers_down[d_node] = self.last_event[d_node] + self.receivers_downtime[d_node]
                 elif self.receivers_down[d_node] and t_event < self.receivers_down[d_node]:
                     t_event = self.receivers_down[d_node]
-                elif self.receivers_down[d_node] and t_event > self.receivers_down[d_node] + self.receivers_uptime[d_node]:
+                elif self.receivers_down[d_node] and t_event > self.receivers_down[d_node] + self.receivers_uptime[
+                    d_node]:
                     self.receivers_down[d_node] = None
                 self.last_event[d_node] = t_event
 
@@ -2134,10 +2130,6 @@ class BurstyRepoDataAndWorkload(object):
             yield (t_event, event)
             req_counter += 1
 
-
-
-
-
         # # Continuous data (for storage) generation settings
         # self.data_gen_dist_mode
         # self.data_gen_dist
@@ -2184,7 +2176,7 @@ class BurstyRepoDataAndWorkload(object):
                 if self.data_gen_dist_mode == "WEIGHTED_DATA_GEN" or self.data_gen_dist_mode == "POISSON":
                     receiver = random_from_pdf(self.data_gen_pdf)
             else:
-                    receiver = random.choice(self.receivers)
+                receiver = random.choice(self.receivers)
             node = receiver
 
             if self.disrupt_mode == 'RAND':
@@ -2218,10 +2210,10 @@ class BurstyRepoDataAndWorkload(object):
                     self.receivers_down[d_node] = self.last_event[d_node] + self.receivers_downtime[d_node]
                 elif self.receivers_down[d_node] and t_event < self.receivers_down[d_node]:
                     t_event = self.receivers_down[d_node]
-                elif self.receivers_down[d_node] and t_event > self.receivers_down[d_node] + self.receivers_uptime[d_node]:
+                elif self.receivers_down[d_node] and t_event > self.receivers_down[d_node] + self.receivers_uptime[
+                    d_node]:
                     self.receivers_down[d_node] = None
                 self.last_event[d_node] = t_event
-
 
             labels = []
             content = None

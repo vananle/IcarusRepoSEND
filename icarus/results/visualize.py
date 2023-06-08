@@ -2,23 +2,21 @@
 
 import os
 
-import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import networkx as nx
-
+import numpy as np
 
 __all__ = [
-       'draw_stack_deployment',
-       'draw_network_load',
-          ]
-
+    'draw_stack_deployment',
+    'draw_network_load',
+]
 
 # Colormap for node stacks
-COLORMAP = {'source':    'blue',
-            'receiver':  'green',
-            'router':    'white',
-            'cache':     'red',
+COLORMAP = {'source': 'blue',
+            'receiver': 'green',
+            'router': 'white',
+            'cache': 'red',
             }
 
 

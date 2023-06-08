@@ -1,29 +1,27 @@
 """Functions for importing and analyzing traffic traces"""
 
-
-import math
 import collections
+import math
 import time
-import dateutil
 import types
 
+import dateutil
 import numpy as np
 from scipy.stats import chisquare
 
 from icarus.tools import TruncatedZipfDist
 
-
 __all__ = [
-       'frequencies',
-       'one_timers',
-       'trace_stats',
-       'zipf_fit',
-       'parse_url_list',
-       'parse_wikibench',
-       'parse_squid',
-       'parse_youtube_umass',
-       'parse_common_log_format'
-           ]
+    'frequencies',
+    'one_timers',
+    'trace_stats',
+    'zipf_fit',
+    'parse_url_list',
+    'parse_wikibench',
+    'parse_squid',
+    'parse_youtube_umass',
+    'parse_common_log_format'
+]
 
 """
     TODO: These should be the functions to extrapolate necessary measures,
@@ -146,9 +144,11 @@ def zipf_fit(obs_freqs, need_sorting=False):
         # Sort in descending order
         obs_freqs = -np.sort(-obs_freqs)
     n = len(obs_freqs)
+
     def log_likelihood(alpha):
         return np.sum(obs_freqs * (alpha * np.log(np.arange(1.0, n + 1)) + \
-                       math.log(sum(1.0 / np.arange(1.0, n + 1) ** alpha))))
+                                   math.log(sum(1.0 / np.arange(1.0, n + 1) ** alpha))))
+
     # Find optimal alpha
     alpha = minimize_scalar(log_likelihood)['x']
     # Calculate goodness of fit
@@ -202,7 +202,7 @@ def parse_wikibench(path):
                 counter=int(entry[0]),
                 timestamp=entry[1],
                 url=entry[2]
-                      )
+            )
     raise StopIteration()
 
 
@@ -257,7 +257,7 @@ def parse_squid(path):
                 hierarchy_data=hierarchy_data,
                 hostname=hostname,
                 content_type=content_type
-                      )
+            )
     raise StopIteration()
 
 
@@ -311,7 +311,7 @@ def parse_youtube_umass(path):
                 request=request,
                 video_id=video_id,
                 content_server_addr=content_server_addr,
-                      )
+            )
     raise StopIteration()
 
 
@@ -353,6 +353,6 @@ def parse_common_log_format(path):
                 request=request,
                 status=status,
                 bytes=n_bytes
-                        )
+            )
             yield t, event
     raise StopIteration()

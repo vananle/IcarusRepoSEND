@@ -1,30 +1,31 @@
 """Utility functions
 """
 
-import time
-import logging
 import collections
 import copy
 import heapq
+import logging
+import time
 
-import numpy as np
 import networkx as nx
+import numpy as np
 
 __all__ = [
-        'Settings',
-        'AnyValue',
-        'SequenceNumber',
-        'config_logging',
-        'inheritdoc',
-        'timestr',
-        'iround',
-        'step_cdf',
-        'Tree',
-        'can_import',
-        'path_links',
-        'multicast_tree',
-        'apportionment'
-           ]
+    'Settings',
+    'AnyValue',
+    'SequenceNumber',
+    'config_logging',
+    'inheritdoc',
+    'timestr',
+    'iround',
+    'step_cdf',
+    'Tree',
+    'can_import',
+    'path_links',
+    'multicast_tree',
+    'apportionment'
+]
+
 
 class Tree(collections.defaultdict):
     """Tree data structure
@@ -508,12 +509,14 @@ def inheritdoc(cls):
     This implementation is simple, easy to understand and works well with
     Icarus code.
     """
+
     def _decorator(function):
         # This assignment is needed to maintain a reference to the superclass
         sup = cls
         name = function.__name__
         function.__doc__ = eval('sup.%s.__doc__' % name)
         return function
+
     return _decorator
 
 
@@ -715,6 +718,7 @@ def multicast_tree(shortest_paths, source, destinations):
             continue
         tree = tree.union(set(path_links(shortest_paths[source][d])))
     return tree
+
 
 def apportionment(n, fracs):
     """Allocate items to buckets according to a given proportion.

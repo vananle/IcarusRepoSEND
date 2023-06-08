@@ -37,6 +37,7 @@ RESULTS_WRITER = {}
 # Dictionary storying all continuous logging parameters keyed by ID
 LOGGING_PARAMETERS = {}
 
+
 def register_decorator(register):
     """Returns a decorator that register a class or function to a specified
     register
@@ -51,6 +52,7 @@ def register_decorator(register):
     decorator : func
         The decorator
     """
+
     def decorator(name):
         """Decorator that register a class or a function to a register.
 
@@ -59,11 +61,14 @@ def register_decorator(register):
         name : str
             The name assigned to the class or function to store in the register
         """
+
         def _decorator(function):
             register[name] = function
             function.name = name
             return function
+
         return _decorator
+
     return decorator
 
 

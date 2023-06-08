@@ -3,9 +3,9 @@ import unittest
 
 import fnss
 
-from icarus.scenarios import IcnTopology
 import icarus.models as strategy
 from icarus.execution import NetworkModel, NetworkView, NetworkController, DummyCollector
+from icarus.scenarios import IcnTopology
 
 
 class TestHashroutingEdge(unittest.TestCase):
@@ -119,7 +119,6 @@ class TestHashroutingEdge(unittest.TestCase):
         self.assertSetEqual(set(exp_cont_hops), set(cont_hops))
         self.assertEqual(4, summary['serving_node'])
 
-
     def test_hashrouting_symmetric_edge_zero_local(self):
         hr = strategy.HashroutingEdge(self.view, self.controller, 'SYMM', 0)
         hr.authoritative_cache = lambda x: ((x - 1) % 4) + 1
@@ -192,7 +191,6 @@ class TestHashroutingEdge(unittest.TestCase):
         self.assertSetEqual(set(exp_req_hops), set(req_hops))
         self.assertSetEqual(set(exp_cont_hops), set(cont_hops))
         self.assertEqual(4, summary['serving_node'])
-
 
     def test_hashrouting_symmetric_edge_zero_coordinated(self):
         hr = strategy.HashroutingEdge(self.view, self.controller, 'SYMM', 1)
@@ -379,7 +377,6 @@ class TestHashroutingOnPath(unittest.TestCase):
         self.assertSetEqual(set(exp_cont_hops), set(cont_hops))
         self.assertEqual(4, summary['serving_node'])
 
-
     def test_hashrouting_symmetric_zero_local(self):
         hr = strategy.HashroutingOnPath(self.view, self.controller, 'SYMM', 0)
         hr.authoritative_cache = lambda x: ((x - 1) % 4) + 1
@@ -452,7 +449,6 @@ class TestHashroutingOnPath(unittest.TestCase):
         self.assertSetEqual(set(exp_req_hops), set(req_hops))
         self.assertSetEqual(set(exp_cont_hops), set(cont_hops))
         self.assertEqual(4, summary['serving_node'])
-
 
     def test_hashrouting_symmetric_zero_coordinated(self):
         hr = strategy.HashroutingOnPath(self.view, self.controller, 'SYMM', 1)
@@ -582,7 +578,6 @@ class TestHashroutingClustered(unittest.TestCase):
 
     def tearDown(self):
         pass
-
 
     def test_hashrouting_symmetric_lce(self):
         hr = strategy.HashroutingClustered(self.view, self.controller,
@@ -895,7 +890,6 @@ class TestHashroutingClustered(unittest.TestCase):
         self.assertEqual("SRC", summary['serving_node'])
 
 
-
 class TestHashrouting(unittest.TestCase):
 
     @classmethod
@@ -1200,7 +1194,6 @@ class TestHashrouting(unittest.TestCase):
         self.assertSetEqual(exp_req_hops, set(req_hops))
         self.assertSetEqual(exp_cont_hops, set(cont_hops))
 
-
     def test_hashrouting_hybrid_sm(self):
         hr = strategy.HashroutingHybridSM(self.view, self.controller)
         hr.authoritative_cache = lambda x: x
@@ -1238,6 +1231,8 @@ class TestHashrouting(unittest.TestCase):
         # but because of NetworkX selecting the least convenient shortest path
         # the computed solution is symmetric with path: 4-5-0-1-2-6.
         pass
+
+
 #        # At time 1, receiver 6 requests content 1, expect multicast
 #        hr = strategy.HashroutingHybridSM(self.view, self.controller)
 #        hr.authoritative_cache = lambda x: x
@@ -1832,7 +1827,6 @@ class TestNrr(unittest.TestCase):
         self.assertSetEqual(set(exp_req_hops), set(summary['request_hops']))
         self.assertSetEqual(set(exp_cont_hops), set(summary['content_hops']))
         self.assertEqual(3, summary['serving_node'])
-
 
     def test_lcd(self):
         hr = strategy.NearestReplicaRouting(self.view, self.controller, metacaching='LCD')

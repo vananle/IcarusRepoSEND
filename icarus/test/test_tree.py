@@ -1,6 +1,7 @@
 import unittest
 
 from io import BytesIO
+
 try:
     # Python 2
     import pickle as pickle
@@ -9,6 +10,7 @@ except ImportError:
     import pickle
 
 from icarus.util import Tree
+
 
 class TestTree(unittest.TestCase):
 

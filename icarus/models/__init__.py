@@ -2,5 +2,5 @@
 policies and caching and routing strategies.
 """
 from .cache import *
-from .strategy import *
 from .service import *
+from .strategy import *

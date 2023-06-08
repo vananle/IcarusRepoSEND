@@ -8,7 +8,6 @@ import icarus.execution as collectors
 class TestLinkLoadCollector(unittest.TestCase):
 
     def test_internal_external_custom_size(self):
-
         req_size = 500
         cont_size = 700
 
@@ -45,7 +44,6 @@ class TestLinkLoadCollector(unittest.TestCase):
         self.assertEqual((req_size + cont_size) / 4, mean_ext)
 
     def test_internal_links_only(self):
-
         req_size = 500
         cont_size = 700
 
@@ -75,7 +73,6 @@ class TestLinkLoadCollector(unittest.TestCase):
         self.assertEqual(0, len(ext_load))
 
     def test_external_links_only(self):
-
         req_size = 500
         cont_size = 700
 
@@ -108,7 +105,6 @@ class TestLinkLoadCollector(unittest.TestCase):
 class TestLatencyCollector(unittest.TestCase):
 
     def test_base(self):
-
         link_delay = {(1, 2): 2, (2, 3): 10,
                       (2, 1): 4, (3, 2): 20}
         view = type('MockNetworkView', (), {'link_delay': lambda s, u, v: link_delay[(u, v)]})()
@@ -131,7 +127,6 @@ class TestLatencyCollector(unittest.TestCase):
         self.assertEqual((10 + 20 + 2 * (2 + 4)) / 2, res['MEAN'])
 
     def test_main_path(self):
-
         link_delay = {(1, 2): 2, (2, 3): 10,
                       (2, 1): 4, (3, 2): 20}
         view = type('MockNetworkView', (), {'link_delay': lambda s, u, v: link_delay[(u, v)]})()
@@ -159,7 +154,6 @@ class TestLatencyCollector(unittest.TestCase):
 class TestCacheHitRatioCollector(unittest.TestCase):
 
     def test_base(self):
-
         view = type('MockNetworkView', (), {})()
 
         c = collectors.CacheHitRatioCollector(view)
@@ -176,7 +170,6 @@ class TestCacheHitRatioCollector(unittest.TestCase):
         self.assertEqual(0.5, res['MEAN'])
 
     def test_per_node(self):
-
         view = type('MockNetworkView', (), {})()
 
         c = collectors.CacheHitRatioCollector(view, per_node=True)
@@ -206,7 +199,6 @@ class TestCacheHitRatioCollector(unittest.TestCase):
         self.assertEqual({4: 0.2}, res['PER_NODE_SERVER_HIT_RATIO'])
 
     def test_per_content(self):
-
         view = type('MockNetworkView', (), {})()
 
         c = collectors.CacheHitRatioCollector(view, content_hits=True)

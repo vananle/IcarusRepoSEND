@@ -3,6 +3,7 @@
 single pickle file.
 """
 import argparse
+
 from icarus.registry import RESULTS_READER, RESULTS_WRITER
 
 __all__ = ['merge_results_txt']

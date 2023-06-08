@@ -1,5 +1,5 @@
-import unittest
 import collections
+import unittest
 
 import numpy as np
 
@@ -23,6 +23,7 @@ class TestDiscreteDist(unittest.TestCase):
         pdf_1 = np.array([0.4, 0.6])
         pdf_2 = stats.DiscreteDist(pdf_1).pdf
         self.assertTrue(all(pdf_1[i] == pdf_2[i] for i in range(len(pdf_1))))
+
 
 class TestTruncatedZipfDist(unittest.TestCase):
 
@@ -76,4 +77,3 @@ class TestCdf(unittest.TestCase):
         for i in range(len(exp_x)):
             self.assertAlmostEqual(x[i], exp_x[i])
             self.assertAlmostEqual(cdf[i], exp_cdf[i])
-

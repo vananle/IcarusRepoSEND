@@ -10,11 +10,12 @@ TODO:
 """
 
 import random
+
 import networkx as nx
 
-from icarus.util import iround
 from icarus.registry import register_cache_placement
 from icarus.scenarios.algorithms import compute_clusters, compute_p_median, deploy_clusters
+from icarus.util import iround
 
 __all__ = [
     'uniform_cache_placement',
@@ -31,8 +32,8 @@ __all__ = [
 
 @register_cache_placement('CONSOLIDATED_REPO_CACHE')
 def repo_cache_storage_placement(topology, cache_budget, storage_budget, spread=1,
-                           metric_dict=None, target='top',
-                           **kwargs):
+                                 metric_dict=None, target='top',
+                                 **kwargs):
     """
     We shall register a separate strategy in here, to place RepoStorage storage
     systems on top of nodes, instead of caches.

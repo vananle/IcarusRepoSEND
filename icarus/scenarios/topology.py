@@ -19,11 +19,10 @@ A valid ICN topology must have the following attributes:
         some nodes could be both at different instances of time, anyway...?
 """
 
-
 from os import path
 
-import networkx as nx
 import fnss
+import networkx as nx
 
 from icarus.registry import register_topology_factory
 
@@ -32,20 +31,19 @@ from icarus.registry import register_topology_factory
 #  Same goes for network.model...?
 
 __all__ = [
-        'IcnTopology',
-        'topology_tree',
-        'topology_repo_tree',
-        'topology_path',
-        'topology_ring',
-        'topology_mesh',
-        'topology_repo_mesh',
-        'topology_geant',
-        'topology_tiscali',
-        'topology_wide',
-        'topology_garr',
-        'topology_rocketfuel_latency'
-           ]
-
+    'IcnTopology',
+    'topology_tree',
+    'topology_repo_tree',
+    'topology_path',
+    'topology_ring',
+    'topology_mesh',
+    'topology_repo_mesh',
+    'topology_geant',
+    'topology_tiscali',
+    'topology_wide',
+    'topology_garr',
+    'topology_rocketfuel_latency'
+]
 
 # Delays
 # These values are suggested by this Computer Networks 2011 paper:
@@ -145,7 +143,7 @@ def topology_tree(k, h, delay=0.020, **kwargs):
 
     receiver_access_delay = 0.001
     topology = fnss.k_ary_tree_topology(k, h)
-    topology.graph['parent'] = [None for x in range(pow(k,h+1)-1)]
+    topology.graph['parent'] = [None for x in range(pow(k, h + 1) - 1)]
     for u, v in topology.edges():
         if topology.node[u]['depth'] > topology.node[v]['depth']:
             topology.graph['parent'][u] = v
@@ -154,7 +152,7 @@ def topology_tree(k, h, delay=0.020, **kwargs):
 
         # TODO: Change(d) the edge allocation from .edges[u, v] to .edges[u, v]...don't really 
         #  understand where edges[u, v] came from originally, anyway, really...
-        
+
         topology.edges[u, v]['type'] = 'internal'
         if u is 0 or v is 0:
             topology.edges[u, v]['delay'] = delay
@@ -165,23 +163,23 @@ def topology_tree(k, h, delay=0.020, **kwargs):
 
     for v in topology.nodes():
         print(("Depth of " + repr(v) + " is " + repr(topology.node[v]['depth'])))
-    
+
     # set weights and delays on all links
     fnss.set_weights_constant(topology, 1.0)
-    #fnss.set_delays_constant(topology, delay, 'ms')
-    
+    # fnss.set_delays_constant(topology, delay, 'ms')
+
     routers = topology.nodes()
     topology.graph['icr_candidates'] = set(routers)
     topology.graph['type'] = 'TREE'
     topology.graph['height'] = h
     topology.graph['link_delay'] = delay
     topology.graph['receiver_access_delay'] = receiver_access_delay
-    
+
     edge_routers = [v for v in topology.nodes()
-                 if topology.node[v]['depth'] == h]
+                    if topology.node[v]['depth'] == h]
     root = [v for v in topology.nodes()
-               if topology.node[v]['depth'] == 0]
-    #routers = [v for v in topology.nodes()
+            if topology.node[v]['depth'] == 0]
+    # routers = [v for v in topology.nodes()
     #          if topology.node[v]['depth'] > 0
     #          and topology.node[v]['depth'] < h]
 
@@ -190,15 +188,14 @@ def topology_tree(k, h, delay=0.020, **kwargs):
     for i in range(n_receivers):
         topology.add_edge(receivers[i], edge_routers[i], delay=receiver_access_delay, type='internal')
 
-
-    n_sources = len(root) 
+    n_sources = len(root)
     sources = ['src_%d' % i for i in range(n_sources)]
     for i in range(n_sources):
-        topology.add_edge(sources[i], root[0], delay=3*delay, type='internal')
+        topology.add_edge(sources[i], root[0], delay=3 * delay, type='internal')
 
     print(("The number of sources: " + repr(n_sources)))
     print(("The number of receivers: " + repr(n_receivers)))
-    topology.graph['receiver_access_delay'] = receiver_access_delay 
+    topology.graph['receiver_access_delay'] = receiver_access_delay
     topology.graph['link_delay'] = delay
     topology.graph['depth'] = h
     for v in sources:
@@ -465,7 +462,6 @@ def topology_mesh(n, m, delay_int=1, delay_ext=5, **kwargs):
     return IcnTopology(topology)
 
 
-
 @register_topology_factory('REPO_MESH')
 def topology_repo_mesh(n, m, delay_int=0.02, delay_ext=1, **kwargs):
     """Returns a ring topology
@@ -553,7 +549,6 @@ def topology_repo_mesh(n, m, delay_int=0.02, delay_ext=1, **kwargs):
     topology.graph['edge_routers'] = routers
 
     return IcnTopology(topology)
-
 
 
 @register_topology_factory('GEANT')
@@ -901,6 +896,7 @@ def topology_geant2(**kwargs):
             topology.edges[u, v]['type'] = 'internal'
     return IcnTopology(topology)
 
+
 @register_topology_factory('TISCALI_2')
 def topology_tiscali2(**kwargs):
     """Return a scenario based on Tiscali topology, parsed from RocketFuel dataset
@@ -1028,10 +1024,10 @@ def topology_rocketfuel_latency(asn, source_ratio=1.0, ext_delay=EXTERNAL_LINK_D
         topology.add_edge(sources[i], routers[i], delay=ext_delay, type='external')
 
     # Here let's try attach them via cluster
-#     clusters = compute_clusters(topology, n_sources, distance=None, n_iter=1000)
-#     source_attachments = [max(cluster, key=lambda k: deg[k]) for cluster in clusters]
-#     for i in range(len(sources)):
-#         topology.add_edge(sources[i], source_attachments[i], delay=ext_delay, type='external')
+    #     clusters = compute_clusters(topology, n_sources, distance=None, n_iter=1000)
+    #     source_attachments = [max(cluster, key=lambda k: deg[k]) for cluster in clusters]
+    #     for i in range(len(sources)):
+    #         topology.add_edge(sources[i], source_attachments[i], delay=ext_delay, type='external')
 
     # attach artificial receiver nodes to ICR candidates
     receivers = ['rec_%d' % i for i in range(len(routers))]
@@ -1049,4 +1045,3 @@ def topology_rocketfuel_latency(asn, source_ratio=1.0, ext_delay=EXTERNAL_LINK_D
     for v in routers:
         fnss.add_stack(topology, v, 'router')
     return IcnTopology(topology)
-

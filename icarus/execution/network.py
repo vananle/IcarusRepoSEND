@@ -19,20 +19,19 @@ about the network status by calling methods of the `NetworkView` instance.
 The `NetworkController` is also responsible to notify a `DataCollectorProxy`
 of all relevant events.
 """
-import random
-import logging
-import sys
-
-import networkx as nx
-import fnss
-
 import heapq
+import logging
+import random
+import sys
+from collections import Counter
 
-from icarus.registry import CACHE_POLICY, REPO_POLICY
-from icarus.util import path_links, iround
+import fnss
+import networkx as nx
+
 from icarus.models.service.compSpot import ComputationSpot
 from icarus.models.service.compSpot import Task
-from collections import Counter
+from icarus.registry import CACHE_POLICY, REPO_POLICY
+from icarus.util import path_links, iround
 
 __all__ = [
     'Service',
@@ -264,7 +263,6 @@ class NetworkView(object):
             source is unavailable
         """
 
-
         if type(k) is dict:
             if k['content'] == '':
                 return self.labels_sources(labels)
@@ -310,7 +308,6 @@ class NetworkView(object):
                         return node
             else:
                 return None
-
 
     def closest_source(self, node, k):
         """Return the node identifier where the content is persistently stored.
@@ -416,8 +413,7 @@ class NetworkView(object):
         for n in del_nodes:
             del nodes[n]
 
-
-        return nodes 
+        return nodes
 
     def labels_requests(self, r_labels):
         """Return the node identifier where the content is persistently stored.
@@ -436,7 +432,6 @@ class NetworkView(object):
         nodes = Counter()
 
         for label in r_labels:
-
             nodes.update(self.model.request_labels_nodes.get(label, None))
 
         del_nodes = []
@@ -616,7 +611,6 @@ class NetworkView(object):
 
         for n in del_nodes:
             del nodes[n]
-
 
         current_hops = float('inf')
         for n in nodes:
@@ -1186,7 +1180,7 @@ class NetworkModel(object):
                             if node not in self.node_labels:
                                 self.node_labels[node] = Counter()
                             for label in self.all_node_labels[node]:
-                                self.node_labels[node].update({label:self.all_node_labels[node][label]})
+                                self.node_labels[node].update({label: self.all_node_labels[node][label]})
 
                             for k in self.all_node_labels[node]:
                                 if k not in self.labels_sources:
@@ -1267,10 +1261,11 @@ class NetworkModel(object):
             self.repoStorage = dict()
             for node in self.storageSize:
                 if node in self.contents:
-                    self.repoStorage[node] = REPO_POLICY[repo_policy_name](node, self, self.contents[node], self.storageSize[node], **repo_policy_args)
+                    self.repoStorage[node] = REPO_POLICY[repo_policy_name](node, self, self.contents[node],
+                                                                           self.storageSize[node], **repo_policy_args)
                 elif node in self.storageSize:
-                    self.repoStorage[node] = REPO_POLICY[repo_policy_name](node, self, None, self.storageSize[node], **repo_policy_args)
-
+                    self.repoStorage[node] = REPO_POLICY[repo_policy_name](node, self, None, self.storageSize[node],
+                                                                           **repo_policy_args)
 
         #  Generate the actual services processing requests
         self.services = []
@@ -1285,8 +1280,9 @@ class NetworkModel(object):
             delay_max = delay_min + 2 * topology.graph['depth'] * topology.graph['link_delay'] + 0.005
         else:
             delay_min = 2 * topology.graph['receiver_access_delay'] + service_time_max
-            delay_max = delay_min + 2 * (len(topology.graph['routers']) + len(topology.graph['sources'])) * topology.graph[
-                'link_delay'] + 0.005
+            delay_max = delay_min + 2 * (len(topology.graph['routers']) + len(topology.graph['sources'])) * \
+                        topology.graph[
+                            'link_delay'] + 0.005
         service_indx = 0
         random.seed(seed)
         for service in range(0, n_services):
@@ -1382,7 +1378,8 @@ class NetworkModel(object):
             aFile.close()
         ComputationSpot.services = self.services
         self.compSpot = {
-            node: ComputationSpot(self, self.comp_size[node], self.service_size[node], self.services, node, sched_policy, None)
+            node: ComputationSpot(self, self.comp_size[node], self.service_size[node], self.services, node,
+                                  sched_policy, None)
             for node in self.comp_size}
         # print ("Generated Computation Spot Objects")
         sys.stdout.flush()
@@ -1650,7 +1647,6 @@ class NetworkController(object):
                 self.model.request_labels_nodes[label] = Counter()
             self.model.request_labels_nodes[label].update([s])
 
-
     def has_request_labels(self, s, labels):
         all_in = []
         for label in labels:
@@ -1669,7 +1665,6 @@ class NetworkController(object):
             return True
         else:
             return False
-
 
     def add_request_labels_to_storage(self, s, labels, add=False):
         """Forward a request from node *s* to node *t* over the provided path.
@@ -1705,7 +1700,7 @@ class NetworkController(object):
                     if label not in self.model.labels_sources:
                         self.model.labels_sources[label] = Counter()
                     self.model.labels_sources[label].update([s])
-                    
+
         for label in Deletion:
             if label in self.model.request_labels[s]:
                 del self.model.request_labels[s][label]
@@ -1771,8 +1766,6 @@ class NetworkController(object):
                 self.model.labels_sources[l] = Counter()
             self.model.labels_sources[l].update([s])
 
-
-
     def replicate(self, s, d):
         """Forward a content from node *s* to node *t* over the provided path.
 
@@ -1798,8 +1791,6 @@ class NetworkController(object):
         self.model.replications_from.update([s])
         self.model.replications_to.update([d])
 
-
-
     def add_replication_hops(self, content):
         """Forward a content from node *s* to node *t* over the provided path.
 
@@ -1823,8 +1814,6 @@ class NetworkController(object):
             *True*
         """
         self.model.replication_hops.update([content['content']])
-
-
 
     def remove_replication_hops(self, content):
         """Forward a content from node *s* to node *t* over the provided path.
@@ -1850,8 +1839,6 @@ class NetworkController(object):
         """
         self.model.replication_hops[content['content']] = 0
 
-
-
     def replication_overhead_update(self, content):
         """Forward a content from node *s* to node *t* over the provided path.
 
@@ -1875,9 +1862,13 @@ class NetworkController(object):
             *True*
         """
         if content['content'] in self.model.replication_overheads:
-            self.model.replication_overheads[content['content']] = self.model.replication_overheads[content['content']] + self.model.replication_hops[content['content']] * content['msg_size']
+            self.model.replication_overheads[content['content']] = self.model.replication_overheads[
+                                                                       content['content']] + \
+                                                                   self.model.replication_hops[content['content']] * \
+                                                                   content['msg_size']
         else:
-            self.model.replication_overheads[content['content']] = self.model.replication_hops[content['content']] * content['msg_size']
+            self.model.replication_overheads[content['content']] = self.model.replication_hops[content['content']] * \
+                                                                   content['msg_size']
 
     def put_content(self, node, content=0):
         """Store content in the specified node.

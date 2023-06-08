@@ -1,23 +1,21 @@
 """Provides statistical utilities functions used by the simulator
 """
 
-
+import collections
 import math
 import random
-import collections
 
 import numpy as np
 import scipy.stats as ss
 
-
 __all__ = [
-       'DiscreteDist',
-       'TruncatedZipfDist',
-       'means_confidence_interval',
-       'proportions_confidence_interval',
-       'cdf',
-       'pdf',
-           ]
+    'DiscreteDist',
+    'TruncatedZipfDist',
+    'means_confidence_interval',
+    'proportions_confidence_interval',
+    'cdf',
+    'pdf',
+]
 
 
 class DiscreteDist(object):
@@ -88,6 +86,7 @@ class DiscreteDist(object):
         # This operation performs binary search over the CDF to return the
         # random value. Worst case time complexity is O(log2(n))
         return int(np.searchsorted(self._cdf, rv) + 1)
+
 
 class TruncatedZipfDist(DiscreteDist):
     """Implements a truncated Zipf distribution, i.e. a Zipf distribution with
@@ -206,8 +205,8 @@ def cdf(data):
     freqs = np.zeros(len(sorted_unique_data))
     for i in range(len(freqs)):
         freqs[i] = freq_dict[sorted_unique_data[i]]
-#    freqs = np.array([freq_dict[sorted_unique_data[i]]
-#                       for i in range(len(sorted_unique_data))])
+    #    freqs = np.array([freq_dict[sorted_unique_data[i]]
+    #                       for i in range(len(sorted_unique_data))])
     cdf = np.array(np.cumsum(freqs))
     norm = cdf[-1]
     cdf = cdf / norm  # normalize

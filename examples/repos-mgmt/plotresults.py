@@ -2,19 +2,14 @@
 """Plot results read from a result set
 """
 
-import os
 import argparse
-import collections
 import logging
 
-import numpy as np
 import matplotlib as mpl
 
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 
-from icarus.util import Settings, Tree, config_logging, step_cdf
-from icarus.tools import means_confidence_interval
 from icarus.results import plot_lines, plot_bar_chart
 from icarus.registry import RESULTS_READER
 
@@ -728,18 +723,18 @@ def run(config, results, plotdir):
     """
     resultset = RESULTS_READER['TXT'](results)
     # Onur: added this BEGIN
-#    lst = resultset.dump()
-#    f = open("raw_results.txt", "w")
-#    for l in lst:
-#        print 'PARAMETERS:\n'
-#        printTree(l[0])
-#        print 'RESULTS:\n'
-#        printTree(l[1])
+    #    lst = resultset.dump()
+    #    f = open("raw_results.txt", "w")
+    #    for l in lst:
+    #        print 'PARAMETERS:\n'
+    #        printTree(l[0])
+    #        print 'RESULTS:\n'
+    #        printTree(l[1])
 
-#        f.write('PARAMETERS:\n')
-#        writeTree(l[0], f)
-#        f.write('RESULTS:\n')
-#        writeTree(l[1], f)
+    #        f.write('PARAMETERS:\n')
+    #        writeTree(l[0], f)
+    #        f.write('RESULTS:\n')
+    #        writeTree(l[1], f)
 
     # print_lru_probability_results(lst)
 

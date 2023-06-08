@@ -3,12 +3,14 @@
 single pickle file.
 """
 import argparse
+
 from icarus.registry import RESULTS_READER, RESULTS_WRITER
 
 __all__ = ['merge_results']
 
 read = RESULTS_READER['PICKLE']
 write = RESULTS_WRITER['PICKLE']
+
 
 def merge_results(inputs, output):
     """Merge a list of resultsets, saved as pickle into a single pickle file.
@@ -24,6 +26,7 @@ def merge_results(inputs, output):
     """
     write(sum((read(i) for i in inputs[1:]), read(inputs[0])), output)
 
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("-o", "--output", dest="output",
@@ -33,6 +36,7 @@ def main():
                         help="The simulation configuration file", nargs="+")
     args = parser.parse_args()
     merge_results(args.inputs, args.output)
+
 
 if __name__ == "__main__":
     main()

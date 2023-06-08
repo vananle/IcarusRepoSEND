@@ -2,8 +2,8 @@ import unittest
 
 import numpy as np
 
-import icarus.tools.cacheperf as cacheperf
 import icarus.models as cache
+import icarus.tools.cacheperf as cacheperf
 import icarus.tools.stats as stats
 
 
@@ -58,6 +58,7 @@ class TestLaoutarisPerContentCacheHitRatio(unittest.TestCase):
         for h in H:
             self.assertGreaterEqual(h, 0)
             self.assertLessEqual(h, 1)
+
 
 class TestCheApproximation(unittest.TestCase):
 

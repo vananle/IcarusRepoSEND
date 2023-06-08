@@ -1,7 +1,7 @@
 import unittest
 
-import networkx as nx
 import fnss
+import networkx as nx
 
 import icarus.util as util
 

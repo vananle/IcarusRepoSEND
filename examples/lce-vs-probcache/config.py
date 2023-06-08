@@ -1,6 +1,7 @@
 """This module contains all configuration information used to run simulations"""
-from collections import deque
 import copy
+from collections import deque
+
 from icarus.util import Tree
 
 # If True, executes simulations in parallel using multiple processes
@@ -23,12 +24,12 @@ default = Tree()
 # Create standard experiment configuration
 
 # Specify workload
-default['workload'] = {'name':       'STATIONARY',
-                       'alpha':      0.8,
-                       'n_contents': 10**5,
-                       'n_warmup':   10**5,
-                       'n_measured': 4*10**5,
-                       'rate':       1.0
+default['workload'] = {'name': 'STATIONARY',
+                       'alpha': 0.8,
+                       'n_contents': 10 ** 5,
+                       'n_warmup': 10 ** 5,
+                       'n_measured': 4 * 10 ** 5,
+                       'rate': 1.0
                        }
 
 # Specify cache placement

@@ -2,22 +2,21 @@
 """Plot results read from a result set
 """
 
-import os
 import collections
+import os
 
 import matplotlib
-import numpy as np
-#import matplotlib
+# import matplotlib
 import matplotlib as mpl
+import numpy as np
+
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 from icarus.util import Tree, step_cdf
 from icarus.tools import means_confidence_interval
 
-
 __all__ = ['plot_lines', 'plot_bar_chart', 'plot_cdf']
-
 
 # These lines prevent insertion of Type 3 fonts in figures
 # Publishers don't want them. However, in some case these commands block the
@@ -199,7 +198,7 @@ def plot_lines(resultset, desc, filename, plotdir):
             means[j], err[j] = means_confidence_interval(data, confidence)
         yerr = None if 'errorbar' in desc and not desc['errorbar'] or all(err == 0) else err
         fmt = desc['line_style'][yvals[i]] if 'line_style' in desc \
-              and yvals[i] in desc['line_style'] else '-'
+                                              and yvals[i] in desc['line_style'] else '-'
         # This check is to prevent crashing when trying to plot arrays of nan
         # values with axes log scale
         if all(np.isnan(x) for x in xvals) or all(np.isnan(y) for y in means):
@@ -429,7 +428,7 @@ def plot_bar_chart(resultset, desc, filename, plotdir):
                (separation + n_bars * width) * np.arange(len(xticks)),
                xticks)
     if 'legend' in desc:
-        legend = [desc['legend'][l] for l in yvals] if 'legend'in desc else yvals
+        legend = [desc['legend'][l] for l in yvals] if 'legend' in desc else yvals
         legend_args = desc['legend_args'] if 'legend_args' in desc else {}
         if 'legend_loc' in desc:
             legend_args['loc'] = desc['legend_loc']
@@ -581,7 +580,7 @@ def plot_cdf(resultset, desc, filename, plotdir):
         else:
             x_cdf, y_cdf = [], []
         fmt = desc['line_style'][yvals[i]] if 'line_style' in desc \
-              and yvals[i] in desc['line_style'] else '-'
+                                              and yvals[i] in desc['line_style'] else '-'
         # This check is to prevent crashing when trying to plot arrays of nan
         # values with axes log scale
         if all(np.isnan(x) for x in x_cdf) or all(np.isnan(y) for y in y_cdf):

@@ -33,6 +33,7 @@ class TestUniform(unittest.TestCase):
         c2 = t.node[2]['stack'][1].get('contents', set())
         self.assertEqual(len(c1) + len(c2), 10)
 
+
 class TestWeighted(unittest.TestCase):
 
     @classmethod
@@ -59,4 +60,3 @@ class TestWeighted(unittest.TestCase):
         c1 = t.node[1]['stack'][1]['contents'] if 'contents' in t.node[1]['stack'][1] else set()
         c2 = t.node[2]['stack'][1]['contents'] if 'contents' in t.node[2]['stack'][1] else set()
         self.assertEqual(len(c1) + len(c2), 10)
-

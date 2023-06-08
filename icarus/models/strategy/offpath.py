@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 """Implementations of all off-path strategies"""
 
-
 import networkx as nx
 
 from icarus.registry import register_strategy
 from icarus.util import inheritdoc, path_links
-
 from .base import Strategy
 
 __all__ = [
-       'NearestReplicaRouting'
-           ]
+    'NearestReplicaRouting'
+]
 
 
 @register_strategy('NRR')

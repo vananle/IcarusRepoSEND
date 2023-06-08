@@ -7,9 +7,9 @@ from icarus.registry import register_strategy
 from icarus.util import inheritdoc
 
 __all__ = [
-        'Strategy',
-        'NoCache'
-          ]
+    'Strategy',
+    'NoCache'
+]
 
 
 class Strategy(object, metaclass=abc.ABCMeta):
@@ -30,7 +30,7 @@ class Strategy(object, metaclass=abc.ABCMeta):
         self.view = view
         self.controller = controller
 
-    # Onur: added kwargs to process_event
+    #  Onur: added kwargs to process_event
     @abc.abstractmethod
     def process_event(self, time, receiver, content, log, **kwargs):
         """Process an event received from the simulation engine.
@@ -55,7 +55,6 @@ class Strategy(object, metaclass=abc.ABCMeta):
         """
         raise NotImplementedError('The selected strategy must implement '
                                   'a process_event method')
-
 
 
 @register_strategy('NO_CACHE')

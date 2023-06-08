@@ -7,19 +7,18 @@ import networkx as nx
 
 from icarus.registry import register_strategy
 from icarus.util import inheritdoc, path_links
-
 from .base import Strategy
 
 __all__ = [
-       'Partition',
-       'Edge',
-       'LeaveCopyEverywhere',
-       'LeaveCopyDown',
-       'ProbCache',
-       'CacheLessForMore',
-       'RandomBernoulli',
-       'RandomChoice',
-           ]
+    'Partition',
+    'Edge',
+    'LeaveCopyEverywhere',
+    'LeaveCopyDown',
+    'ProbCache',
+    'CacheLessForMore',
+    'RandomBernoulli',
+    'RandomChoice',
+]
 
 """
     Caching strategies - ALL ON-PATH !!!
@@ -33,6 +32,7 @@ __all__ = [
         centralised way, or, otherwise in a hybrid, centralised information, coordinated
         with local service and data information and performance metrics way
 """
+
 
 @register_strategy('PARTITION')
 class Partition(Strategy):
@@ -343,8 +343,8 @@ class CacheLessForMore(Strategy):
     @inheritdoc(Strategy)
     def process_event(self, time, receiver, content, log):
         # get all required data
-        source = self.view.content_source(content) # in our case, this should be the original content EDR storage env.
-        #THIS IS WHERE THE MESSAGES AND THEIR METADATA/INFO ARE READ
+        source = self.view.content_source(content)  # in our case, this should be the original content EDR storage env.
+        # THIS IS WHERE THE MESSAGES AND THEIR METADATA/INFO ARE READ
         path = self.view.shortest_path(receiver, source)
         # Route requests to original source and queries caches on the path
         self.controller.start_session(time, receiver, content, log)
@@ -416,6 +416,7 @@ class RandomBernoulli(Strategy):
                 if random.random() < self.p:
                     self.controller.put_content(v)
         self.controller.end_session()
+
 
 @register_strategy('RAND_CHOICE')
 class RandomChoice(Strategy):

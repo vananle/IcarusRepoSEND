@@ -3,6 +3,7 @@
 import collections
 import copy
 import json
+
 try:
     import pickle as pickle
 except ImportError:
@@ -11,15 +12,14 @@ from icarus.util import Tree
 from icarus.registry import register_results_reader, register_results_writer
 import pprint
 
-
-
 __all__ = [
     'ResultSet',
     'write_results_pickle',
     'read_results_pickle',
     'write_results_txt',
     'read_results_txt'
-           ]
+]
+
 
 class ResultSet(object):
     """This class can be used to store results from different experiments,
@@ -180,6 +180,7 @@ class ResultSet(object):
                 filtered_resultset.add(parameters, results)
         return filtered_resultset
 
+
 # TODO: THIS is where results are written to pickle!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 @register_results_writer('PICKLE')
 def write_results_pickle(results, path):
@@ -213,6 +214,7 @@ def read_results_pickle(path):
     """
     with open(path, 'rb') as pickle_file:
         return pickle.load(pickle_file)
+
 
 # TODO: THIS is where results are written to pickle!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 @register_results_writer('TXT')
