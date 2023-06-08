@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import division
+
 
 import time
 from collections import deque, defaultdict
@@ -217,7 +217,7 @@ class GenRepoStorApp(Strategy):
             *Well...it actually doesn't influence it that much, so it would mostly be just for correctness, really...
             """
 
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
                 """
                 * Oldest processed message is depleted (as a FIFO type of storage,
                 * and a  message for processing is processed
@@ -296,7 +296,7 @@ class GenRepoStorApp(Strategy):
               self.view.model.repoStorage[node].getStaleMessagesSize()) > \
                 (self.view.model.repoStorage[node].getTotalStorageSpace() * self.max_stor):
             self.cloudEmptyLoop = True
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
 
                 """ Oldest unprocessed message is depleted (as a FIFO type of storage) """
 
@@ -385,7 +385,7 @@ class GenRepoStorApp(Strategy):
 
             self.cloudEmptyLoop = True
 
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
 
                 """
 
@@ -465,7 +465,7 @@ class GenRepoStorApp(Strategy):
             # System.out.prln("Depleted  messages : "+ sdepleted)
 
             self.upEmptyLoop = True
-        for i in range(0, 50) and self.cloudBW > self.cloud_lim and \
+        for i in list(range(0, 50)) and self.cloudBW > self.cloud_lim and \
                  not self.view.model.repoStorage[node].isProcessingEmpty() and self.upEmptyLoop:
             if (not self.view.model.repoStorage[node].isProcessedEmpty):
                 self.processedDepletion(node)
@@ -484,7 +484,7 @@ class GenRepoStorApp(Strategy):
                 self.view.model.repoStorage[node].getMessagesSize() >
                 self.view.model.repoStorage[node].getTotalStorageSpace() * self.max_stor):
             self.deplEmptyLoop = True
-            for i in range(0, 50) and self.deplBW < self.depl_rate and self.deplEmptyLoop:
+            for i in list(range(0, 50)) and self.deplBW < self.depl_rate and self.deplEmptyLoop:
                 if (self.view.model.repoStorage[node].getOldestDeplUnProcMessage() is not None):
                     msg = self.oldestUnProcDepletion(node)
                     source = self.view.content_source_cloud(msg, msg['labels'])
@@ -863,7 +863,7 @@ class HServRepoStorApp(Strategy):
         self.last_replacement = 0
         self.receivers = view.topology().receivers()
         self.compSpots = self.view.service_nodes()
-        self.num_nodes = len(self.compSpots.keys())
+        self.num_nodes = len(list(self.compSpots.keys()))
         self.num_services = self.view.num_services()
         self.debug = debug
         # metric to rank each VM of Comp. Spot
@@ -872,7 +872,7 @@ class HServRepoStorApp(Strategy):
         self.replacements_so_far = 0
         self.serviceNodeUtil = [None]*len(self.receivers)
         self.last_period = 0
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -884,7 +884,7 @@ class HServRepoStorApp(Strategy):
         for recv in self.receivers:
             recv = int(recv[4:])
             self.serviceNodeUtil[recv] = [None]*self.num_nodes
-            for n in self.compSpots.keys():
+            for n in list(self.compSpots.keys()):
                 cs = self.compSpots[n]
                 if cs.is_cloud:
                     continue
@@ -925,7 +925,7 @@ class HServRepoStorApp(Strategy):
         """
         Initialise metrics/counters to 0
         """
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -939,7 +939,7 @@ class HServRepoStorApp(Strategy):
 
     # HYBRID
     def replace_services1(self, curTime):
-        for node, cs in self.compSpots.items():
+        for node, cs in list(self.compSpots.items()):
             n_replacements = 0
             if cs.is_cloud:
                 continue
@@ -953,7 +953,7 @@ class HServRepoStorApp(Strategy):
             # missedServicesUtil = {}
 
             if len(cs.scheduler.upcomingTaskQueue) > 0:
-                print("Printing upcoming task queue at node: " + str(cs.node))
+                print(("Printing upcoming task queue at node: " + str(cs.node)))
                 for task in cs.scheduler.upcomingTaskQueue:
                     task.print_task()
 
@@ -961,19 +961,19 @@ class HServRepoStorApp(Strategy):
             util_normalised = {}
 
             if self.debug:
-                print("Replacement at node " + repr(node))
+                print(("Replacement at node " + repr(node)))
             for service in range(0, self.num_services):
                 if cs.numberOfVMInstances[service] != len(cs.scheduler.idleVMs[service]) + len(
                         cs.scheduler.busyVMs[service]) + len(cs.scheduler.startingVMs[service]):
-                    print("Error: number of vm instances do not match for service: " + str(service) + " node: " + str(
-                        cs.node))
-                    print("numberOfInstances = " + str(cs.numberOfVMInstances[service]))
-                    print("Total VMs: " + str(
+                    print(("Error: number of vm instances do not match for service: " + str(service) + " node: " + str(
+                        cs.node)))
+                    print(("numberOfInstances = " + str(cs.numberOfVMInstances[service])))
+                    print(("Total VMs: " + str(
                         len(cs.scheduler.idleVMs[service]) + len(cs.scheduler.busyVMs[service]) + len(
-                            cs.scheduler.startingVMs[service])))
-                    print("\t Idle: " + str(len(cs.scheduler.idleVMs[service])) + " Busy: " + str(
+                            cs.scheduler.startingVMs[service]))))
+                    print(("\t Idle: " + str(len(cs.scheduler.idleVMs[service])) + " Busy: " + str(
                         len(cs.scheduler.busyVMs[service])) + " Starting: " + str(
-                        len(cs.scheduler.startingVMs[service])))
+                        len(cs.scheduler.startingVMs[service]))))
                     if cs.numberOfVMInstances[service] > len(cs.scheduler.idleVMs[service]) + len(
                         cs.scheduler.busyVMs[service]) + len(cs.scheduler.startingVMs[service]):
                         aVM = VM(self, service)
@@ -1044,15 +1044,15 @@ class HServRepoStorApp(Strategy):
                         self.controller.reassign_vm(curTime, cs, service_running, service_missed, self.debug)
                         # cs.reassign_vm(self.controller, curTime, service_running, service_missed, self.debug)
                         if self.debug:
-                            print("Missed util: " + str(missed_util) + " running util: " + str(
+                            print(("Missed util: " + str(missed_util) + " running util: " + str(
                                 running_util) + " Adequate time missed: " + str(
-                                delay[service_missed]) + " Adequate time running: " + str(delay[service_running]))
+                                delay[service_missed]) + " Adequate time running: " + str(delay[service_running])))
                         del running_services_utilisation_normalised[indx]
                         n_replacements += 1
                         break
             if self.debug:
-                print(str(n_replacements) + " replacements at node:" + str(cs.node) + " at time: " + str(curTime))
-                for node in self.compSpots.keys():
+                print((str(n_replacements) + " replacements at node:" + str(cs.node) + " at time: " + str(curTime)))
+                for node in list(self.compSpots.keys()):
                     cs = self.compSpots[node]
                     if cs.is_cloud:
                         continue
@@ -1060,8 +1060,8 @@ class HServRepoStorApp(Strategy):
                         continue
                     for service in range(0, self.num_services):
                         if cs.numberOfVMInstances[service] > 0:
-                            print("Node: " + str(node) + " has " + str(
-                                cs.numberOfVMInstances[service]) + " instance of " + str(service))
+                            print(("Node: " + str(node) + " has " + str(
+                                cs.numberOfVMInstances[service]) + " instance of " + str(service)))
 
     """ 
      * Sets the application ID. Should only set once when the application is
@@ -1207,7 +1207,7 @@ class HServRepoStorApp(Strategy):
 
         if curTime - self.last_replacement > self.replacement_interval:
             #self.print_stats()
-            print("Replacement time: " + repr(curTime))
+            print(("Replacement time: " + repr(curTime)))
             self.controller.replacement_interval_over(flow_id, self.replacement_interval, curTime)
             self.replace_services1(curTime)
             self.last_replacement = curTime
@@ -1231,7 +1231,7 @@ class HServRepoStorApp(Strategy):
 
         if curTime - self.last_replacement > self.replacement_interval:
             # self.print_stats()
-            print("Replacement time: " + repr(curTime))
+            print(("Replacement time: " + repr(curTime)))
             self.controller.replacement_interval_over(flow_id, self.replacement_interval, curTime)
             self.replace_services1(curTime)
             self.last_replacement = curTime
@@ -1406,7 +1406,7 @@ class HServRepoStorApp(Strategy):
                                     service['content'], service['labels']):
                                 self.controller.add_request_labels_to_node(node, service)
                             if self.debug:
-                                print("Message is scheduled to run at: " + str(upstream_node))
+                                print(("Message is scheduled to run at: " + str(upstream_node)))
                         else:  # request is to be executed in the cloud and returned to receiver
                             services = self.view.services()
                             serviceTime = services[service['content']].service_time
@@ -1433,9 +1433,9 @@ class HServRepoStorApp(Strategy):
                 return
 
             if self.debug:
-                print("\nEvent\n time: " + repr(curTime) + " receiver  " + repr(receiver) + " service " + repr(
+                print(("\nEvent\n time: " + repr(curTime) + " receiver  " + repr(receiver) + " service " + repr(
                     service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(
-                    deadline) + " status " + repr(status))
+                    deadline) + " status " + repr(status)))
 
             if status == RESPONSE:
 
@@ -1627,8 +1627,8 @@ class HServRepoStorApp(Strategy):
                 self.controller.add_event(curTime + delay, receiver, service, labels, next_node, flow_id,
                                           deadline, rtt_delay, RESPONSE)
                 if (node != source and curTime + path_delay > deadline):
-                    print("Error in HYBRID strategy: Request missed its deadline\nResponse at receiver at time: " + str(
-                        curTime + path_delay) + " deadline: " + str(deadline))
+                    print(("Error in HYBRID strategy: Request missed its deadline\nResponse at receiver at time: " + str(
+                        curTime + path_delay) + " deadline: " + str(deadline)))
                     task.print_task()
                     # raise ValueError("This should not happen: a task missed its deadline after being executed at an edge node.")
 
@@ -1648,11 +1648,11 @@ class HServRepoStorApp(Strategy):
                 deadline_metric = (deadline - curTime - rtt_delay - compSpot.services[
                     service['content']].service_time)  # /deadline
                 if self.debug:
-                    print("Deadline metric: " + repr(deadline_metric))
+                    print(("Deadline metric: " + repr(deadline_metric)))
                 if self.view.has_service(node, service) and service["service_type"] is "proc":
                     if self.controller.has_message(node, labels, service):
-                        print "ERROR: Tasks should not be admitted in nodes which do not have the data they need to " \
-                              "process the request and these nodes should be added as data 'source', but hey-ho"
+                        print("ERROR: Tasks should not be admitted in nodes which do not have the data they need to " \
+                              "process the request and these nodes should be added as data 'source', but hey-ho")
                         cache_delay = 0
                         if not in_cache and self.view.has_cache(node):
                             if self.controller.put_content(source, content['content']):
@@ -1723,7 +1723,7 @@ class HServRepoStorApp(Strategy):
                             if deadline_metric > 0:
                                 self.cand_deadline_metric[node][service['content']] += deadline_metric
                             if self.debug:
-                                print("Pass upstream to node: " + repr(next_node))
+                                print(("Pass upstream to node: " + repr(next_node)))
                             compSpot.missed_requests[service['content']] += 1  # Added here
                         else:
                             if deadline_metric > 0:
@@ -1741,7 +1741,7 @@ class HServRepoStorApp(Strategy):
                                 self.controller.put_content_local_cache(source)
                         compSpot.missed_requests[service['content']] += 1
                         if self.debug:
-                            print("Not running the service: Pass upstream to node: " + repr(next_node))
+                            print(("Not running the service: Pass upstream to node: " + repr(next_node)))
                         rtt_delay += delay * 2
                         self.controller.add_event(curTime + delay, receiver, service, labels, next_node,
                                                   flow_id, deadline, rtt_delay, REQUEST)
@@ -1754,7 +1754,7 @@ class HServRepoStorApp(Strategy):
                 else:  # Not running the service
                     compSpot.missed_requests[service['content']] += 1
                     if self.debug:
-                        print("Not running the service: Pass upstream to node: " + repr(next_node))
+                        print(("Not running the service: Pass upstream to node: " + repr(next_node)))
                     rtt_delay += delay * 2
                     self.controller.add_event(curTime + delay, receiver, service, labels, next_node,
                                               flow_id, deadline, rtt_delay, REQUEST)
@@ -1766,7 +1766,7 @@ class HServRepoStorApp(Strategy):
             elif status == STORE:
                 pass
             else:
-                print("Error: unrecognised status value : " + repr(status))
+                print(("Error: unrecognised status value : " + repr(status)))
 
     def find_closest_feasible_node(self, receiver, flow_id, path, curTime, service, deadline, rtt_delay):
         """
@@ -1817,7 +1817,7 @@ class HServRepoStorApp(Strategy):
                 if ( (task.expiry - delay) < task.completionTime ) or ( task.completionTime == float('inf') ):
                     cs.scheduler.upcomingTaskQueue.remove(aTask)
                     if self.debug:
-                        print ("Task with flow_id " + str(aTask.flow_id) + " is violating its expiration time at node: " + str(n))
+                        print(("Task with flow_id " + str(aTask.flow_id) + " is violating its expiration time at node: " + str(n)))
                     break
             else:
                 source = n
@@ -1826,7 +1826,7 @@ class HServRepoStorApp(Strategy):
                 #    print ("Task is scheduled at node 5:")
                 #    aTask.print_task()
                 if self.debug:
-                    print ("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source))
+                    print(("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source)))
                 return source
         return source
 
@@ -1865,7 +1865,7 @@ class HServRepoStorApp(Strategy):
             *Well...it actually doesn't influence it that much, so it would mostly be just for correctness, really...
             """
 
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
                 """
                 * Oldest processed message is depleted (as a FIFO type of storage,
                 * and a  message for processing is processed
@@ -1945,7 +1945,7 @@ class HServRepoStorApp(Strategy):
               self.view.model.repoStorage[node].getStaleMessagesSize()) > \
                 (self.view.model.repoStorage[node].getTotalStorageSpace() * self.max_stor):
             self.cloudEmptyLoop = True
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
 
                 """ Oldest unprocessed message is depleted (as a FIFO type of storage) """
 
@@ -2037,7 +2037,7 @@ class HServRepoStorApp(Strategy):
 
             self.cloudEmptyLoop = True
 
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
 
                 """
 
@@ -2120,7 +2120,7 @@ class HServRepoStorApp(Strategy):
             # System.out.prln("Depleted  messages : "+ sdepleted)
 
             self.upEmptyLoop = True
-        for i in range(0, 50) and self.cloudBW > self.cloud_lim and \
+        for i in list(range(0, 50)) and self.cloudBW > self.cloud_lim and \
                  not self.view.model.repoStorage[node].isProcessingEmpty() and self.upEmptyLoop:
             if (not self.view.model.repoStorage[node].isProcessedEmpty):
                 self.processedDepletion(node)
@@ -2139,7 +2139,7 @@ class HServRepoStorApp(Strategy):
                 self.view.model.repoStorage[node].getMessagesSize() >
                 self.view.model.repoStorage[node].getTotalStorageSpace() * self.max_stor):
             self.deplEmptyLoop = True
-            for i in range(0, 50) and self.deplBW < self.depl_rate and self.deplEmptyLoop:
+            for i in list(range(0, 50)) and self.deplBW < self.depl_rate and self.deplEmptyLoop:
                 if (self.view.model.repoStorage[node].getOldestDeplUnProcMessage() is not None):
                     msg = self.oldestUnProcDepletion(node)
 
@@ -2511,7 +2511,7 @@ class HServProStorApp(Strategy):
         self.last_replacement = 0
         self.receivers = view.topology().receivers()
         self.compSpots = self.view.service_nodes()
-        self.num_nodes = len(self.compSpots.keys())
+        self.num_nodes = len(list(self.compSpots.keys()))
         self.num_services = self.view.num_services()
         self.debug = debug
         # metric to rank each VM of Comp. Spot
@@ -2519,7 +2519,7 @@ class HServProStorApp(Strategy):
         self.cand_deadline_metric = {x: {} for x in range(0, self.num_nodes)}
         self.replacements_so_far = 0
         self.serviceNodeUtil = [None]*len(self.receivers)
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -2531,7 +2531,7 @@ class HServProStorApp(Strategy):
         for recv in self.receivers:
             recv = int(recv[4:])
             self.serviceNodeUtil[recv] = [None]*self.num_nodes
-            for n in self.compSpots.keys():
+            for n in list(self.compSpots.keys()):
                 cs = self.compSpots[n]
                 if cs.is_cloud:
                     continue
@@ -2573,7 +2573,7 @@ class HServProStorApp(Strategy):
         """
         Initialise metrics/counters to 0
         """
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -2587,7 +2587,7 @@ class HServProStorApp(Strategy):
 
     # HYBRID
     def replace_services1(self, curTime):
-        for node, cs in self.compSpots.items():
+        for node, cs in list(self.compSpots.items()):
             n_replacements = 0
             if cs.is_cloud:
                 continue
@@ -2601,7 +2601,7 @@ class HServProStorApp(Strategy):
             # missedServicesUtil = {}
 
             if len(cs.scheduler.upcomingTaskQueue) > 0:
-                print("Printing upcoming task queue at node: " + str(cs.node))
+                print(("Printing upcoming task queue at node: " + str(cs.node)))
                 for task in cs.scheduler.upcomingTaskQueue:
                     task.print_task()
 
@@ -2609,19 +2609,19 @@ class HServProStorApp(Strategy):
             util_normalised = {}
 
             if self.debug:
-                print("Replacement at node " + repr(node))
+                print(("Replacement at node " + repr(node)))
             for service in range(0, self.num_services):
                 if cs.numberOfVMInstances[service] != len(cs.scheduler.idleVMs[service]) + len(
                         cs.scheduler.busyVMs[service]) + len(cs.scheduler.startingVMs[service]):
-                    print("Error: number of vm instances do not match for service: " + str(service) + " node: " + str(
-                        cs.node))
-                    print("numberOfInstances = " + str(cs.numberOfVMInstances[service]))
-                    print("Total VMs: " + str(
+                    print(("Error: number of vm instances do not match for service: " + str(service) + " node: " + str(
+                        cs.node)))
+                    print(("numberOfInstances = " + str(cs.numberOfVMInstances[service])))
+                    print(("Total VMs: " + str(
                         len(cs.scheduler.idleVMs[service]) + len(cs.scheduler.busyVMs[service]) + len(
-                            cs.scheduler.startingVMs[service])))
-                    print("\t Idle: " + str(len(cs.scheduler.idleVMs[service])) + " Busy: " + str(
+                            cs.scheduler.startingVMs[service]))))
+                    print(("\t Idle: " + str(len(cs.scheduler.idleVMs[service])) + " Busy: " + str(
                         len(cs.scheduler.busyVMs[service])) + " Starting: " + str(
-                        len(cs.scheduler.startingVMs[service])))
+                        len(cs.scheduler.startingVMs[service]))))
                     if cs.numberOfVMInstances[service] > len(cs.scheduler.idleVMs[service]) + len(
                         cs.scheduler.busyVMs[service]) + len(cs.scheduler.startingVMs[service]):
                         aVM = VM(self, service)
@@ -2692,15 +2692,15 @@ class HServProStorApp(Strategy):
                         self.controller.reassign_vm(curTime, cs, service_running, service_missed, self.debug)
                         # cs.reassign_vm(self.controller, curTime, service_running, service_missed, self.debug)
                         if self.debug:
-                            print("Missed util: " + str(missed_util) + " running util: " + str(
+                            print(("Missed util: " + str(missed_util) + " running util: " + str(
                                 running_util) + " Adequate time missed: " + str(
-                                delay[service_missed]) + " Adequate time running: " + str(delay[service_running]))
+                                delay[service_missed]) + " Adequate time running: " + str(delay[service_running])))
                         del running_services_utilisation_normalised[indx]
                         n_replacements += 1
                         break
             if self.debug:
-                print(str(n_replacements) + " replacements at node:" + str(cs.node) + " at time: " + str(curTime))
-                for node in self.compSpots.keys():
+                print((str(n_replacements) + " replacements at node:" + str(cs.node) + " at time: " + str(curTime)))
+                for node in list(self.compSpots.keys()):
                     cs = self.compSpots[node]
                     if cs.is_cloud:
                         continue
@@ -2708,8 +2708,8 @@ class HServProStorApp(Strategy):
                         continue
                     for service in range(0, self.num_services):
                         if cs.numberOfVMInstances[service] > 0:
-                            print("Node: " + str(node) + " has " + str(
-                                cs.numberOfVMInstances[service]) + " instance of " + str(service))
+                            print(("Node: " + str(node) + " has " + str(
+                                cs.numberOfVMInstances[service]) + " instance of " + str(service)))
 
     def getAppID(self):
         return self.appID
@@ -2858,7 +2858,7 @@ class HServProStorApp(Strategy):
 
         if curTime - self.last_replacement > self.replacement_interval:
             # self.print_stats()
-            print("Replacement time: " + repr(curTime))
+            print(("Replacement time: " + repr(curTime)))
             self.controller.replacement_interval_over(flow_id, self.replacement_interval, curTime)
             self.replace_services1(curTime)
             self.last_replacement = curTime
@@ -2882,7 +2882,7 @@ class HServProStorApp(Strategy):
 
         if curTime - self.last_replacement > self.replacement_interval:
             # self.print_stats()
-            print("Replacement time: " + repr(curTime))
+            print(("Replacement time: " + repr(curTime)))
             self.controller.replacement_interval_over(flow_id, self.replacement_interval, curTime)
             self.replace_services1(curTime)
             self.last_replacement = curTime
@@ -3055,7 +3055,7 @@ class HServProStorApp(Strategy):
                                     service['content'], service['labels']):
                                 self.controller.add_request_labels_to_node(node, service)
                             if self.debug:
-                                print("Message is scheduled to run at: " + str(upstream_node))
+                                print(("Message is scheduled to run at: " + str(upstream_node)))
                         else:  # request is to be executed in the cloud and returned to receiver
                             services = self.view.services()
                             serviceTime = services[service['content']].service_time
@@ -3082,9 +3082,9 @@ class HServProStorApp(Strategy):
                 return
 
             if self.debug:
-                print("\nEvent\n time: " + repr(curTime) + " receiver  " + repr(receiver) + " service " + repr(
+                print(("\nEvent\n time: " + repr(curTime) + " receiver  " + repr(receiver) + " service " + repr(
                     service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(
-                    deadline) + " status " + repr(status))
+                    deadline) + " status " + repr(status)))
 
             if status == RESPONSE:
 
@@ -3278,8 +3278,8 @@ class HServProStorApp(Strategy):
                 self.controller.add_event(curTime + delay, receiver, service, labels, next_node, flow_id,
                                           deadline, rtt_delay, RESPONSE)
                 if (node != source and curTime + path_delay > deadline):
-                    print("Error in HYBRID strategy: Request missed its deadline\nResponse at receiver at time: " + str(
-                        curTime + path_delay) + " deadline: " + str(deadline))
+                    print(("Error in HYBRID strategy: Request missed its deadline\nResponse at receiver at time: " + str(
+                        curTime + path_delay) + " deadline: " + str(deadline)))
                     task.print_task()
                     # raise ValueError("This should not happen: a task missed its deadline after being executed at an edge node.")
 
@@ -3299,11 +3299,11 @@ class HServProStorApp(Strategy):
                 deadline_metric = (deadline - curTime - rtt_delay - compSpot.services[
                     service['content']].service_time)  # /deadline
                 if self.debug:
-                    print("Deadline metric: " + repr(deadline_metric))
+                    print(("Deadline metric: " + repr(deadline_metric)))
                 if self.view.has_service(node, service) and service["service_type"] is "proc":
                     if self.controller.has_message(node, labels, service):
-                        print "ERROR: Tasks should not be admitted in nodes which do not have the data they need to " \
-                              "process the request and these nodes should be added as data 'source', but hey-ho"
+                        print("ERROR: Tasks should not be admitted in nodes which do not have the data they need to " \
+                              "process the request and these nodes should be added as data 'source', but hey-ho")
                         cache_delay = 0
                         if not in_cache and self.view.has_cache(node):
                             if self.controller.put_content(source, content['content']):
@@ -3374,7 +3374,7 @@ class HServProStorApp(Strategy):
                             if deadline_metric > 0:
                                 self.cand_deadline_metric[node][service['content']] += deadline_metric
                             if self.debug:
-                                print("Pass upstream to node: " + repr(next_node))
+                                print(("Pass upstream to node: " + repr(next_node)))
                             compSpot.missed_requests[service['content']] += 1  # Added here
                         else:
                             if deadline_metric > 0:
@@ -3392,7 +3392,7 @@ class HServProStorApp(Strategy):
                                 self.controller.put_content_local_cache(source)
                         compSpot.missed_requests[service['content']] += 1
                         if self.debug:
-                            print("Not running the service: Pass upstream to node: " + repr(next_node))
+                            print(("Not running the service: Pass upstream to node: " + repr(next_node)))
                         rtt_delay += delay * 2
                         self.controller.add_event(curTime + delay, receiver, service, labels, next_node,
                                                   flow_id, deadline, rtt_delay, REQUEST)
@@ -3405,7 +3405,7 @@ class HServProStorApp(Strategy):
                 else:  # Not running the service
                     compSpot.missed_requests[service['content']] += 1
                     if self.debug:
-                        print("Not running the service: Pass upstream to node: " + repr(next_node))
+                        print(("Not running the service: Pass upstream to node: " + repr(next_node)))
                     rtt_delay += delay * 2
                     self.controller.add_event(curTime + delay, receiver, service, labels, next_node,
                                               flow_id, deadline, rtt_delay, REQUEST)
@@ -3417,7 +3417,7 @@ class HServProStorApp(Strategy):
             elif status == STORE:
                 pass
             else:
-                print("Error: unrecognised status value : " + repr(status))
+                print(("Error: unrecognised status value : " + repr(status)))
 
     def find_closest_feasible_node(self, receiver, flow_id, path, curTime, service, deadline, rtt_delay):
         """
@@ -3469,8 +3469,8 @@ class HServProStorApp(Strategy):
                 if ((task.expiry - delay) < task.completionTime) or (task.completionTime == float('inf')):
                     cs.scheduler.upcomingTaskQueue.remove(aTask)
                     if self.debug:
-                        print ("Task with flow_id " + str(
-                            aTask.flow_id) + " is violating its expiration time at node: " + str(n))
+                        print(("Task with flow_id " + str(
+                            aTask.flow_id) + " is violating its expiration time at node: " + str(n)))
                     break
             else:
                 source = n
@@ -3479,7 +3479,7 @@ class HServProStorApp(Strategy):
                 #    print ("Task is scheduled at node 5:")
                 #    aTask.print_task()
                 if self.debug:
-                    print ("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source))
+                    print(("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source)))
                 return source
         return source
 
@@ -3519,7 +3519,7 @@ class HServProStorApp(Strategy):
             *Well...it actually doesn't influence it that much, so it would mostly be just for correctness, really...
             """
 
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
                 """
                 * Oldest processed message is depleted (as a FIFO type of storage,
                 * and a  message for processing is processed
@@ -3600,7 +3600,7 @@ class HServProStorApp(Strategy):
                 self.view.model.repoStorage[node].getStaleMessagesSize()) > \
                 (self.view.model.repoStorage[node].getTotalStorageSpace() * self.max_stor):
             self.cloudEmptyLoop = True
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
 
                 """ Oldest unprocessed message is depleted (as a FIFO type of storage) """
 
@@ -3689,7 +3689,7 @@ class HServProStorApp(Strategy):
 
             self.cloudEmptyLoop = True
 
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
 
                 """
 
@@ -3769,7 +3769,7 @@ class HServProStorApp(Strategy):
             # System.out.prln("Depleted  messages : "+ sdepleted)
 
             self.upEmptyLoop = True
-        for i in range(0, 50) and self.cloudBW > self.cloud_lim and \
+        for i in list(range(0, 50)) and self.cloudBW > self.cloud_lim and \
                  not self.view.model.repoStorage[node].isProcessingEmpty() and self.upEmptyLoop:
             if (not self.view.model.repoStorage[node].isProcessedEmpty):
                 self.processedDepletion(node)
@@ -3787,7 +3787,7 @@ class HServProStorApp(Strategy):
                 self.view.model.repoStorage[node].getMessagesSize() >
                 self.view.model.repoStorage[node].getTotalStorageSpace() * self.max_stor):
             self.deplEmptyLoop = True
-            for i in range(0, 50) and self.deplBW < self.depl_rate and self.deplEmptyLoop:
+            for i in list(range(0, 50)) and self.deplBW < self.depl_rate and self.deplEmptyLoop:
                 if (self.view.model.repoStorage[node].getOldestDeplUnProcMessage() is not None):
                     msg = self.oldestUnProcDepletion(node)
                     source = self.view.content_source_cloud(msg, msg['labels'])
@@ -4161,7 +4161,7 @@ class HServReStorApp(Strategy):
         self.last_replacement = 0
         self.receivers = view.topology().receivers()
         self.compSpots = self.view.service_nodes()
-        self.num_nodes = len(self.compSpots.keys())
+        self.num_nodes = len(list(self.compSpots.keys()))
         self.num_services = self.view.num_services()
         self.debug = debug
         # metric to rank each VM of Comp. Spot
@@ -4169,7 +4169,7 @@ class HServReStorApp(Strategy):
         self.cand_deadline_metric = {x: {} for x in range(0, self.num_nodes)}
         self.replacements_so_far = 0
         self.serviceNodeUtil = [None]*len(self.receivers)
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -4181,7 +4181,7 @@ class HServReStorApp(Strategy):
         for recv in self.receivers:
             recv = int(recv[4:])
             self.serviceNodeUtil[recv] = [None]*self.num_nodes
-            for n in self.compSpots.keys():
+            for n in list(self.compSpots.keys()):
                 cs = self.compSpots[n]
                 if cs.is_cloud:
                     continue
@@ -4223,7 +4223,7 @@ class HServReStorApp(Strategy):
         """
         Initialise metrics/counters to 0
         """
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -4237,7 +4237,7 @@ class HServReStorApp(Strategy):
 
     # HYBRID
     def replace_services1(self, curTime):
-        for node, cs in self.compSpots.items():
+        for node, cs in list(self.compSpots.items()):
             n_replacements = 0
             if cs.is_cloud:
                 continue
@@ -4251,7 +4251,7 @@ class HServReStorApp(Strategy):
             # missedServicesUtil = {}
 
             if len(cs.scheduler.upcomingTaskQueue) > 0:
-                print("Printing upcoming task queue at node: " + str(cs.node))
+                print(("Printing upcoming task queue at node: " + str(cs.node)))
                 for task in cs.scheduler.upcomingTaskQueue:
                     task.print_task()
 
@@ -4259,19 +4259,19 @@ class HServReStorApp(Strategy):
             util_normalised = {}
 
             if self.debug:
-                print("Replacement at node " + repr(node))
+                print(("Replacement at node " + repr(node)))
             for service in range(0, self.num_services):
                 if cs.numberOfVMInstances[service] != len(cs.scheduler.idleVMs[service]) + len(
                         cs.scheduler.busyVMs[service]) + len(cs.scheduler.startingVMs[service]):
-                    print("Error: number of vm instances do not match for service: " + str(service) + " node: " + str(
-                        cs.node))
-                    print("numberOfInstances = " + str(cs.numberOfVMInstances[service]))
-                    print("Total VMs: " + str(
+                    print(("Error: number of vm instances do not match for service: " + str(service) + " node: " + str(
+                        cs.node)))
+                    print(("numberOfInstances = " + str(cs.numberOfVMInstances[service])))
+                    print(("Total VMs: " + str(
                         len(cs.scheduler.idleVMs[service]) + len(cs.scheduler.busyVMs[service]) + len(
-                            cs.scheduler.startingVMs[service])))
-                    print("\t Idle: " + str(len(cs.scheduler.idleVMs[service])) + " Busy: " + str(
+                            cs.scheduler.startingVMs[service]))))
+                    print(("\t Idle: " + str(len(cs.scheduler.idleVMs[service])) + " Busy: " + str(
                         len(cs.scheduler.busyVMs[service])) + " Starting: " + str(
-                        len(cs.scheduler.startingVMs[service])))
+                        len(cs.scheduler.startingVMs[service]))))
                     if cs.numberOfVMInstances[service] > len(cs.scheduler.idleVMs[service]) + len(
                         cs.scheduler.busyVMs[service]) + len(cs.scheduler.startingVMs[service]):
                         aVM = VM(self, service)
@@ -4342,15 +4342,15 @@ class HServReStorApp(Strategy):
                         self.controller.reassign_vm(curTime, cs, service_running, service_missed, self.debug)
                         # cs.reassign_vm(self.controller, curTime, service_running, service_missed, self.debug)
                         if self.debug:
-                            print("Missed util: " + str(missed_util) + " running util: " + str(
+                            print(("Missed util: " + str(missed_util) + " running util: " + str(
                                 running_util) + " Adequate time missed: " + str(
-                                delay[service_missed]) + " Adequate time running: " + str(delay[service_running]))
+                                delay[service_missed]) + " Adequate time running: " + str(delay[service_running])))
                         del running_services_utilisation_normalised[indx]
                         n_replacements += 1
                         break
             if self.debug:
-                print(str(n_replacements) + " replacements at node:" + str(cs.node) + " at time: " + str(curTime))
-                for node in self.compSpots.keys():
+                print((str(n_replacements) + " replacements at node:" + str(cs.node) + " at time: " + str(curTime)))
+                for node in list(self.compSpots.keys()):
                     cs = self.compSpots[node]
                     if cs.is_cloud:
                         continue
@@ -4358,8 +4358,8 @@ class HServReStorApp(Strategy):
                         continue
                     for service in range(0, self.num_services):
                         if cs.numberOfVMInstances[service] > 0:
-                            print("Node: " + str(node) + " has " + str(
-                                cs.numberOfVMInstances[service]) + " instance of " + str(service))
+                            print(("Node: " + str(node) + " has " + str(
+                                cs.numberOfVMInstances[service]) + " instance of " + str(service)))
 
 
     def replicate(self, ProcApplication):
@@ -4550,7 +4550,7 @@ class HServReStorApp(Strategy):
 
         if curTime - self.last_replacement > self.replacement_interval:
             # self.print_stats()
-            print("Replacement time: " + repr(curTime))
+            print(("Replacement time: " + repr(curTime)))
             self.controller.replacement_interval_over(flow_id, self.replacement_interval, curTime)
             self.replace_services1(curTime)
             self.last_replacement = curTime
@@ -4574,7 +4574,7 @@ class HServReStorApp(Strategy):
 
         if curTime - self.last_replacement > self.replacement_interval:
             # self.print_stats()
-            print("Replacement time: " + repr(curTime))
+            print(("Replacement time: " + repr(curTime)))
             self.controller.replacement_interval_over(flow_id, self.replacement_interval, curTime)
             self.replace_services1(curTime)
             self.last_replacement = curTime
@@ -4746,7 +4746,7 @@ class HServReStorApp(Strategy):
                                     service['content'], service['labels']):
                                 self.controller.add_request_labels_to_node(node, service)
                             if self.debug:
-                                print("Message is scheduled to run at: " + str(upstream_node))
+                                print(("Message is scheduled to run at: " + str(upstream_node)))
                         else:  # request is to be executed in the cloud and returned to receiver
                             services = self.view.services()
                             serviceTime = services[service['content']].service_time
@@ -4773,9 +4773,9 @@ class HServReStorApp(Strategy):
                 return
 
             if self.debug:
-                print("\nEvent\n time: " + repr(curTime) + " receiver  " + repr(receiver) + " service " + repr(
+                print(("\nEvent\n time: " + repr(curTime) + " receiver  " + repr(receiver) + " service " + repr(
                     service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(
-                    deadline) + " status " + repr(status))
+                    deadline) + " status " + repr(status)))
 
             if status == RESPONSE:
 
@@ -4969,8 +4969,8 @@ class HServReStorApp(Strategy):
                 self.controller.add_event(curTime + delay, receiver, service, labels, next_node, flow_id,
                                           deadline, rtt_delay, RESPONSE)
                 if (node != source and curTime + path_delay > deadline):
-                    print("Error in HYBRID strategy: Request missed its deadline\nResponse at receiver at time: " + str(
-                        curTime + path_delay) + " deadline: " + str(deadline))
+                    print(("Error in HYBRID strategy: Request missed its deadline\nResponse at receiver at time: " + str(
+                        curTime + path_delay) + " deadline: " + str(deadline)))
                     task.print_task()
                     # raise ValueError("This should not happen: a task missed its deadline after being executed at an edge node.")
 
@@ -4990,11 +4990,11 @@ class HServReStorApp(Strategy):
                 deadline_metric = (deadline - curTime - rtt_delay - compSpot.services[
                     service['content']].service_time)  # /deadline
                 if self.debug:
-                    print("Deadline metric: " + repr(deadline_metric))
+                    print(("Deadline metric: " + repr(deadline_metric)))
                 if self.view.has_service(node, service) and service["service_type"] is "proc":
                     if self.controller.has_message(node, labels, service):
-                        print "ERROR: Tasks should not be admitted in nodes which do not have the data they need to " \
-                              "process the request and these nodes should be added as data 'source', but hey-ho"
+                        print("ERROR: Tasks should not be admitted in nodes which do not have the data they need to " \
+                              "process the request and these nodes should be added as data 'source', but hey-ho")
                         cache_delay = 0
                         if not in_cache and self.view.has_cache(node):
                             if self.controller.put_content(source, content['content']):
@@ -5065,7 +5065,7 @@ class HServReStorApp(Strategy):
                             if deadline_metric > 0:
                                 self.cand_deadline_metric[node][service['content']] += deadline_metric
                             if self.debug:
-                                print("Pass upstream to node: " + repr(next_node))
+                                print(("Pass upstream to node: " + repr(next_node)))
                             compSpot.missed_requests[service['content']] += 1  # Added here
                         else:
                             if deadline_metric > 0:
@@ -5083,7 +5083,7 @@ class HServReStorApp(Strategy):
                                 self.controller.put_content_local_cache(source)
                         compSpot.missed_requests[service['content']] += 1
                         if self.debug:
-                            print("Not running the service: Pass upstream to node: " + repr(next_node))
+                            print(("Not running the service: Pass upstream to node: " + repr(next_node)))
                         rtt_delay += delay * 2
                         self.controller.add_event(curTime + delay, receiver, service, labels, next_node,
                                                   flow_id, deadline, rtt_delay, REQUEST)
@@ -5096,7 +5096,7 @@ class HServReStorApp(Strategy):
                 else:  # Not running the service
                     compSpot.missed_requests[service['content']] += 1
                     if self.debug:
-                        print("Not running the service: Pass upstream to node: " + repr(next_node))
+                        print(("Not running the service: Pass upstream to node: " + repr(next_node)))
                     rtt_delay += delay * 2
                     self.controller.add_event(curTime + delay, receiver, service, labels, next_node,
                                               flow_id, deadline, rtt_delay, REQUEST)
@@ -5108,7 +5108,7 @@ class HServReStorApp(Strategy):
             elif status == STORE:
                 pass
             else:
-                print("Error: unrecognised status value : " + repr(status))
+                print(("Error: unrecognised status value : " + repr(status)))
 
     def find_closest_feasible_node(self, receiver, flow_id, path, curTime, service, deadline, rtt_delay):
         """
@@ -5159,8 +5159,8 @@ class HServReStorApp(Strategy):
                 if ((task.expiry - delay) < task.completionTime) or (task.completionTime == float('inf')):
                     cs.scheduler.upcomingTaskQueue.remove(aTask)
                     if self.debug:
-                        print ("Task with flow_id " + str(
-                            aTask.flow_id) + " is violating its expiration time at node: " + str(n))
+                        print(("Task with flow_id " + str(
+                            aTask.flow_id) + " is violating its expiration time at node: " + str(n)))
                     break
             else:
                 source = n
@@ -5169,7 +5169,7 @@ class HServReStorApp(Strategy):
                 #    print ("Task is scheduled at node 5:")
                 #    aTask.print_task()
                 if self.debug:
-                    print ("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source))
+                    print(("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source)))
                 return source
         return source
 
@@ -5209,7 +5209,7 @@ class HServReStorApp(Strategy):
             *Well...it actually doesn't influence it that much, so it would mostly be just for correctness, really...
             """
 
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
                 """
                 * Oldest processed message is depleted (as a FIFO type of storage,
                 * and a  message for processing is processed
@@ -5288,7 +5288,7 @@ class HServReStorApp(Strategy):
               self.view.model.repoStorage[node].getStaleMessagesSize()) > \
                 (self.view.model.repoStorage[node].getTotalStorageSpace() * self.max_stor):
             self.cloudEmptyLoop = True
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
 
                 """ Oldest unprocessed message is depleted (as a FIFO type of storage) """
 
@@ -5377,7 +5377,7 @@ class HServReStorApp(Strategy):
 
             self.cloudEmptyLoop = True
 
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
 
                 """
 
@@ -5457,7 +5457,7 @@ class HServReStorApp(Strategy):
             # System.out.prln("Depleted  messages : "+ sdepleted)
 
             self.upEmptyLoop = True
-        for i in range(0, 50) and self.cloudBW > self.cloud_lim and \
+        for i in list(range(0, 50)) and self.cloudBW > self.cloud_lim and \
                  not self.view.model.repoStorage[node].isProcessingEmpty() and self.upEmptyLoop:
             if (not self.view.model.repoStorage[node].isProcessedEmpty):
                 self.processedDepletion(node)
@@ -5476,7 +5476,7 @@ class HServReStorApp(Strategy):
                 self.view.model.repoStorage[node].getMessagesSize() >
                 self.view.model.repoStorage[node].getTotalStorageSpace() * self.max_stor):
             self.deplEmptyLoop = True
-            for i in range(0, 50) and self.deplBW < self.depl_rate and self.deplEmptyLoop:
+            for i in list(range(0, 50)) and self.deplBW < self.depl_rate and self.deplEmptyLoop:
                 if (self.view.model.repoStorage[node].getOldestDeplUnProcMessage() is not None):
                     content = self.oldestUnProcDepletion(node)
                     source = self.view.content_source_cloud(content, content['labels'])
@@ -5842,7 +5842,7 @@ class HServSpecStorApp(Strategy):
         self.last_replacement = 0
         self.receivers = view.topology().receivers()
         self.compSpots = self.view.service_nodes()
-        self.num_nodes = len(self.compSpots.keys())
+        self.num_nodes = len(list(self.compSpots.keys()))
         self.num_services = self.view.num_services()
         self.debug = debug
         # metric to rank each VM of Comp. Spot
@@ -5850,7 +5850,7 @@ class HServSpecStorApp(Strategy):
         self.cand_deadline_metric = {x: {} for x in range(0, self.num_nodes)}
         self.replacements_so_far = 0
         self.serviceNodeUtil = [None]*len(self.receivers)
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -5862,7 +5862,7 @@ class HServSpecStorApp(Strategy):
         for recv in self.receivers:
             recv = int(recv[4:])
             self.serviceNodeUtil[recv] = [None]*self.num_nodes
-            for n in self.compSpots.keys():
+            for n in list(self.compSpots.keys()):
                 cs = self.compSpots[n]
                 if cs.is_cloud:
                     continue
@@ -5904,7 +5904,7 @@ class HServSpecStorApp(Strategy):
         """
         Initialise metrics/counters to 0
         """
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -5918,7 +5918,7 @@ class HServSpecStorApp(Strategy):
 
     # HYBRID
     def replace_services1(self, curTime):
-        for node, cs in self.compSpots.items():
+        for node, cs in list(self.compSpots.items()):
             n_replacements = 0
             if cs.is_cloud:
                 continue
@@ -5932,7 +5932,7 @@ class HServSpecStorApp(Strategy):
             # missedServicesUtil = {}
 
             if len(cs.scheduler.upcomingTaskQueue) > 0:
-                print("Printing upcoming task queue at node: " + str(cs.node))
+                print(("Printing upcoming task queue at node: " + str(cs.node)))
                 for task in cs.scheduler.upcomingTaskQueue:
                     task.print_task()
 
@@ -5940,19 +5940,19 @@ class HServSpecStorApp(Strategy):
             util_normalised = {}
 
             if self.debug:
-                print("Replacement at node " + repr(node))
+                print(("Replacement at node " + repr(node)))
             for service in range(0, self.num_services):
                 if cs.numberOfVMInstances[service] != len(cs.scheduler.idleVMs[service]) + len(
                         cs.scheduler.busyVMs[service]) + len(cs.scheduler.startingVMs[service]):
-                    print("Error: number of vm instances do not match for service: " + str(service) + " node: " + str(
-                        cs.node))
-                    print("numberOfInstances = " + str(cs.numberOfVMInstances[service]))
-                    print("Total VMs: " + str(
+                    print(("Error: number of vm instances do not match for service: " + str(service) + " node: " + str(
+                        cs.node)))
+                    print(("numberOfInstances = " + str(cs.numberOfVMInstances[service])))
+                    print(("Total VMs: " + str(
                         len(cs.scheduler.idleVMs[service]) + len(cs.scheduler.busyVMs[service]) + len(
-                            cs.scheduler.startingVMs[service])))
-                    print("\t Idle: " + str(len(cs.scheduler.idleVMs[service])) + " Busy: " + str(
+                            cs.scheduler.startingVMs[service]))))
+                    print(("\t Idle: " + str(len(cs.scheduler.idleVMs[service])) + " Busy: " + str(
                         len(cs.scheduler.busyVMs[service])) + " Starting: " + str(
-                        len(cs.scheduler.startingVMs[service])))
+                        len(cs.scheduler.startingVMs[service]))))
                     if cs.numberOfVMInstances[service] > len(cs.scheduler.idleVMs[service]) + len(
                         cs.scheduler.busyVMs[service]) + len(cs.scheduler.startingVMs[service]):
                         aVM = VM(self, service)
@@ -6023,15 +6023,15 @@ class HServSpecStorApp(Strategy):
                         self.controller.reassign_vm(curTime, cs, service_running, service_missed, self.debug)
                         # cs.reassign_vm(self.controller, curTime, service_running, service_missed, self.debug)
                         if self.debug:
-                            print("Missed util: " + str(missed_util) + " running util: " + str(
+                            print(("Missed util: " + str(missed_util) + " running util: " + str(
                                 running_util) + " Adequate time missed: " + str(
-                                delay[service_missed]) + " Adequate time running: " + str(delay[service_running]))
+                                delay[service_missed]) + " Adequate time running: " + str(delay[service_running])))
                         del running_services_utilisation_normalised[indx]
                         n_replacements += 1
                         break
             if self.debug:
-                print(str(n_replacements) + " replacements at node:" + str(cs.node) + " at time: " + str(curTime))
-                for node in self.compSpots.keys():
+                print((str(n_replacements) + " replacements at node:" + str(cs.node) + " at time: " + str(curTime)))
+                for node in list(self.compSpots.keys()):
                     cs = self.compSpots[node]
                     if cs.is_cloud:
                         continue
@@ -6039,8 +6039,8 @@ class HServSpecStorApp(Strategy):
                         continue
                     for service in range(0, self.num_services):
                         if cs.numberOfVMInstances[service] > 0:
-                            print("Node: " + str(node) + " has " + str(
-                                cs.numberOfVMInstances[service]) + " instance of " + str(service))
+                            print(("Node: " + str(node) + " has " + str(
+                                cs.numberOfVMInstances[service]) + " instance of " + str(service)))
 
     def getAppID(self):
         return self.appID
@@ -6244,7 +6244,7 @@ class HServSpecStorApp(Strategy):
 
         if curTime - self.last_replacement > self.replacement_interval:
             # self.print_stats()
-            print("Replacement time: " + repr(curTime))
+            print(("Replacement time: " + repr(curTime)))
             self.controller.replacement_interval_over(flow_id, self.replacement_interval, curTime)
             self.replace_services1(curTime)
             self.last_replacement = curTime
@@ -6268,7 +6268,7 @@ class HServSpecStorApp(Strategy):
 
         if curTime - self.last_replacement > self.replacement_interval:
             # self.print_stats()
-            print("Replacement time: " + repr(curTime))
+            print(("Replacement time: " + repr(curTime)))
             self.controller.replacement_interval_over(flow_id, self.replacement_interval, curTime)
             self.replace_services1(curTime)
             self.last_replacement = curTime
@@ -6440,7 +6440,7 @@ class HServSpecStorApp(Strategy):
                                     service['content'], service['labels']):
                                 self.controller.add_request_labels_to_node(node, service)
                             if self.debug:
-                                print("Message is scheduled to run at: " + str(upstream_node))
+                                print(("Message is scheduled to run at: " + str(upstream_node)))
                         else:  # request is to be executed in the cloud and returned to receiver
                             services = self.view.services()
                             serviceTime = services[service['content']].service_time
@@ -6467,9 +6467,9 @@ class HServSpecStorApp(Strategy):
                 return
 
             if self.debug:
-                print("\nEvent\n time: " + repr(curTime) + " receiver  " + repr(receiver) + " service " + repr(
+                print(("\nEvent\n time: " + repr(curTime) + " receiver  " + repr(receiver) + " service " + repr(
                     service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(
-                    deadline) + " status " + repr(status))
+                    deadline) + " status " + repr(status)))
 
             if status == RESPONSE:
 
@@ -6663,8 +6663,8 @@ class HServSpecStorApp(Strategy):
                 self.controller.add_event(curTime + delay, receiver, service, labels, next_node, flow_id,
                                           deadline, rtt_delay, RESPONSE)
                 if (node != source and curTime + path_delay > deadline):
-                    print("Error in HYBRID strategy: Request missed its deadline\nResponse at receiver at time: " + str(
-                        curTime + path_delay) + " deadline: " + str(deadline))
+                    print(("Error in HYBRID strategy: Request missed its deadline\nResponse at receiver at time: " + str(
+                        curTime + path_delay) + " deadline: " + str(deadline)))
                     task.print_task()
                     # raise ValueError("This should not happen: a task missed its deadline after being executed at an edge node.")
 
@@ -6684,11 +6684,11 @@ class HServSpecStorApp(Strategy):
                 deadline_metric = (deadline - curTime - rtt_delay - compSpot.services[
                     service['content']].service_time)  # /deadline
                 if self.debug:
-                    print("Deadline metric: " + repr(deadline_metric))
+                    print(("Deadline metric: " + repr(deadline_metric)))
                 if self.view.has_service(node, service) and service["service_type"] is "proc":
                     if self.controller.has_message(node, labels, service):
-                        print "ERROR: Tasks should not be admitted in nodes which do not have the data they need to " \
-                              "process the request and these nodes should be added as data 'source', but hey-ho"
+                        print("ERROR: Tasks should not be admitted in nodes which do not have the data they need to " \
+                              "process the request and these nodes should be added as data 'source', but hey-ho")
                         cache_delay = 0
                         if not in_cache and self.view.has_cache(node):
                             if self.controller.put_content(source, content['content']):
@@ -6759,7 +6759,7 @@ class HServSpecStorApp(Strategy):
                             if deadline_metric > 0:
                                 self.cand_deadline_metric[node][service['content']] += deadline_metric
                             if self.debug:
-                                print("Pass upstream to node: " + repr(next_node))
+                                print(("Pass upstream to node: " + repr(next_node)))
                             compSpot.missed_requests[service['content']] += 1  # Added here
                         else:
                             if deadline_metric > 0:
@@ -6777,7 +6777,7 @@ class HServSpecStorApp(Strategy):
                                 self.controller.put_content_local_cache(source)
                         compSpot.missed_requests[service['content']] += 1
                         if self.debug:
-                            print("Not running the service: Pass upstream to node: " + repr(next_node))
+                            print(("Not running the service: Pass upstream to node: " + repr(next_node)))
                         rtt_delay += delay * 2
                         self.controller.add_event(curTime + delay, receiver, service, labels, next_node,
                                                   flow_id, deadline, rtt_delay, REQUEST)
@@ -6790,7 +6790,7 @@ class HServSpecStorApp(Strategy):
                 else:  # Not running the service
                     compSpot.missed_requests[service['content']] += 1
                     if self.debug:
-                        print("Not running the service: Pass upstream to node: " + repr(next_node))
+                        print(("Not running the service: Pass upstream to node: " + repr(next_node)))
                     rtt_delay += delay * 2
                     self.controller.add_event(curTime + delay, receiver, service, labels, next_node,
                                               flow_id, deadline, rtt_delay, REQUEST)
@@ -6802,7 +6802,7 @@ class HServSpecStorApp(Strategy):
             elif status == STORE:
                 pass
             else:
-                print("Error: unrecognised status value : " + repr(status))
+                print(("Error: unrecognised status value : " + repr(status)))
 
     def find_closest_feasible_node(self, receiver, flow_id, path, curTime, service, deadline, rtt_delay):
         """
@@ -6853,8 +6853,8 @@ class HServSpecStorApp(Strategy):
                 if ((task.expiry - delay) < task.completionTime) or (task.completionTime == float('inf')):
                     cs.scheduler.upcomingTaskQueue.remove(aTask)
                     if self.debug:
-                        print ("Task with flow_id " + str(
-                            aTask.flow_id) + " is violating its expiration time at node: " + str(n))
+                        print(("Task with flow_id " + str(
+                            aTask.flow_id) + " is violating its expiration time at node: " + str(n)))
                     break
             else:
                 source = n
@@ -6863,7 +6863,7 @@ class HServSpecStorApp(Strategy):
                 #    print ("Task is scheduled at node 5:")
                 #    aTask.print_task()
                 if self.debug:
-                    print ("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source))
+                    print(("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source)))
                 return source
         return source
 
@@ -6903,7 +6903,7 @@ class HServSpecStorApp(Strategy):
             *Well...it actually doesn't influence it that much, so it would mostly be just for correctness, really...
             """
 
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
                 """
                 * Oldest processed message is depleted (as a FIFO type of storage,
                 * and a  message for processing is processed
@@ -6982,7 +6982,7 @@ class HServSpecStorApp(Strategy):
               self.view.model.repoStorage[node].getStaleMessagesSize()) > \
                 (self.view.model.repoStorage[node].getTotalStorageSpace() * self.max_stor):
             self.cloudEmptyLoop = True
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
 
                 """ Oldest unprocessed message is depleted (as a FIFO type of storage) """
 
@@ -7071,7 +7071,7 @@ class HServSpecStorApp(Strategy):
 
             self.cloudEmptyLoop = True
 
-            for i in range(0, 50) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
+            for i in list(range(0, 50)) and self.cloudBW < self.cloud_lim and self.cloudEmptyLoop:
 
                 """
 
@@ -7151,7 +7151,7 @@ class HServSpecStorApp(Strategy):
             # System.out.prln("Depleted  messages : "+ sdepleted)
 
             self.upEmptyLoop = True
-        for i in range(0, 50) and self.cloudBW > self.cloud_lim and \
+        for i in list(range(0, 50)) and self.cloudBW > self.cloud_lim and \
                  not self.view.model.repoStorage[node].isProcessingEmpty() and self.upEmptyLoop:
             if (not self.view.model.repoStorage[node].isProcessedEmpty):
                 self.processedDepletion(node)
@@ -7170,7 +7170,7 @@ class HServSpecStorApp(Strategy):
                 self.view.model.repoStorage[node].getMessagesSize() >
                 self.view.model.repoStorage[node].getTotalStorageSpace() * self.max_stor):
             self.deplEmptyLoop = True
-            for i in range(0, 50) and self.deplBW < self.depl_rate and self.deplEmptyLoop:
+            for i in list(range(0, 50)) and self.deplBW < self.depl_rate and self.deplEmptyLoop:
                 if (self.view.model.repoStorage[node].getOldestDeplUnProcMessage() is not None):
                     msg = self.oldestUnProcDepletion(node)
                     source = self.view.content_source_cloud(msg, msg['labels'])

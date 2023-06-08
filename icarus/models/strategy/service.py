@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Implementations of all service-based strategies"""
-from __future__ import division
-from __future__ import print_function
+
+
 
 import networkx as nx
 import random
@@ -52,13 +52,13 @@ class Coordinated(Strategy):
         self.receivers = view.topology().receivers()
         self.topo = view.topology()
         self.compSpots = self.view.service_nodes()
-        self.num_nodes = len(self.compSpots.keys())
+        self.num_nodes = len(list(self.compSpots.keys()))
         self.num_services = self.view.num_services()
         self.serviceNodeUtil = [None]*len(self.receivers)
         self.numVMsPerService = [[0] * self.num_services for x in range(self.num_nodes)]
         self.debug = debug
         self.p = p
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -81,7 +81,7 @@ class Coordinated(Strategy):
         for recv in self.receivers:
             recv = int(recv[4:])
             self.serviceNodeUtil[recv] = [None]*self.num_nodes
-            for n in self.compSpots.keys():
+            for n in list(self.compSpots.keys()):
                 cs = self.compSpots[n]
                 if cs.is_cloud:
                     continue
@@ -91,14 +91,14 @@ class Coordinated(Strategy):
         """
         Initialise metrics/counters to 0
         """
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             cs.scheduler.idleTime = 0.0
 
         for recv in self.receivers:
             recv = int(recv[4:])
             self.serviceNodeUtil[recv] = [None]*self.num_nodes
-            for n in self.compSpots.keys():
+            for n in list(self.compSpots.keys()):
                 cs = self.compSpots[n]
                 if cs.is_cloud:
                     continue
@@ -165,7 +165,7 @@ class Coordinated(Strategy):
         for height in range(self.topo.graph['height']+1):
             nodes = []
             ### Get nodes with depth = height #
-            for node in self.compSpots.keys():
+            for node in list(self.compSpots.keys()):
                 cs = self.compSpots[node]
                 if cs.is_cloud:
                     continue
@@ -188,7 +188,7 @@ class Coordinated(Strategy):
                         service_obj = self.view.services()[service]
                         if service_obj.deadline > (2*self.view.path_delay(recv, node) + service_obj.service_time):
                             service_utils[service] += self.serviceNodeUtil[ap][node][service]
-                service_utils_sorted = sorted(service_utils.items(), key = lambda x: x[1], reverse=True)
+                service_utils_sorted = sorted(list(service_utils.items()), key = lambda x: x[1], reverse=True)
                 
                 if self.debug:
                     count = 0
@@ -255,7 +255,7 @@ class Coordinated(Strategy):
                     if newAddition is False:
                         break
         # Report the VM instantiations (diff with the previous timeslot)
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             servicesToReplace = []
             servicesToAdd = []
             cs = self.compSpots[node]
@@ -399,14 +399,14 @@ class Hybrid(Strategy):
         self.last_replacement = 0
         self.receivers = view.topology().receivers()
         self.compSpots = self.view.service_nodes()
-        self.num_nodes = len(self.compSpots.keys())
+        self.num_nodes = len(list(self.compSpots.keys()))
         self.num_services = self.view.num_services()
         self.debug = debug
         # metric to rank each VM of Comp. Spot
         self.deadline_metric = {x : {} for x in range(0, self.num_nodes)}
         self.cand_deadline_metric = {x : {} for x in range(0, self.num_nodes)}
         self.replacements_so_far = 0
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -420,7 +420,7 @@ class Hybrid(Strategy):
         """
         Initialise metrics/counters to 0
         """
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -434,7 +434,7 @@ class Hybrid(Strategy):
 
     #HYBRID
     def replace_services1(self, time):
-        for node, cs in self.compSpots.items():
+        for node, cs in list(self.compSpots.items()):
             n_replacements = 0
             if cs.is_cloud:
                 continue
@@ -525,7 +525,7 @@ class Hybrid(Strategy):
                         break
             if self.debug:
                 print(str(n_replacements) + " replacements at node:" + str(cs.node) + " at time: " + str(time))
-                for node in self.compSpots.keys():
+                for node in list(self.compSpots.keys()):
                     cs = self.compSpots[node]
                     if cs.is_cloud:
                         continue
@@ -778,13 +778,13 @@ class MostFrequentlyUsed(Strategy):
         self.last_replacement = 0
         self.receivers = view.topology().receivers()
         self.compSpots = self.view.service_nodes()
-        self.num_nodes = len(self.compSpots.keys())
+        self.num_nodes = len(list(self.compSpots.keys()))
         self.num_services = self.view.num_services()
         self.debug = debug
         # metric to rank each VM of Comp. Spot
         self.deadline_metric = {x : {} for x in range(0, self.num_nodes)}
         self.cand_deadline_metric = {x : {} for x in range(0, self.num_nodes)}
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -798,7 +798,7 @@ class MostFrequentlyUsed(Strategy):
         """
         Initialise metrics/counters to 0
         """
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -820,7 +820,7 @@ class MostFrequentlyUsed(Strategy):
         interval: the length of interval
         """
 
-        for node, cs in self.compSpots.items():
+        for node, cs in list(self.compSpots.items()):
             if cs.is_cloud:
                 continue
             n_replacements = k
@@ -1072,13 +1072,13 @@ class StrictestDeadlineFirst(Strategy):
         self.last_replacement = 0
         self.receivers = view.topology().receivers()
         self.compSpots = self.view.service_nodes()
-        self.num_nodes = len(self.compSpots.keys())
+        self.num_nodes = len(list(self.compSpots.keys()))
         self.num_services = self.view.num_services()
         self.debug = debug
         # metric to rank each VM of Comp. Spot
         self.deadline_metric = {x : {} for x in range(0, self.num_nodes)}
         self.cand_deadline_metric = {x : {} for x in range(0, self.num_nodes)}
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -1092,7 +1092,7 @@ class StrictestDeadlineFirst(Strategy):
         """
         Initialise metrics/counters to 0
         """
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -1114,7 +1114,7 @@ class StrictestDeadlineFirst(Strategy):
         interval: the length of interval
         """
 
-        for node, cs in self.compSpots.items():
+        for node, cs in list(self.compSpots.items()):
             if cs.is_cloud:
                 continue
             n_replacements = k

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Implementations of all hash-routing strategies"""
-from __future__ import division
+
 
 import networkx as nx
 from collections import Counter
@@ -374,7 +374,7 @@ class HashroutingEdge(BaseHashrouting):
         self.controller.reserve_local_cache(edge_cache_ratio)
         self.proxy = {v: list(self.view.topology().edge[v].keys())[0]
                         for v in self.view.topology().receivers()}
-        if any(v not in self.view.topology().cache_nodes() for v in self.proxy.values()):
+        if any(v not in self.view.topology().cache_nodes() for v in list(self.proxy.values())):
             raise ValueError('There are receivers connected to a proxy without cache')
 
     @inheritdoc(Strategy)

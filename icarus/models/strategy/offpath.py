@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Implementations of all off-path strategies"""
-from __future__ import division
+
 
 import networkx as nx
 

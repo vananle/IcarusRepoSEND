@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Implementations of base strategies"""
-from __future__ import division
+
 import abc
 
 from icarus.registry import register_strategy
@@ -12,10 +12,8 @@ __all__ = [
           ]
 
 
-class Strategy(object):
+class Strategy(object, metaclass=abc.ABCMeta):
     """Base strategy imported by all other strategy classes"""
-
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, view, controller, **kwargs):
         """Constructor

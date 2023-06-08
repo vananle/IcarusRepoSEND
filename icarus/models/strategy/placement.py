@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Implementations of all service-based strategies"""
-from __future__ import division
-from __future__ import print_function
+
+
 
 import networkx as nx
 import random
@@ -47,7 +47,7 @@ class OptimalPlacementAndScheduling(Strategy):
         self.perAccessPerNodePerServiceProbability = {}
         self.receivers = view.topology().receivers()
         self.compSpots = self.view.service_nodes()
-        self.num_nodes = len(self.compSpots.keys())
+        self.num_nodes = len(list(self.compSpots.keys()))
         self.num_services = self.view.num_services()
         self.requestNumber = 0
         self.debug = debug
@@ -73,7 +73,7 @@ class OptimalPlacementAndScheduling(Strategy):
             for g in range(self.G):
                 self.x[g,i]  = cp.Variable(self.H)
 
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -121,7 +121,7 @@ class OptimalPlacementAndScheduling(Strategy):
         for ap in self.receivers:
             ap = int(ap[4:])
             self.perAccessPerNodePerServiceProbability[ap] = {}
-            for node in self.compSpots.keys():
+            for node in list(self.compSpots.keys()):
                 cs = self.compSpots[node]
                 if cs.is_cloud:
                     continue
@@ -137,7 +137,7 @@ class OptimalPlacementAndScheduling(Strategy):
 
         ### Assign large enough number of VMs at each node to assure that 
         #   the only constraint is the numOfCores
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -155,8 +155,8 @@ class OptimalPlacementAndScheduling(Strategy):
         self.compute_optimal_placement_schedule()
 
     def max_request_forwarded(self):
-        objective  = cp.Maximize(cp.sum_entries(cp.sum_entries(np.sum(map(lambda i:cp.mul_elemwise(self.A[i].T,self.x_bar[i]),range(self.S))), axis=0),axis=1))
-        capacityConstrain  = cp.sum_entries(np.sum(map(lambda i:cp.mul_elemwise(self.A[i],self.x_bar[i].T),range(self.S))), axis=1)<=self.C #row_sums, if axis=0 it would be a column sum
+        objective  = cp.Maximize(cp.sum_entries(cp.sum_entries(np.sum([cp.mul_elemwise(self.A[i].T,self.x_bar[i]) for i in range(self.S)]), axis=0),axis=1))
+        capacityConstrain  = cp.sum_entries(np.sum([cp.mul_elemwise(self.A[i],self.x_bar[i].T) for i in range(self.S)]), axis=1)<=self.C #row_sums, if axis=0 it would be a column sum
         constraints  = [capacityConstrain]
         for i in range(self.S):
             r1          = cp.sum_entries(self.x_bar[i],axis=1)<= self.avg_D[i]
@@ -167,8 +167,8 @@ class OptimalPlacementAndScheduling(Strategy):
         result = lp1.solve()
 
     def groupSpecificExecution(self):
-        for g in xrange(self.G):
-            for s in xrange(self.S):
+        for g in range(self.G):
+            for s in range(self.S):
                 objective = cp.Maximize(cp.sum_entries(self.x[g,s]))
                 r1 = cp.sum_entries(self.x[g,s]) <= self.avg_D[s][g]-self.riskAversionParameter*self.std_D[s][g]
                 r2 = self.x[g,s] <= self.x_bar[s].value[g].T
@@ -181,7 +181,7 @@ class OptimalPlacementAndScheduling(Strategy):
         for ap in self.receivers:
             ap = int(ap[4:])
             for service in range(0, self.view.num_services()):
-                for node in self.compSpots.keys():
+                for node in list(self.compSpots.keys()):
                     cs = self.compSpots[node]
                     if cs.is_cloud:
                         continue
@@ -190,11 +190,11 @@ class OptimalPlacementAndScheduling(Strategy):
                         self.x_bar[service].value[ap, node] = 0.0
 
     def finalizeResults(self):
-        for group in xrange(self.G):
+        for group in range(self.G):
             print ('Group '+str(group))
-            for service in xrange(self.S):
+            for service in range(self.S):
                 print ('\tService: '+str(service))
-                for node in xrange(self.H):
+                for node in range(self.H):
                     print ('\t\t\tnode: '+str(node)+', rate: '+str(self.x[group,service].value[node]))
     
     def compute_optimal_placement_schedule(self):
@@ -206,7 +206,7 @@ class OptimalPlacementAndScheduling(Strategy):
         # initialise the probability array here (not in initialise because it is to be used during the next replacement interval)
         for ap in self.receivers:
             ap = int(ap[4:])
-            for node in self.compSpots.keys():
+            for node in list(self.compSpots.keys()):
                 cs = self.compSpots[node]
                 if cs.is_cloud:
                     continue
@@ -223,7 +223,7 @@ class OptimalPlacementAndScheduling(Strategy):
         self.noiseFilter()#the optimisers essentially they are using interior point methods so they migh assign negligible values to variables
         
         # Do the placement now
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -233,7 +233,7 @@ class OptimalPlacementAndScheduling(Strategy):
         for service in range(0, self.view.num_services()):
             for ap in self.receivers:
                 ap = int(ap[4:])
-                for node in self.compSpots.keys():
+                for node in list(self.compSpots.keys()):
                     cs = self.compSpots[node]
                     if cs.is_cloud:
                         continue
@@ -245,7 +245,7 @@ class OptimalPlacementAndScheduling(Strategy):
                     #cs.numberOfVMInstances[service] += int(math.ceil(self.x_bar[service].value[ap, node]))
                     self.perAccessPerNodePerServiceProbability[ap][node][service] = self.x_bar[service].value[ap, node] - math.floor(self.x_bar[service].value[ap, node])
 
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
@@ -254,7 +254,7 @@ class OptimalPlacementAndScheduling(Strategy):
                 cs.numberOfVMInstances[service] = int(math.ceil(cs.serviceProbabilities[service]))
 
         if True:
-            for node in self.compSpots.keys():
+            for node in list(self.compSpots.keys()):
                 cs = self.compSpots[node]
                 if cs.is_cloud:
                     continue
@@ -272,7 +272,7 @@ class OptimalPlacementAndScheduling(Strategy):
                 ap = int(ap[4:])
                 self.perServiceReceiverRequestCounts[service][ap] = 0
 
-        for node in self.compSpots.keys():
+        for node in list(self.compSpots.keys()):
             cs = self.compSpots[node]
             if cs.is_cloud:
                 continue
