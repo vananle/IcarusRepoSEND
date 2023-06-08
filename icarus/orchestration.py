@@ -20,7 +20,7 @@ import sys
 import time
 import traceback
 
-from icarus.execution import exec_experiment
+from icarus.execution.engine import exec_experiment
 from icarus.registry import TOPOLOGY_FACTORY, CACHE_PLACEMENT, CONTENT_PLACEMENT, \
     COMPUTATION_PLACEMENT, \
     CACHE_POLICY, REPO_POLICY, WORKLOAD, DATA_COLLECTOR, STRATEGY

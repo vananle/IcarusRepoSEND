@@ -6,7 +6,8 @@ experiments needs to be run, instantiates all the required classes and executes
 the experiment by iterating through the event provided by an event generator
 and providing them to a strategy instance.
 """
-from icarus.execution import NetworkModel, NetworkView, NetworkController, CollectorProxy
+from icarus.execution.network import NetworkModel, NetworkView, NetworkController
+from icarus.execution.collectors import CollectorProxy
 from icarus.registry import DATA_COLLECTOR, STRATEGY
 
 __all__ = ['exec_experiment']

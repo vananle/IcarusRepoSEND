@@ -7,7 +7,7 @@ import math
 import numpy as np
 from scipy.optimize import fsolve
 
-from icarus.tools import TruncatedZipfDist, DiscreteDist
+from .stats import TruncatedZipfDist, DiscreteDist
 
 __all__ = [
     'che_characteristic_time',
