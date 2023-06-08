@@ -8,7 +8,7 @@ labelled, these functions deploy caching space to the nodes of the topology.
 TODO:
         THIS IS THE FILE WHERE CACHES ARE ASSOCIATED TO NODES!
 """
-from __future__ import division
+
 import random
 import networkx as nx
 

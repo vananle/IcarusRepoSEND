@@ -1,5 +1,5 @@
 """Functions for visualizing results on graphs of topologies"""
-from __future__ import division
+
 import os
 
 import numpy as np
@@ -37,7 +37,7 @@ def stack_map(topology):
         source | receiver | router | cache
     """
     stack = {}
-    for v, (name, props) in topology.stacks().items():
+    for v, (name, props) in list(topology.stacks().items()):
         if name == 'router':
             cache = False
             if 'cache_size' in props and props['cache_size'] > 0:

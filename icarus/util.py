@@ -1,6 +1,6 @@
 """Utility functions
 """
-from __future__ import division
+
 import time
 import logging
 import collections
@@ -61,7 +61,7 @@ class Tree(collections.defaultdict):
 
     def __iter__(self, root=[]):
         it = collections.deque()
-        for k_child, v_child in self.items():
+        for k_child, v_child in list(self.items()):
             base = copy.copy(root)
             base.append(k_child)
             if isinstance(v_child, Tree):
@@ -178,7 +178,7 @@ class Tree(collections.defaultdict):
             A nested dict representation of the tree
         """
         d = {}
-        for k, v in self.items():
+        for k, v in list(self.items()):
             k = str(k) if str_keys else k
             v = v.dict() if isinstance(v, Tree) else v
             d[k] = v
@@ -208,7 +208,7 @@ class Tree(collections.defaultdict):
             True if the tree matches the condition, False otherwise.
         """
         condition = Tree(condition)
-        return all(self.getval(path) == val for path, val in condition.paths().items())
+        return all(self.getval(path) == val for path, val in list(condition.paths().items()))
 
 
 class Settings(object):
@@ -655,9 +655,9 @@ def overlay_betwenness_centrality(topology, origins=None, destinations=None,
         Dictionary of betweenness centralities keyed by node
     """
     if origins is None:
-        origins = [v for v, (stack, _) in topology.stacks().items() if stack == 'receiver']
+        origins = [v for v, (stack, _) in list(topology.stacks().items()) if stack == 'receiver']
     if destinations is None:
-        destinations = [v for v, (stack, _) in topology.stacks().items() if stack == 'source']
+        destinations = [v for v, (stack, _) in list(topology.stacks().items()) if stack == 'source']
     betweenness = collections.defaultdict(int)
     path = {v: nx.single_source_shortest_path(topology, v) for v in origins}
     for u in path:
@@ -733,12 +733,12 @@ def apportionment(n, fracs):
     apportionment : list of int
         Apportionment of items to buckets
     """
-    ints, remainders = zip(*[divmod(n * f, 1) for f in fracs])
+    ints, remainders = list(zip(*[divmod(n * f, 1) for f in fracs]))
     to_alloc = int(n - sum(ints))
     ints = list(ints)
     if to_alloc == 0:
         return ints
-    idx = heapq.nlargest(to_alloc, range(len(remainders)), remainders.__getitem__)
+    idx = heapq.nlargest(to_alloc, list(range(len(remainders))), remainders.__getitem__)
     for i in idx:
         ints[i] += 1
     return ints

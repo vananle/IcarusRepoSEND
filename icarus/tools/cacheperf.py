@@ -1,7 +1,7 @@
 """Functions for modelling and evaluating the performance of cache
 replacement policies.
 """
-from __future__ import division
+
 import math
 
 import numpy as np
@@ -56,7 +56,7 @@ def che_characteristic_time(pdf, cache_size, target=None):
     def func_r(r, i):
         return sum(math.exp(-pdf[j] * r) for j in range(len(pdf)) if j != i) \
                - len(pdf) + 1 + cache_size
-    items = range(len(pdf)) if target is None else [target - 1]
+    items = list(range(len(pdf))) if target is None else [target - 1]
     r = [fsolve(func_r, x0=cache_size, args=(i)) for i in items]
     return r if target is None else r[0]
 
@@ -83,7 +83,7 @@ def che_per_content_cache_hit_ratio(pdf, cache_size, target=None):
         items in the population. If a target is specified, then it returns
         the cache hit ratio of only the specified item.
     """
-    items = range(len(pdf)) if target is None else [target]
+    items = list(range(len(pdf))) if target is None else [target]
     r = che_characteristic_time(pdf, cache_size)
     hit_ratio = [1 - math.exp(-pdf[i] * r[i]) for i in items]
     return hit_ratio if target is None else hit_ratio[0]
@@ -157,7 +157,7 @@ def che_per_content_cache_hit_ratio_simplified(pdf, cache_size, target=None):
         items in the population. If a target is specified, then it returns
         the cache hit ratio of only the specified item.
     """
-    items = range(len(pdf)) if target is None else [target]
+    items = list(range(len(pdf))) if target is None else [target]
     r = che_characteristic_time_simplified(pdf, cache_size)
     hit_ratio = [1 - math.exp(-pdf[i] * r) for i in items]
     return hit_ratio if target is None else hit_ratio[0]
@@ -482,7 +482,7 @@ def laoutaris_per_content_cache_hit_ratio(alpha, population, cache_size,
     """
     pdf = TruncatedZipfDist(alpha, population).pdf
     r = laoutaris_characteristic_time(alpha, population, cache_size, order)
-    items = range(len(pdf)) if target is None else [target - 1]
+    items = list(range(len(pdf))) if target is None else [target - 1]
     hit_ratio = [1 - math.exp(-pdf[i] * r) for i in items]
     return hit_ratio if target is None else hit_ratio[0]
 

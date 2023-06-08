@@ -10,7 +10,7 @@ user-provided settings.
     TODO: This is where the placement strategy is determined and, through it,
         caches are associated to nodes
 """
-from __future__ import division
+
 import time
 import collections
 import multiprocessing as mp

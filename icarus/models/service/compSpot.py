@@ -10,7 +10,7 @@ TODO: Data needs to be fetched from the closest nodes then, it may be kept in lo
     be another, Edge-produced data, which has its own properties, once stored and/or offloaded - maybe create the
     processed data with a freshness period and shelf-life that are the mean between its precursors.
 """
-from __future__ import division
+
 from collections import deque
 import random
 import abc
@@ -125,21 +125,21 @@ class Task(object):
         return self.vm
     
     def print_task(self):
-        print ("---Task.service: " + repr(self.service))
-        print ("\tTask.labels:" + repr(self.labels))
-        print ("\tTask.curTime: " + repr(self.curTime))
-        print ("\tTask.type: " + repr(self.taskType))
-        print ("\tTask.deadline: " + repr(self.expiry))
-        print ("\tTask.rtt_delay: " + repr(self.rtt_delay))
-        print ("\tTask.exec_time: " + repr(self.exec_time))
-        print ("\tTask.node: " + repr(self.node))
-        print ("\tTask.flow_id: " + repr(self.flow_id))
-        print ("\tTask.receiver: " + repr(self.receiver))
-        print ("\tTask.completionTime: " + repr(self.completionTime))
+        print(("---Task.service: " + repr(self.service)))
+        print(("\tTask.labels:" + repr(self.labels)))
+        print(("\tTask.curTime: " + repr(self.curTime)))
+        print(("\tTask.type: " + repr(self.taskType)))
+        print(("\tTask.deadline: " + repr(self.expiry)))
+        print(("\tTask.rtt_delay: " + repr(self.rtt_delay)))
+        print(("\tTask.exec_time: " + repr(self.exec_time)))
+        print(("\tTask.node: " + repr(self.node)))
+        print(("\tTask.flow_id: " + repr(self.flow_id)))
+        print(("\tTask.receiver: " + repr(self.receiver)))
+        print(("\tTask.completionTime: " + repr(self.completionTime)))
         if self.serviceToInstantiate is not None:
-            print("\tTask.serviceToInstantiate: " + str(self.serviceToInstantiate))
+            print(("\tTask.serviceToInstantiate: " + str(self.serviceToInstantiate)))
         if self.arrivalTime is not None:
-            print ("\tTask.arrivalTime: " + repr(self.arrivalTime))
+            print(("\tTask.arrivalTime: " + repr(self.arrivalTime)))
         if len(self.nextTask) > 0:
             print ("\tTask.nextTask: ")
             for atask in self.nextTask:
@@ -417,7 +417,7 @@ class Scheduler(object):
                         return aTask
                     else:
                         if debug:
-                            print("No idle VMs for service: " + str(aTask.service))
+                            print(("No idle VMs for service: " + str(aTask.service)))
                 else:
                     if fail_if_no_vm is True:
                     # Under strange circumstances where one service is both being replaced and added
@@ -476,7 +476,7 @@ class Scheduler(object):
         Return the next task to be executed, if there is any.
         """
         if debug:
-            print("Schedule is called at curTime: " + str(curTime))
+            print(("Schedule is called at curTime: " + str(curTime)))
         if curTime == float('inf') or curTime is None:
             raise ValueError("Error in schedule(): curTime is invalid - " + str(curTime))
 
@@ -508,7 +508,7 @@ class Scheduler(object):
                     return aTask
                 else:
                     if debug:
-                        print("No idle VMs for service: " + str(aTask.service))
+                        print(("No idle VMs for service: " + str(aTask.service)))
                     if (len(self.idleVMs[aTask.service]) + len(self.busyVMs[aTask.service])) <= 0:
                         print ("This should not happen in scheduler: no instances, task:")
                         aTask.print_task()
@@ -518,7 +518,7 @@ class Scheduler(object):
 
     def print_core_status(self):
         for indx in range(0, self.numOfCores):
-            print ("\tCore: " + repr(indx) + " finish curTime: " + repr(self.coreFinishTime[indx]) + " service: " + repr(self.runningServices[indx]))
+            print(("\tCore: " + repr(indx) + " finish curTime: " + repr(self.coreFinishTime[indx]) + " service: " + repr(self.runningServices[indx])))
 
 class ComputationSpot(object):
     """
@@ -559,8 +559,8 @@ class ComputationSpot(object):
         if numOfVMs > self.service_population_size:
             self.numOfVMs = self.service_population_size
 
-        print ("Number of VMs @node: " + repr(node) + " " + repr(self.numOfVMs))
-        print ("Number of cores @node: " + repr(node) + " " + repr(self.numOfCores))
+        print(("Number of VMs @node: " + repr(node) + " " + repr(self.numOfVMs)))
+        print(("Number of cores @node: " + repr(node) + " " + repr(self.numOfCores)))
 
         # number of VMs in the memory (capacity)
         self.numOfVMs = numOfVMs
@@ -593,7 +593,7 @@ class ComputationSpot(object):
         if dist is None and self.is_cloud == False:
             # setup a random set of services to run in the memory
             while num_of_VMs < self.numOfVMs:
-                service_index = random.choice(range(0, self.service_population_size))
+                service_index = random.choice(list(range(0, self.service_population_size)))
                 #if self.numberOfVMInstances[service_index] == 0:
                 self.numberOfVMInstances[service_index] += 1
                 num_of_VMs += 1
@@ -604,10 +604,10 @@ class ComputationSpot(object):
         if self.is_cloud == False:
             for service in range(len(ComputationSpot.services)):
                 if self.numberOfVMInstances[service] != len(self.scheduler.idleVMs[service]) + len(self.scheduler.busyVMs[service]) + len(self.scheduler.startingVMs[service]):
-                    print ("Error in setting up the VMs at node: " + str(self.node))
-                    print ("numberOfInstances = " + str(self.numberOfVMInstances[service]))
-                    print ("Total VMs: " + str(len(self.scheduler.idleVMs[service]) + len(self.scheduler.busyVMs[service]) + len(self.scheduler.startingVMs[service])) )
-                    print ("\t Idle: " + str(len(self.scheduler.idleVMs[service])) + " Busy: " + str(len(self.scheduler.busyVMs[service])) + " Starting: " + str(len(self.scheduler.startingVMs[service])) )
+                    print(("Error in setting up the VMs at node: " + str(self.node)))
+                    print(("numberOfInstances = " + str(self.numberOfVMInstances[service])))
+                    print(("Total VMs: " + str(len(self.scheduler.idleVMs[service]) + len(self.scheduler.busyVMs[service]) + len(self.scheduler.startingVMs[service])) ))
+                    print(("\t Idle: " + str(len(self.scheduler.idleVMs[service])) + " Busy: " + str(len(self.scheduler.busyVMs[service])) + " Starting: " + str(len(self.scheduler.startingVMs[service])) ))
                     raise ValueError("Error in setting up the VMs")
 
 
@@ -617,7 +617,7 @@ class ComputationSpot(object):
             print ("Error in complete_VM_start(): service to instantiate is not specified")
             raise ValueError("missing task field service to instantiate")
         if len(self.scheduler.startingVMs[service]) <= 0:
-            print("Error in complete_VM_start(): No VM instance to start for service: " + str(service))
+            print(("Error in complete_VM_start(): No VM instance to start for service: " + str(service)))
             raise ValueError("No VM instance to start")
         vm = self.scheduler.startingVMs[service].pop(0)
         self.scheduler.idleVMs[service].append(vm)
@@ -726,7 +726,7 @@ class ComputationSpot(object):
         cpuFinishTime: Current Finish times of CPUs
         """
         if debug:
-            print("\tComputing completion times for node: " + str(self.node))
+            print(("\tComputing completion times for node: " + str(self.node)))
         self.schedulerCopy = copy.copy(self.scheduler)
         # The below copy operations are necessary as copy.copy only makes
         # a shallow copy, which simply copies references of the following two
@@ -747,13 +747,13 @@ class ComputationSpot(object):
         numRunning = self.schedulerCopy.update_state(curTime,  False)
 
         if debug:
-            print ("Time = " + str(curTime))
-            print ("\tNumber of VMs for node: " + str(self.node))
+            print(("Time = " + str(curTime)))
+            print(("\tNumber of VMs for node: " + str(self.node)))
             print (numVMs)
-            print("\tPrinting task queue for node: " + str(self.node))
+            print(("\tPrinting task queue for node: " + str(self.node)))
             for task_indx in range(0, len(self.schedulerCopy._taskQueue)):
                 self.schedulerCopy._taskQueue[task_indx].print_task()
-            print("\tPrinting upcoming task queue for node: " + str(self.node))
+            print(("\tPrinting upcoming task queue for node: " + str(self.node)))
             for task_indx in range(0, len(self.schedulerCopy.upcomingTaskQueue)):
                 self.schedulerCopy.upcomingTaskQueue[task_indx].print_task()
             self.schedulerCopy.print_core_status()
@@ -764,18 +764,18 @@ class ComputationSpot(object):
             if taskToExecute is not None and taskToExecute.completionTime == float('inf'):
                 break
             if debug:
-                print ("Time = " + str(curTime))
+                print(("Time = " + str(curTime)))
                 if taskToExecute is not None:
-                    print ("\tTask to execute for flow: " + str(taskToExecute.flow_id))
+                    print(("\tTask to execute for flow: " + str(taskToExecute.flow_id)))
                 else:
                     print ("\tNo task to execute")
-                    print ("Current curTime: " + str(curTime))
+                    print(("Current curTime: " + str(curTime)))
                     if len(self.schedulerCopy.upcomingTaskQueue) > 0:
-                        print ("Upcoming task queue not empty: " + str(len(self.schedulerCopy.upcomingTaskQueue)))
+                        print(("Upcoming task queue not empty: " + str(len(self.schedulerCopy.upcomingTaskQueue))))
                         for task in self.schedulerCopy.upcomingTaskQueue:
                             task.print_task()
                     if len(self.schedulerCopy._taskQueue) > 0:
-                        print ("task queue not empty: " + str(len(self.schedulerCopy._taskQueue)))
+                        print(("task queue not empty: " + str(len(self.schedulerCopy._taskQueue))))
                         for task in self.schedulerCopy._taskQueue:
                             task.print_task()
 
@@ -803,7 +803,7 @@ class ComputationSpot(object):
                 break
             numRunning = self.schedulerCopy.update_state(curTime,  False)
             if debug:
-                print ("NumRunning: " + str(numRunning))
+                print(("NumRunning: " + str(numRunning)))
 
     def admit_task_FIFO(self, service, labels, curTime,  flow_id, deadline, receiver, rtt_delay, controller, debug):
         """
@@ -851,7 +851,7 @@ class ComputationSpot(object):
             if task.taskType == Task.TASK_TYPE_VM_START:
                 continue
             if task.completionTime is None:
-                print("Error: a task with invalid completion curTime: " + repr(task.completionTime))
+                print(("Error: a task with invalid completion curTime: " + repr(task.completionTime)))
                 raise ValueError("Task completion curTime is invalid")
             if (task.expiry - task.rtt_delay) < task.completionTime:
                 self.missed_requests[service] += 1
@@ -924,7 +924,7 @@ class ComputationSpot(object):
             if task.taskType == Task.TASK_TYPE_VM_START:
                 continue
             if task.completionTime is None: 
-                print("Error: a task with invalid completion curTime: " + repr(task.completionTime))
+                print(("Error: a task with invalid completion curTime: " + repr(task.completionTime)))
                 raise ValueError("Task completion curTime is invalid")
             if (task.expiry - task.rtt_delay) < task.completionTime:
                 self.missed_requests[service] += 1
@@ -956,14 +956,14 @@ class ComputationSpot(object):
         elif self.scheduler.sched_policy == "FIFO":
             ret = self.admit_task_FIFO(service, labels, curTime,  flow_id, deadline, receiver, rtt_delay, controller, debug)
         else:
-            print ("Error: This should not happen in admit_task(): " +repr(self.scheduler.sched_policy))
+            print(("Error: This should not happen in admit_task(): " +repr(self.scheduler.sched_policy)))
             
         return ret
     
     def admit_task_with_probability(self, curTime,  aTask, perAccessPerNodePerServiceProbability, debug):
         availableInstances = self.numberOfVMInstances[aTask.service]
         if debug:
-            print("Available instances for service: " + str(aTask.service) + " at node: " + str(self.node) + " is: " + str(availableInstances))
+            print(("Available instances for service: " + str(aTask.service) + " at node: " + str(self.node) + " is: " + str(availableInstances)))
         if availableInstances == 0:
             return False
         
@@ -977,7 +977,7 @@ class ComputationSpot(object):
         numQueued = self.scheduler.queuedServicesPerReceiver[int(aTask.receiver[4:])][aTask.service]
         numQueuedAndRunning = numQueued + numRunning
         if debug:
-            print("Number of running instances for service: " + str(aTask.service) + " is: " + str(numQueuedAndRunning))
+            print(("Number of running instances for service: " + str(aTask.service) + " is: " + str(numQueuedAndRunning)))
         if numQueuedAndRunning >= availableInstances:
             return False
         elif (availableInstances - numQueuedAndRunning) == 1:
@@ -986,7 +986,7 @@ class ComputationSpot(object):
             node = int(aTask.node)
             if r < perAccessPerNodePerServiceProbability[ap][node][aTask.service]:
                 if debug:
-                    print("Admitted with probability: " + str(perAccessPerNodePerServiceProbability[ap][node][aTask.service]))
+                    print(("Admitted with probability: " + str(perAccessPerNodePerServiceProbability[ap][node][aTask.service])))
                 ### Check if the task will satisfy the deadline
                 self.scheduler.addToTaskQueue(aTask, curTime)
                 self.compute_completion_times(curTime,  True, debug)
@@ -997,7 +997,7 @@ class ComputationSpot(object):
                     if task.taskType == Task.TASK_TYPE_VM_START:
                         continue
                     if task.completionTime is None: 
-                        print("Error: a task with invalid completion curTime: " + repr(task.completionTime))
+                        print(("Error: a task with invalid completion curTime: " + repr(task.completionTime)))
                         raise ValueError("Task completion curTime is invalid")
                     if (task.expiry - task.rtt_delay) < task.completionTime:
                         if debug:
@@ -1016,7 +1016,7 @@ class ComputationSpot(object):
                 if task.taskType == Task.TASK_TYPE_VM_START:
                     continue
                 if task.completionTime is None: 
-                    print("Error: a task with invalid completion curTime: " + repr(task.completionTime))
+                    print(("Error: a task with invalid completion curTime: " + repr(task.completionTime)))
                     raise ValueError("Task completion curTime is invalid")
                 if (task.expiry - task.rtt_delay) < task.completionTime:
                     if debug:
@@ -1038,9 +1038,9 @@ class ComputationSpot(object):
             raise ValueError("Error in reassign_vm: the service to replace has no instances")
 
         if debug:
-            print ("Replacing service: " + repr(serviceToReplace) + " with: " + repr(newService) + " at node: " + repr(self.node))
+            print(("Replacing service: " + repr(serviceToReplace) + " with: " + repr(newService) + " at node: " + repr(self.node)))
         if self.numberOfVMInstances[serviceToReplace] <= 0:
-            print("Error in reassign_vm(): service to replace has no instances for service:" + str(serviceToReplace))
+            print(("Error in reassign_vm(): service to replace has no instances for service:" + str(serviceToReplace)))
             raise ValueError("Invalid number of instances of service: " + str(serviceToReplace) + " has " + str(self.numberOfVMInstances[serviceToReplace]))
         self.numberOfVMInstances[newService] += 1
         self.numberOfVMInstances[serviceToReplace] -= 1

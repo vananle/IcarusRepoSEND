@@ -18,7 +18,7 @@ A valid ICN topology must have the following attributes:
         for services? If that is the case, then that's fine. Or, even so, I'd imagine
         some nodes could be both at different instances of time, anyway...?
 """
-from __future__ import division
+
 
 from os import path
 
@@ -158,13 +158,13 @@ def topology_tree(k, h, delay=0.020, **kwargs):
         topology.edges[u, v]['type'] = 'internal'
         if u is 0 or v is 0:
             topology.edges[u, v]['delay'] = delay
-            print ("Edge between " + repr(u) + " and " + repr(v) + " delay: " + repr(topology.edges[u, v]['delay']))
+            print(("Edge between " + repr(u) + " and " + repr(v) + " delay: " + repr(topology.edges[u, v]['delay'])))
         else:
             topology.edges[u, v]['delay'] = delay
-            print ("Edge between " + repr(u) + " and " + repr(v) + " delay: " + repr(topology.edges[u, v]['delay']))
+            print(("Edge between " + repr(u) + " and " + repr(v) + " delay: " + repr(topology.edges[u, v]['delay'])))
 
     for v in topology.nodes():
-        print ("Depth of " + repr(v) + " is " + repr(topology.node[v]['depth']))
+        print(("Depth of " + repr(v) + " is " + repr(topology.node[v]['depth'])))
     
     # set weights and delays on all links
     fnss.set_weights_constant(topology, 1.0)
@@ -196,8 +196,8 @@ def topology_tree(k, h, delay=0.020, **kwargs):
     for i in range(n_sources):
         topology.add_edge(sources[i], root[0], delay=3*delay, type='internal')
 
-    print ("The number of sources: " + repr(n_sources))
-    print ("The number of receivers: " + repr(n_receivers))
+    print(("The number of sources: " + repr(n_sources)))
+    print(("The number of receivers: " + repr(n_receivers)))
     topology.graph['receiver_access_delay'] = receiver_access_delay 
     topology.graph['link_delay'] = delay
     topology.graph['depth'] = h
@@ -249,13 +249,13 @@ def topology_repo_tree(k, h, delay=0.020, **kwargs):
         topology.edges[u, v]['type'] = 'internal'
         if u is 0 or v is 0:
             topology.edges[u, v]['delay'] = delay
-            print("Edge between " + repr(u) + " and " + repr(v) + " delay: " + repr(topology.edges[u, v]['delay']))
+            print(("Edge between " + repr(u) + " and " + repr(v) + " delay: " + repr(topology.edges[u, v]['delay'])))
         else:
             topology.edges[u, v]['delay'] = delay
-            print("Edge between " + repr(u) + " and " + repr(v) + " delay: " + repr(topology.edges[u, v]['delay']))
+            print(("Edge between " + repr(u) + " and " + repr(v) + " delay: " + repr(topology.edges[u, v]['delay'])))
 
     for v in topology.nodes():
-        print("Depth of " + repr(v) + " is " + repr(topology.node[v]['depth']))
+        print(("Depth of " + repr(v) + " is " + repr(topology.node[v]['depth'])))
 
     # set weights and delays on all links
     fnss.set_weights_constant(topology, 1.0)
@@ -290,8 +290,8 @@ def topology_repo_tree(k, h, delay=0.020, **kwargs):
     for i in range(n_sources):
         topology.add_edge(sources[i], root[0], delay=3 * delay, type='internal')
 
-    print("The number of sources: " + repr(n_sources))
-    print("The number of receivers: " + repr(n_receivers))
+    print(("The number of sources: " + repr(n_sources)))
+    print(("The number of receivers: " + repr(n_receivers)))
     topology.graph['receiver_access_delay'] = receiver_access_delay
     topology.graph['link_delay'] = delay
     topology.graph['depth'] = h
@@ -349,7 +349,7 @@ def topology_path(n, delay=1, **kwargs):
     """
     topology = fnss.line_topology(n)
     receivers = [0]
-    routers = range(1, n - 1)
+    routers = list(range(1, n - 1))
     sources = [n - 1]
     topology.graph['icr_candidates'] = set(routers)
     for v in sources:
@@ -393,10 +393,10 @@ def topology_ring(n, delay_int=1, delay_ext=5, **kwargs):
         The topology object
     """
     topology = fnss.ring_topology(n)
-    routers = range(n)
-    receivers = range(n, 2 * n)
+    routers = list(range(n))
+    receivers = list(range(n, 2 * n))
     source = 2 * n
-    internal_links = zip(routers, receivers)
+    internal_links = list(zip(routers, receivers))
     external_links = [(routers[0], source)]
     for u, v in internal_links:
         topology.add_edge(u, v, type='internal')
@@ -442,11 +442,11 @@ def topology_mesh(n, m, delay_int=1, delay_ext=5, **kwargs):
     if m > n:
         raise ValueError("m cannot be greater than n")
     topology = fnss.full_mesh_topology(n)
-    routers = range(n)
-    receivers = range(n, 2 * n)
-    sources = range(2 * n, 2 * n + m)
-    internal_links = zip(routers, receivers)
-    external_links = zip(routers[:m], sources)
+    routers = list(range(n))
+    receivers = list(range(n, 2 * n))
+    sources = list(range(2 * n, 2 * n + m))
+    internal_links = list(zip(routers, receivers))
+    external_links = list(zip(routers[:m], sources))
     for u, v in internal_links:
         topology.add_edge(u, v, type='internal')
     for u, v in external_links:
@@ -496,15 +496,15 @@ def topology_repo_mesh(n, m, delay_int=0.02, delay_ext=1, **kwargs):
     topology = fnss.full_mesh_topology(n)
     topology.sources_no = m
     topology.routers_no = n
-    routers = range(n)
+    routers = list(range(n))
     receivers = ['rec_%d' % i for i in range(n)]
     sources = ['src_%d' % i for i in range(m)]
-    internal_links = zip(routers, receivers)
+    internal_links = list(zip(routers, receivers))
     for u in routers:
         for v in routers:
             if v != u:
                 internal_links.append(tuple([u, v]))
-    external_links = zip(routers[:m], sources)
+    external_links = list(zip(routers[:m], sources))
     for u, v in internal_links:
         topology.add_edge(u, v, type='internal')
     for u, v in external_links:
@@ -513,8 +513,8 @@ def topology_repo_mesh(n, m, delay_int=0.02, delay_ext=1, **kwargs):
 
     n_sources = m
 
-    print("The number of sources: " + repr(n_sources))
-    print("The number of receivers: " + repr(n))
+    print(("The number of sources: " + repr(n_sources)))
+    print(("The number of receivers: " + repr(n)))
     topology.graph['receiver_access_delay'] = receiver_access_delay
     topology.graph['link_delay'] = delay_int
     for v in routers:

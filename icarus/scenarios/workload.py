@@ -113,7 +113,7 @@ class StationaryWorkload(object):
 
         self.n_contents = n_contents
         # THIS is where CONTENTS are generated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        self.contents = range(0, n_contents)
+        self.contents = list(range(0, n_contents))
         self.n_services = n_services
         self.alpha = alpha
         self.rate = rate
@@ -186,7 +186,7 @@ class StationaryWorkload(object):
             yield (t_event, event)
             req_counter += 1
 
-        print ("End of iteration: len(eventObj): " + repr(len(self.model.eventQ)))
+        print(("End of iteration: len(eventObj): " + repr(len(self.model.eventQ))))
         # aFile.close()
         raise StopIteration()
 
@@ -255,7 +255,7 @@ class RepoStationaryWorkload(object):
         # THIS is where CONTENTS are generated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         self.contents = {}
         for content in range(0, n_contents):
-            if self.contents.has_key(content):
+            if content in self.contents:
                 self.contents[content].update(None)
             else:
                 self.contents[content] = None
@@ -325,7 +325,7 @@ class RepoStationaryWorkload(object):
             yield (t_event, event)
             req_counter += 1
 
-        print ("End of iteration: len(eventObj): " + repr(len(self.model.eventQ)))
+        print(("End of iteration: len(eventObj): " + repr(len(self.model.eventQ))))
         # aFile.close()
         raise StopIteration()
 
@@ -377,13 +377,13 @@ class GlobetraffWorkload(object):
             for content, popularity, size, app_type in reader:
                 self.n_contents = max(self.n_contents, content)
         self.n_contents += 1
-        self.contents = range(self.n_contents)
+        self.contents = list(range(self.n_contents))
         self.request_file = reqs_file
         self.beta = beta
         if beta != 0:
             degree = nx.degree(self.topology)
             self.receivers = sorted(self.receivers, key=lambda x:
-            degree[iter(topology.edge[x]).next()],
+            degree[next(iter(topology.edge[x]))],
                                     reverse=True)
             self.receiver_dist = TruncatedZipfDist(beta, len(self.receivers))
 
@@ -475,7 +475,7 @@ class TraceDrivenWorkload(object):
         if beta != 0:
             degree = nx.degree(topology)
             self.receivers = sorted(self.receivers, key=lambda x:
-            degree[iter(topology.edge[x]).next()],
+            degree[next(iter(topology.edge[x]))],
                                     reverse=True)
             self.receiver_dist = TruncatedZipfDist(beta, len(self.receivers))
 
@@ -644,7 +644,7 @@ class StationaryRepoWorkload(object):
         # THIS is where CONTENTS are generated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         # TODO: Associate all below content properties to contents, according to CONFIGURATION required IN FILE, in
         #  contentplacement.py file, registered placement strategies!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        self.contents = range(0, n_contents)
+        self.contents = list(range(0, n_contents))
         self.data = dict()
 
         for content in self.contents:
@@ -680,7 +680,7 @@ class StationaryRepoWorkload(object):
         self.topology = topology
         if beta != 0:
             degree = nx.degree(self.topology)
-            self.receivers = sorted(self.receivers, key=lambda x: degree[iter(topology.edge[x]).next()], reverse=True)
+            self.receivers = sorted(self.receivers, key=lambda x: degree[next(iter(topology.edge[x]))], reverse=True)
             self.receiver_dist = TruncatedZipfDist(beta, len(self.receivers), seed)
 
         self.seed = seed
@@ -817,7 +817,7 @@ class StationaryRepoWorkload(object):
             yield (t_event, event)
             req_counter += 1
 
-        print("End of iteration: len(eventObj): " + repr(len(self.model.eventQ)))
+        print(("End of iteration: len(eventObj): " + repr(len(self.model.eventQ))))
         # aFile.close()
         raise StopIteration()
 
@@ -897,7 +897,7 @@ class BurstyRepoWorkload(object):
         # THIS is where CONTENTS are generated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         # TODO: Associate all below content properties to contents, according to CONFIGURATION required IN FILE, in
         #  contentplacement.py file, registered placement strategies!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        self.contents = range(0, n_contents)
+        self.contents = list(range(0, n_contents))
         self.data = dict()
 
         for content in self.contents:
@@ -945,7 +945,7 @@ class BurstyRepoWorkload(object):
         self.receivers_uptime = {}
         if beta != 0:
             degree = nx.degree(self.topology)
-            self.receivers = sorted(self.receivers, key=lambda x: degree[iter(topology.edge[x]).next()], reverse=True)
+            self.receivers = sorted(self.receivers, key=lambda x: degree[next(iter(topology.edge[x]))], reverse=True)
             self.receiver_dist = TruncatedZipfDist(beta, len(self.receivers), seed)
 
         self.seed = seed
@@ -1119,7 +1119,7 @@ class BurstyRepoWorkload(object):
             yield (t_event, event)
             req_counter += 1
 
-        print("End of iteration: len(eventObj): " + repr(len(self.model.eventQ)))
+        print(("End of iteration: len(eventObj): " + repr(len(self.model.eventQ))))
         # aFile.close()
         raise StopIteration()
 
@@ -1213,7 +1213,7 @@ class TraceDrivenRepoWorkload(object):
         self.topology = topology
         if beta != 0:
             degree = nx.degree(self.topology)
-            self.receivers = sorted(self.receivers, key=lambda x: degree[iter(topology.edge[x]).next()], reverse=True)
+            self.receivers = sorted(self.receivers, key=lambda x: degree[next(iter(topology.edge[x]))], reverse=True)
             self.receiver_dist = TruncatedZipfDist(beta, len(self.receivers), seed)
 
         self.seed = seed
@@ -1304,7 +1304,7 @@ class TraceDrivenRepoWorkload(object):
         for label in unique_labels:
             self.labels_weights[label] = label_counts[label]
         labels_norm_factor = float(sum(self.labels_weights.values()))
-        self.labels_pdf = dict((k, v / labels_norm_factor) for k, v in self.labels_weights.items())
+        self.labels_pdf = dict((k, v / labels_norm_factor) for k, v in list(self.labels_weights.items()))
 
         for number in range(0, self.n_contents):
             self.contents.append(number)
@@ -1317,7 +1317,7 @@ class TraceDrivenRepoWorkload(object):
         for content in self.rates_pdf:
             contents_weights[content] = self.rates_pdf[content]
         contents_norm_factor = float(sum(contents_weights.values()))
-        self.rates_pdf = dict((k, v / contents_norm_factor) for k, v in contents_weights.items())
+        self.rates_pdf = dict((k, v / contents_norm_factor) for k, v in list(contents_weights.items()))
 
 
         self.data = dict()
@@ -1340,7 +1340,7 @@ class TraceDrivenRepoWorkload(object):
         if beta != 0:
             degree = nx.degree(topology)
             self.receivers = sorted(self.receivers, key=lambda x:
-            degree[iter(topology.edge[x]).next()],
+            degree[next(iter(topology.edge[x]))],
                                     reverse=True)
             self.receiver_dist = TruncatedZipfDist(beta, len(self.receivers))
 
@@ -1468,7 +1468,7 @@ class TraceDrivenRepoWorkload(object):
             yield (t_event, event)
             req_counter += 1
 
-        print("End of iteration: len(eventObj): " + repr(len(self.model.eventQ)))
+        print(("End of iteration: len(eventObj): " + repr(len(self.model.eventQ))))
         # aFile.close()
         raise StopIteration()
 
@@ -1543,7 +1543,7 @@ class BurstyTraceRepoWorkload(object):
         # THIS is where CONTENTS are generated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         # TODO: Associate all below content properties to contents, according to CONFIGURATION required IN FILE, in
         #  contentplacement.py file, registered placement strategies!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        self.contents = range(0, n_contents)
+        self.contents = list(range(0, n_contents))
         self.data = dict()
 
         for content in self.contents:
@@ -1589,7 +1589,7 @@ class BurstyTraceRepoWorkload(object):
 
         if beta != 0:
             degree = nx.degree(self.topology)
-            self.receivers = sorted(self.receivers, key=lambda x: degree[iter(topology.edge[x]).next()], reverse=True)
+            self.receivers = sorted(self.receivers, key=lambda x: degree[next(iter(topology.edge[x]))], reverse=True)
             self.receiver_dist = TruncatedZipfDist(beta, len(self.receivers), seed)
 
         self.seed = seed
@@ -1653,7 +1653,7 @@ class BurstyTraceRepoWorkload(object):
         for label in unique_labels:
             self.labels_weights[label] = label_counts[label]
         labels_norm_factor = float(sum(self.labels_weights.values()))
-        self.labels_pdf = dict((k, v / labels_norm_factor) for k, v in self.labels_weights.items())
+        self.labels_pdf = dict((k, v / labels_norm_factor) for k, v in list(self.labels_weights.items()))
 
         for number in range(0, len(self.contents)-1):
             self.contents[number] = number
@@ -1666,13 +1666,13 @@ class BurstyTraceRepoWorkload(object):
         for content in self.rates_pdf:
             contents_weights[content] = self.rates_pdf[content]
         contents_norm_factor = float(sum(contents_weights.values()))
-        self.rates_pdf = dict((k, v / contents_norm_factor) for k, v in contents_weights.items())
+        self.rates_pdf = dict((k, v / contents_norm_factor) for k, v in list(contents_weights.items()))
 
         self.beta = beta
         if beta != 0:
             degree = nx.degree(topology)
             self.receivers = sorted(self.receivers, key=lambda x:
-            degree[iter(topology.edge[x]).next()],
+            degree[next(iter(topology.edge[x]))],
                                     reverse=True)
             self.receiver_dist = TruncatedZipfDist(beta, len(self.receivers))
 
@@ -1799,7 +1799,7 @@ class BurstyTraceRepoWorkload(object):
             yield (t_event, event)
             req_counter += 1
 
-        print("End of iteration: len(eventObj): " + repr(len(self.model.eventQ)))
+        print(("End of iteration: len(eventObj): " + repr(len(self.model.eventQ))))
         # aFile.close()
         raise StopIteration()
 
@@ -1880,7 +1880,7 @@ class BurstyRepoDataAndWorkload(object):
         # THIS is where CONTENTS are generated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         # TODO: Associate all below content properties to contents, according to CONFIGURATION required IN FILE, in
         #  contentplacement.py file, registered placement strategies!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        self.contents = range(0, n_contents)
+        self.contents = list(range(0, n_contents))
         self.data = dict()
 
         for content in self.contents:
@@ -1960,7 +1960,7 @@ class BurstyRepoDataAndWorkload(object):
 
         if beta != 0:
             degree = nx.degree(self.topology)
-            self.receivers = sorted(self.receivers, key=lambda x: degree[iter(topology.edge[x]).next()], reverse=True)
+            self.receivers = sorted(self.receivers, key=lambda x: degree[next(iter(topology.edge[x]))], reverse=True)
             self.receiver_dist = TruncatedZipfDist(beta, len(self.receivers), seed)
 
         self.seed = seed
@@ -2324,6 +2324,6 @@ class BurstyRepoDataAndWorkload(object):
             yield (t_data, event)
             stor_counter += 1
 
-        print("End of iteration: len(eventObj): " + repr(len(self.model.eventQ)))
+        print(("End of iteration: len(eventObj): " + repr(len(self.model.eventQ))))
         # aFile.close()
         raise StopIteration()

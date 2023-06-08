@@ -1,5 +1,5 @@
 """Functions for importing and analyzing traffic traces"""
-from __future__ import division
+
 
 import math
 import collections
@@ -54,7 +54,7 @@ def frequencies(data):
     This function can be used to get frequencies to pass to the *zipf_fit*
     function given a set of data, e.g. content request traces.
     """
-    return np.asarray(sorted(collections.Counter(data).values(), reverse=True))
+    return np.asarray(sorted(list(collections.Counter(data).values()), reverse=True))
 
 
 def one_timers(data):
@@ -73,7 +73,7 @@ def one_timers(data):
     n_items = 0
     n_onetimers = 0
     counter = collections.Counter(data)
-    for i in counter.itervalues():
+    for i in counter.values():
         n_items += 1
         if i == 1:
             n_onetimers += 1

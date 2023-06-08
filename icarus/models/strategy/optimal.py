@@ -83,7 +83,7 @@ class OptimalScheduling(Strategy):
                 node = int(parent)
                 rtt_delay = 2*view.path_delay(ap, parent)
                 if self.debug:
-                    print ("RTT delay from " + str(ap) + " to " + str(parent) + " is: " + str(rtt_delay))
+                    print(("RTT delay from " + str(ap) + " to " + str(parent) + " is: " + str(rtt_delay)))
                 service_indx = 0
                 for s in view.services():
                     if s.deadline > rtt_delay + s.service_time:
@@ -175,11 +175,11 @@ class OptimalScheduling(Strategy):
                         self.x[group,service].value[node]=0.0
     def finalizeResults(self):
         for group in range(self.G):
-            print ('Group '+str(group))
+            print(('Group '+str(group)))
             for service in range(self.S):
-                print ('\tService: '+str(service))
+                print(('\tService: '+str(service)))
                 for node in range(self.H):
-                    print ('\t\t\tnode: '+str(node)+', rate: '+str(self.x[group,service].value[node]))
+                    print(('\t\t\tnode: '+str(node)+', rate: '+str(self.x[group,service].value[node])))
     
     def compute_optimal_schedule(self):
         """
@@ -214,12 +214,12 @@ class OptimalScheduling(Strategy):
                 node = int(node)
                 for service in range(0, self.view.num_services()):
                     if self.debug:
-                        print("Count for ap: " + str(ap) + " service: " + str(service) + " is: " + str( self.perServiceReceiverRequestCounts[service][ap])) 
+                        print(("Count for ap: " + str(ap) + " service: " + str(service) + " is: " + str( self.perServiceReceiverRequestCounts[service][ap]))) 
                     if self.perServiceReceiverRequestCounts[service][ap] > 0:
                         rate = self.perServiceReceiverRequestCounts[service][ap]/self.replacement_interval 
                         if self.debug:
-                            print ("Type: " + str(type(self.x[ap, service].value[node])))
-                            print ("x[ap, service].value[node] = " + str(self.x[ap, service].value[node].item(0,0)))
+                            print(("Type: " + str(type(self.x[ap, service].value[node]))))
+                            print(("x[ap, service].value[node] = " + str(self.x[ap, service].value[node].item(0,0))))
                         self.perAccessPerNodePerServiceProbability[ap][node][service] = (self.x[ap, service].value[node].item(0,0))/ rate
                         if self.perAccessPerNodePerServiceProbability[ap][node][service] > 1.01:
                             raise ValueError("Invalid probability: " + str(self.perAccessPerNodePerServiceProbability[ap][node][service]))
@@ -235,7 +235,7 @@ class OptimalScheduling(Strategy):
                             if cs.is_cloud:
                                 continue
                             node = int(node)
-                            print ("Probability for access: " + str(ap) + " at node: " + str(node) + " service: " + str(service) + " is " + str(self.perAccessPerNodePerServiceProbability[ap][node][service]))
+                            print(("Probability for access: " + str(ap) + " at node: " + str(node) + " service: " + str(service) + " is " + str(self.perAccessPerNodePerServiceProbability[ap][node][service])))
 
     def initialise_metrics(self):
         """Initialise counts and metrics between periods of optimized solution computations
@@ -278,7 +278,7 @@ class OptimalScheduling(Strategy):
 
         service = content
         if self.debug:
-            print ("\nEvent\n time: " + repr(time) + " receiver  " + repr(receiver) + " service " + repr(service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(deadline) + " status " + repr(status)) 
+            print(("\nEvent\n time: " + repr(time) + " receiver  " + repr(receiver) + " service " + repr(service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(deadline) + " status " + repr(status))) 
         source = self.view.content_source(service)
         
         if time - self.last_replacement > self.replacement_interval:
@@ -302,7 +302,7 @@ class OptimalScheduling(Strategy):
                 cs.scheduler.upcomingTaskQueue = sorted(cs.scheduler.upcomingTaskQueue, key=lambda x: x.arrivalTime)
                 self.controller.add_event(time+delay, receiver, service, upstream_node, flow_id, deadline, rtt_delay, REQUEST)
                 if self.debug:
-                    print ("Request is scheduled to run at: " + str(upstream_node))
+                    print(("Request is scheduled to run at: " + str(upstream_node)))
             else: #request is to be executed in the cloud and returned to receiver
                 services = self.view.services() 
                 serviceTime = services[service].service_time
@@ -329,10 +329,10 @@ class OptimalScheduling(Strategy):
                 if self.debug and False:
                     print ("Task is not ready to be executed: ")
                     compSpot.scheduler.print_core_status()
-                    print (str(len(compSpot.scheduler.taskQueue)) + " tasks in the taskQueue")
+                    print((str(len(compSpot.scheduler.taskQueue)) + " tasks in the taskQueue"))
                     for aTask in compSpot.scheduler._taskQueue:
                         aTask.print_task()
-                    print (str(len(compSpot.scheduler.upcomingTaskQueue)) + " tasks in the upcomingtaskQueue")
+                    print((str(len(compSpot.scheduler.upcomingTaskQueue)) + " tasks in the upcomingtaskQueue"))
                     for aTask in compSpot.scheduler.upcomingTaskQueue:
                         aTask.print_task()
 
@@ -346,13 +346,13 @@ class OptimalScheduling(Strategy):
             delay = self.view.path_delay(node, receiver)
             self.controller.add_event(time+delay, receiver, service, receiver, flow_id, deadline, rtt_delay, RESPONSE)
             if self.debug and False:
-                print("Flow id: " + str(flow_id) + " is scheduled to arrive at the receiver at time: " + str(time+delay))
+                print(("Flow id: " + str(flow_id) + " is scheduled to arrive at the receiver at time: " + str(time+delay)))
                 if (time+delay > deadline):
-                    print ("Response at receiver at time: " + str(time+delay) + " deadline: " + str(deadline))
+                    print(("Response at receiver at time: " + str(time+delay) + " deadline: " + str(deadline)))
         elif status == RESPONSE and node == receiver:
             self.controller.end_session(True, time, flow_id) 
             if self.debug and False:
-                print ("Response reached the receiver at time: " + str(time) + " deadline: " + str(deadline))
+                print(("Response reached the receiver at time: " + str(time) + " deadline: " + str(deadline)))
             return
         else:
             print("This should not happen in Coordinated")

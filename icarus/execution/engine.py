@@ -49,14 +49,14 @@ def exec_experiment(topology, workload, netconf, strategy, cache_policy, repo_po
     view = NetworkView(model)
     controller = NetworkController(model)
 
-    collectors_inst = [DATA_COLLECTOR[name](view, **params) for name, params in collectors.items()]
+    collectors_inst = [DATA_COLLECTOR[name](view, **params) for name, params in list(collectors.items())]
     collector = CollectorProxy(view, collectors_inst)
     controller.attach_collector(collector)
 
     strategy_name = strategy['name']
     warmup_strategy_name = warmup_strategy['name']
-    strategy_args = {k: v for k, v in strategy.items() if k != 'name'}
-    warmup_strategy_args = {k: v for k, v in warmup_strategy.iteritems() if k != 'name'}
+    strategy_args = {k: v for k, v in list(strategy.items()) if k != 'name'}
+    warmup_strategy_args = {k: v for k, v in warmup_strategy.items() if k != 'name'}
     strategy_inst = STRATEGY[strategy_name](view, controller, **strategy_args)
     warmup_strategy_inst = STRATEGY[warmup_strategy_name](view, controller, **warmup_strategy_args)
 

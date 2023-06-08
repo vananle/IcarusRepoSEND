@@ -142,7 +142,7 @@ class Coordinated(Strategy):
                 if ( (task.expiry - delay) < task.completionTime ) or ( task.completionTime == float('inf') ):
                     cs.scheduler.upcomingTaskQueue.remove(aTask)
                     if self.debug:
-                        print ("Task with flow_id " + str(aTask.flow_id) + " is violating its expiration time at node: " + str(n))
+                        print(("Task with flow_id " + str(aTask.flow_id) + " is violating its expiration time at node: " + str(n)))
                     break
             else:
                 source = n
@@ -151,7 +151,7 @@ class Coordinated(Strategy):
                 #    print ("Task is scheduled at node 5:")
                 #    aTask.print_task()
                 if self.debug:
-                    print ("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source))
+                    print(("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source)))
                 return source
         return source
 
@@ -193,7 +193,7 @@ class Coordinated(Strategy):
                 if self.debug:
                     count = 0
                     for s,u in service_utils_sorted:
-                        print (str(s) + " has utilisation " + str(u))
+                        print((str(s) + " has utilisation " + str(u)))
                         count += 1
                         if count == 10:
                             break
@@ -215,7 +215,7 @@ class Coordinated(Strategy):
                     #if self.debug and cs.numberOfVMInstances[service] > 0:
                     if self.debug and self.numVMsPerService[cs.node][service] > 0:
                         #print(str(cs.numberOfVMInstances[service]) + " vms are instantiated at node: " + str(node) + " for service: " + str(service))
-                        print(str(self.numVMsPerService[cs.node][service]) + " vms are instantiated at node: " + str(cs.node) + " for service: " + str(service))
+                        print((str(self.numVMsPerService[cs.node][service]) + " vms are instantiated at node: " + str(cs.node) + " for service: " + str(service)))
                     #remaining_vms -= cs.numberOfVMInstances[service]
                     remaining_vms -= self.numVMsPerService[cs.node][service]
 
@@ -231,7 +231,7 @@ class Coordinated(Strategy):
                             self.numVMsPerService[cs.node][service] += 1
                             remaining_vms -= 1
                             if self.debug:
-                                print ("One additional vm is instantiated at node: " + str(node) + " for service: " + str(service))
+                                print(("One additional vm is instantiated at node: " + str(node) + " for service: " + str(service)))
                         else:
                             num_vms = int(ceil(util/(self.replacement_interval)))
                             num_vms = min(num_vms, remaining_vms)
@@ -249,7 +249,7 @@ class Coordinated(Strategy):
                                         for n in path[1:]:
                                            self.serviceNodeUtil[ap][n][service] = 0.0
                                 if self.debug:
-                                    print (str(num_vms) + " additional vm is instantiated at node: " + str(node) + " for service: " + str(service))
+                                    print((str(num_vms) + " additional vm is instantiated at node: " + str(node) + " for service: " + str(service)))
                         if remaining_vms == 0:
                             break
                     if newAddition is False:
@@ -274,7 +274,7 @@ class Coordinated(Strategy):
                         servicesToReplace.append(service)
                         diff += 1
             if len(servicesToReplace) != len(servicesToAdd):
-                print("Error: Services to replace " + str(servicesToReplace) + " is different in size from: " + str(servicesToAdd))
+                print(("Error: Services to replace " + str(servicesToReplace) + " is different in size from: " + str(servicesToAdd)))
                 raise ValueError("This should not happen in Coordinated strategy replace_services()")
             for indx in range(len(servicesToAdd)):
                 serviceToAdd = servicesToAdd[indx]
@@ -292,7 +292,7 @@ class Coordinated(Strategy):
         """
         service = content
         if self.debug:
-            print ("\nEvent\n time: " + repr(time) + " receiver  " + repr(receiver) + " service " + repr(service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(deadline) + " status " + repr(status))
+            print(("\nEvent\n time: " + repr(time) + " receiver  " + repr(receiver) + " service " + repr(service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(deadline) + " status " + repr(status)))
         source = self.view.content_source(service, labels)[len(self.view.content_source(service, labels))-1]
         if time - self.last_replacement > self.replacement_interval:
             #self.print_stats()
@@ -313,7 +313,7 @@ class Coordinated(Strategy):
                 self.controller.add_event(time + delay, receiver, service, labels, upstream_node, flow_id,
                                           deadline, rtt_delay, REQUEST)
                 if self.debug:
-                    print("Request is scheduled to run at: " + str(upstream_node))
+                    print(("Request is scheduled to run at: " + str(upstream_node)))
             else:  # request is to be executed in the cloud and returned to receiver
                 services = self.view.services()
                 serviceTime = services[service['content']].service_time
@@ -334,7 +334,7 @@ class Coordinated(Strategy):
                 if thisTask.flow_id == flow_id:
                     break
             else: # task for the flow_id is not in the Queue
-                print ("Flow id: " + str(flow_id) + " is missing in the upcoming task queue")
+                print(("Flow id: " + str(flow_id) + " is missing in the upcoming task queue"))
                 for thisTask in compSpot.scheduler._taskQueue:
                     if thisTask.flow_id == flow_id:
                         break
@@ -350,10 +350,10 @@ class Coordinated(Strategy):
                 if self.debug:
                     print ("Task is not ready to be executed: ")
                     compSpot.scheduler.print_core_status()
-                    print (str(len(compSpot.scheduler._taskQueue)) + " tasks in the taskQueue")
+                    print((str(len(compSpot.scheduler._taskQueue)) + " tasks in the taskQueue"))
                     for aTask in compSpot.scheduler._taskQueue:
                         aTask.print_task()
-                    print (str(len(compSpot.scheduler.upcomingTaskQueue)) + " tasks in the upcomingtaskQueue")
+                    print((str(len(compSpot.scheduler.upcomingTaskQueue)) + " tasks in the upcomingtaskQueue"))
                     for aTask in compSpot.scheduler.upcomingTaskQueue:
                         aTask.print_task()
 
@@ -369,16 +369,16 @@ class Coordinated(Strategy):
             delay = self.view.path_delay(node, receiver)
             self.controller.add_event(time+delay, receiver, service, labels, receiver, flow_id, deadline, rtt_delay, RESPONSE)
             if self.debug:
-                print("Flow id: " + str(flow_id) + " is scheduled to arrive at the receiver at time: " + str(time+delay))
+                print(("Flow id: " + str(flow_id) + " is scheduled to arrive at the receiver at time: " + str(time+delay)))
             if (time+delay > deadline):
                 #if node == 5:
-                print ("Error in COORDINATED strategy: Request missed its deadline\nResponse at receiver at time: " + str(time+delay) + " deadline: " + str(deadline))
+                print(("Error in COORDINATED strategy: Request missed its deadline\nResponse at receiver at time: " + str(time+delay) + " deadline: " + str(deadline)))
                 task.print_task()
             #    raise ValueError ("A scheduled request has missed its deadline!")
         elif status == RESPONSE and node == receiver:
             self.controller.end_session(True, time, flow_id) #TODO add flow_time
             if self.debug:
-                print ("Response reached the receiver at time: " + str(time) + " deadline: " + str(deadline))
+                print(("Response reached the receiver at time: " + str(time) + " deadline: " + str(deadline)))
             return
         else:
             print("This should not happen in Coordinated")
@@ -448,7 +448,7 @@ class Hybrid(Strategy):
             #missedServicesUtil = {}
 
             if len(cs.scheduler.upcomingTaskQueue) > 0:
-                print ("Printing upcoming task queue at node: " + str(cs.node))
+                print(("Printing upcoming task queue at node: " + str(cs.node)))
                 for task in cs.scheduler.upcomingTaskQueue:
                     task.print_task()
 
@@ -456,13 +456,13 @@ class Hybrid(Strategy):
             util_normalised = {}
 
             if self.debug:
-                print ("Replacement at node " + repr(node))
+                print(("Replacement at node " + repr(node)))
             for service in range(0, self.num_services):
                 if cs.numberOfVMInstances[service] != len(cs.scheduler.idleVMs[service]) + len(cs.scheduler.busyVMs[service]) + len(cs.scheduler.startingVMs[service]):
-                    print ("Error: number of vm instances do not match for service: " + str(service) + " node: " + str(cs.node))
-                    print ("numberOfInstances = " + str(cs.numberOfVMInstances[service]))
-                    print ("Total VMs: " + str(len(cs.scheduler.idleVMs[service]) + len(cs.scheduler.busyVMs[service]) + len(cs.scheduler.startingVMs[service])) )
-                    print ("\t Idle: " + str(len(cs.scheduler.idleVMs[service])) + " Busy: " + str(len(cs.scheduler.busyVMs[service])) + " Starting: " + str(len(cs.scheduler.startingVMs[service])) )
+                    print(("Error: number of vm instances do not match for service: " + str(service) + " node: " + str(cs.node)))
+                    print(("numberOfInstances = " + str(cs.numberOfVMInstances[service])))
+                    print(("Total VMs: " + str(len(cs.scheduler.idleVMs[service]) + len(cs.scheduler.busyVMs[service]) + len(cs.scheduler.startingVMs[service])) ))
+                    print(("\t Idle: " + str(len(cs.scheduler.idleVMs[service])) + " Busy: " + str(len(cs.scheduler.busyVMs[service])) + " Starting: " + str(len(cs.scheduler.startingVMs[service])) ))
                 d_metric = 0.0
                 u_metric = 0.0
                 util.append([service, (cs.missed_requests[service] + cs.running_requests[service]) * cs.services[service].service_time])
@@ -519,12 +519,12 @@ class Hybrid(Strategy):
                         self.controller.reassign_vm(time, cs, service_running, service_missed, self.debug)
                         #cs.reassign_vm(self.controller, time, service_running, service_missed, self.debug)
                         if self.debug:
-                            print ("Missed util: " + str(missed_util) + " running util: " + str(running_util) + " Adequate time missed: " + str(delay[service_missed]) + " Adequate time running: " + str(delay[service_running]))
+                            print(("Missed util: " + str(missed_util) + " running util: " + str(running_util) + " Adequate time missed: " + str(delay[service_missed]) + " Adequate time running: " + str(delay[service_running])))
                         del running_services_utilisation_normalised[indx]
                         n_replacements += 1
                         break
             if self.debug:
-                print(str(n_replacements) + " replacements at node:" + str(cs.node) + " at time: " + str(time))
+                print((str(n_replacements) + " replacements at node:" + str(cs.node) + " at time: " + str(time)))
                 for node in list(self.compSpots.keys()):
                     cs = self.compSpots[node]
                     if cs.is_cloud:
@@ -533,7 +533,7 @@ class Hybrid(Strategy):
                         continue
                     for service in range(0, self.num_services):
                         if cs.numberOfVMInstances[service] > 0:
-                            print ("Node: " + str(node) + " has " + str(cs.numberOfVMInstances[service]) + " instance of " + str(service))
+                            print(("Node: " + str(node) + " has " + str(cs.numberOfVMInstances[service]) + " instance of " + str(service)))
 
     def find_topmost_feasible_node(self, receiver, flow_id, path, time, service, deadline, rtt_delay):
         """
@@ -573,7 +573,7 @@ class Hybrid(Strategy):
                 if ( (task.expiry - delay) < task.completionTime ) or ( task.completionTime == float('inf') ):
                     cs.scheduler.upcomingTaskQueue.remove(aTask)
                     if self.debug:
-                        print ("Task with flow_id " + str(aTask.flow_id) + " is violating its expiration time at node: " + str(n))
+                        print(("Task with flow_id " + str(aTask.flow_id) + " is violating its expiration time at node: " + str(n)))
                     break
             else:
                 source = n
@@ -582,7 +582,7 @@ class Hybrid(Strategy):
                 #    print ("Task is scheduled at node 5:")
                 #    aTask.print_task()
                 if self.debug:
-                    print ("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source))
+                    print(("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source)))
                 return source
         return source
 
@@ -610,7 +610,7 @@ class Hybrid(Strategy):
 
         if time - self.last_replacement > self.replacement_interval:
             #self.print_stats()
-            print("Replacement time: " + repr(time))
+            print(("Replacement time: " + repr(time)))
             self.controller.replacement_interval_over(flow_id, self.replacement_interval, time)
             self.replace_services1(time)
             self.last_replacement = time
@@ -641,7 +641,7 @@ class Hybrid(Strategy):
                         self.controller.add_event(time + delay, receiver, service, labels, upstream_node, flow_id,
                                                   deadline, rtt_delay, REQUEST)
                         if self.debug:
-                            print("Request is scheduled to run at: " + str(upstream_node))
+                            print(("Request is scheduled to run at: " + str(upstream_node)))
                     else:  # request is to be executed in the cloud and returned to receiver
                         services = self.view.services()
                         serviceTime = services[service['content']].service_time
@@ -672,7 +672,7 @@ class Hybrid(Strategy):
             return
 
         if self.debug:
-            print ("\nEvent\n time: " + repr(time) + " receiver  " + repr(receiver) + " service " + repr(service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(deadline) + " status " + repr(status))
+            print(("\nEvent\n time: " + repr(time) + " receiver  " + repr(receiver) + " service " + repr(service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(deadline) + " status " + repr(status)))
 
         if status == RESPONSE:
             # response is on its way back to the receiver
@@ -720,7 +720,7 @@ class Hybrid(Strategy):
 
             self.controller.add_event(time+delay, receiver, service, labels, next_node, flow_id, deadline, rtt_delay, RESPONSE)
             if (node != source and time + path_delay > deadline):
-                print ("Error in HYBRID strategy: Request missed its deadline\nResponse at receiver at time: " + str(time+path_delay) + " deadline: " + str(deadline))
+                print(("Error in HYBRID strategy: Request missed its deadline\nResponse at receiver at time: " + str(time+path_delay) + " deadline: " + str(deadline)))
                 task.print_task()
                 #raise ValueError("This should not happen: a task missed its deadline after being executed at an edge node.")
 
@@ -733,7 +733,7 @@ class Hybrid(Strategy):
             delay = self.view.path_delay(node, next_node)
             deadline_metric = (deadline - time - rtt_delay - compSpot.services[service['content']].service_time) #/deadline
             if self.debug:
-                print ("Deadline metric: " + repr(deadline_metric))
+                print(("Deadline metric: " + repr(deadline_metric)))
             if self.view.has_service(node, service) and service["service_type"] is "proc" and \
                     (node in self.view.content_source(service, labels) or self.controller.has_message(node, labels, service['content'])):
                 if self.debug:
@@ -748,7 +748,7 @@ class Hybrid(Strategy):
                     if deadline_metric > 0:
                         self.cand_deadline_metric[node][service['content']] += deadline_metric
                     if self.debug:
-                        print ("Pass upstream to node: " + repr(next_node))
+                        print(("Pass upstream to node: " + repr(next_node)))
                     compSpot.missed_requests[service['content']] += 1 # Added here
                 else:
                     if deadline_metric > 0:
@@ -756,13 +756,13 @@ class Hybrid(Strategy):
             else: #Not running the service
                 compSpot.missed_requests[service['content']] += 1
                 if self.debug:
-                    print ("Not running the service: Pass upstream to node: " + repr(next_node))
+                    print(("Not running the service: Pass upstream to node: " + repr(next_node)))
                 rtt_delay += delay*2
                 self.controller.add_event(time+delay, receiver, service, labels, next_node, flow_id, deadline, rtt_delay, REQUEST)
                 if deadline_metric > 0:
                     self.cand_deadline_metric[node][service['content']] += deadline_metric
         else:
-            print ("Error: unrecognised status value : " + repr(status))
+            print(("Error: unrecognised status value : " + repr(status)))
 
 
 # Highest Utilisation First Strategy
@@ -829,21 +829,21 @@ class MostFrequentlyUsed(Strategy):
             vm_metrics = self.deadline_metric[node]
             cand_metric = self.cand_deadline_metric[node]
             if self.debug:
-                print ("Replacement at node " + repr(node))
+                print(("Replacement at node " + repr(node)))
             for service in range(0, self.num_services):
                 usage_metric = 0.0
                 if cs.numberOfVMInstances[service] == 0:
                     if self.debug:
-                        print ("No running instances of service: " + repr(service))
+                        print(("No running instances of service: " + repr(service)))
                     continue
                 if cs.running_requests[service] == 0:
                     usage_metric = 0.0
                     if self.debug:
-                        print ("No scheduled requests for service: " + repr(service))
+                        print(("No scheduled requests for service: " + repr(service)))
                 else:
                     usage_metric = cs.running_requests[service] * cs.services[service].service_time
                     if self.debug:
-                        print ("Usage metric for service: " + repr(service) + " is " + repr(usage_metric))
+                        print(("Usage metric for service: " + repr(service) + " is " + repr(usage_metric)))
 
                 vms.append([service, usage_metric])
 
@@ -855,15 +855,15 @@ class MostFrequentlyUsed(Strategy):
                 else:
                     usage_metric = cs.missed_requests[service] * cs.services[service].service_time
                     if self.debug:
-                        print ("Usage metric for Upstream Service: " + repr(service) + " is " + repr(usage_metric))
+                        print(("Usage metric for Upstream Service: " + repr(service) + " is " + repr(usage_metric)))
                     cand_services.append([service, usage_metric])
 
             # sort vms and virtual_vms arrays according to metric
             vms = sorted(vms, key=lambda x: x[1]) #small to large
             cand_services = sorted(cand_services, key=lambda x: x[1], reverse=True) #large to small
             if self.debug:
-                print ("VMs: " + repr(vms))
-                print ("Cand. Services: " + repr(cand_services))
+                print(("VMs: " + repr(vms)))
+                print(("Cand. Services: " + repr(cand_services)))
             # Small metric is better
             indx = 0
             for vm in vms:
@@ -920,7 +920,7 @@ class MostFrequentlyUsed(Strategy):
                 if ( (task.expiry - delay) < task.completionTime ) or ( task.completionTime == float('inf') ):
                     cs.scheduler.upcomingTaskQueue.remove(aTask)
                     if self.debug:
-                        print ("Task with flow_id " + str(aTask.flow_id) + " is violating its expiration time at node: " + str(n))
+                        print(("Task with flow_id " + str(aTask.flow_id) + " is violating its expiration time at node: " + str(n)))
                     break
             else:
                 source = n
@@ -929,7 +929,7 @@ class MostFrequentlyUsed(Strategy):
                 #    print ("Task is scheduled at node 5:")
                 #    aTask.print_task()
                 if self.debug:
-                    print ("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source))
+                    print(("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source)))
                 return source
         return source
 
@@ -986,7 +986,7 @@ class MostFrequentlyUsed(Strategy):
             return
 
         if self.debug:
-            print ("\nEvent\n time: " + repr(time) + " receiver  " + repr(receiver) + " service " + repr(service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(deadline) + " status " + repr(status))
+            print(("\nEvent\n time: " + repr(time) + " receiver  " + repr(receiver) + " service " + repr(service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(deadline) + " status " + repr(status)))
 
         # MFU
         if status == RESPONSE:
@@ -1017,7 +1017,7 @@ class MostFrequentlyUsed(Strategy):
             delay = self.view.link_delay(node, next_node)
             self.controller.add_event(time+delay, receiver, service, labels, next_node, flow_id, deadline, rtt_delay, RESPONSE, task)
             if (node != source and time + path_delay > deadline):
-                print ("Error in MFU strategy: Request missed its deadline\nResponse at receiver at time: " + str(time+path_delay) + " deadline: " + str(deadline))
+                print(("Error in MFU strategy: Request missed its deadline\nResponse at receiver at time: " + str(time+path_delay) + " deadline: " + str(deadline)))
                 task.print_task()
                 #raise ValueError("This should not happen: a task missed its deadline after being executed at an edge node.")
 
@@ -1030,7 +1030,7 @@ class MostFrequentlyUsed(Strategy):
             delay = self.view.path_delay(node, next_node)
             deadline_metric = (deadline - time - rtt_delay - compSpot.services[service['content']].service_time)/deadline
             if self.debug:
-                print ("Deadline metric: " + repr(deadline_metric))
+                print(("Deadline metric: " + repr(deadline_metric)))
             if self.view.has_service(node, service):
                 if self.debug:
                     print ("Calling admit_task")
@@ -1044,20 +1044,20 @@ class MostFrequentlyUsed(Strategy):
                     if deadline_metric > 0:
                         self.cand_deadline_metric[node][service['content']] += deadline_metric
                     if self.debug:
-                        print ("Pass upstream to node: " + repr(next_node))
+                        print(("Pass upstream to node: " + repr(next_node)))
                 else:
                     if deadline_metric > 0:
                         self.deadline_metric[node][service['content']] += deadline_metric
             else: #Not running the service
                 compSpot.missed_requests[service['content']] += 1
                 if self.debug:
-                    print ("Not running the service: Pass upstream to node: " + repr(next_node))
+                    print(("Not running the service: Pass upstream to node: " + repr(next_node)))
                 rtt_delay += delay*2
                 self.controller.add_event(time+delay, receiver, service, labels, next_node, flow_id, deadline, rtt_delay, REQUEST)
                 if deadline_metric > 0:
                     self.cand_deadline_metric[node][service['content']] += deadline_metric
         else:
-            print ("Error: unrecognised status value : " + repr(status))
+            print(("Error: unrecognised status value : " + repr(status)))
 
 # Strictest Deadline First Strategy
 @register_strategy('SDF')
@@ -1123,21 +1123,21 @@ class StrictestDeadlineFirst(Strategy):
             vm_metrics = self.deadline_metric[node]
             cand_metric = self.cand_deadline_metric[node]
             if self.debug:
-                print ("Replacement at node " + repr(node))
+                print(("Replacement at node " + repr(node)))
             for service in range(0, self.num_services):
                 if cs.numberOfVMInstances[service] == 0:
                     if self.debug:
-                        print ("No running instances of service: " + repr(service))
+                        print(("No running instances of service: " + repr(service)))
                     continue
                 d_metric = 0.0
                 if cs.running_requests[service] == 0:
                     d_metric = 1.0
                     if self.debug:
-                        print ("No scheduled requests for service: " + repr(service))
+                        print(("No scheduled requests for service: " + repr(service)))
                 else:
                     d_metric = vm_metrics[service]/cs.running_requests[service]
                     if self.debug:
-                        print ("Deadline metric for service: " + repr(service) + " is " + repr(d_metric))
+                        print(("Deadline metric for service: " + repr(service) + " is " + repr(d_metric)))
 
                 vms.append([service, d_metric])
             # SDF
@@ -1150,14 +1150,14 @@ class StrictestDeadlineFirst(Strategy):
                 else:
                     d_metric = cand_metric[service]/cs.missed_requests[service]
                     if self.debug:
-                        print ("Deadline metric for Upstream Service: " + repr(service) + " is " + repr(d_metric))
+                        print(("Deadline metric for Upstream Service: " + repr(service) + " is " + repr(d_metric)))
                     cand_services.append([service, d_metric])
             # sort vms and virtual_vms arrays according to metric
             vms = sorted(vms, key=lambda x: x[1], reverse=True) #larger to smaller
             cand_services = sorted(cand_services, key=lambda x: x[1]) #smaller to larger
             if self.debug:
-                print ("VMs: " + repr(vms))
-                print ("Cand. Services: " + repr(cand_services))
+                print(("VMs: " + repr(vms)))
+                print(("Cand. Services: " + repr(cand_services)))
             # Small metric is better
             indx = 0
             for vm in vms:
@@ -1213,7 +1213,7 @@ class StrictestDeadlineFirst(Strategy):
                 if ( (task.expiry - delay) < task.completionTime ) or ( task.completionTime == float('inf') ):
                     cs.scheduler.upcomingTaskQueue.remove(aTask)
                     if self.debug:
-                        print ("Task with flow_id " + str(aTask.flow_id) + " is violating its expiration time at node: " + str(n))
+                        print(("Task with flow_id " + str(aTask.flow_id) + " is violating its expiration time at node: " + str(n)))
                     break
             else:
                 source = n
@@ -1222,7 +1222,7 @@ class StrictestDeadlineFirst(Strategy):
                 #    print ("Task is scheduled at node 5:")
                 #    aTask.print_task()
                 if self.debug:
-                    print ("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source))
+                    print(("Flow_id: " + str(aTask.flow_id) + " is scheduled to run at " + str(source)))
                 return source
         return source
 
@@ -1270,7 +1270,7 @@ class StrictestDeadlineFirst(Strategy):
                         self.controller.add_event(time + delay, receiver, service, labels, upstream_node, flow_id,
                                                   deadline, rtt_delay, REQUEST)
                         if self.debug:
-                            print("Request is scheduled to run at: " + str(upstream_node))
+                            print(("Request is scheduled to run at: " + str(upstream_node)))
                     else:  # request is to be executed in the cloud and returned to receiver
                         services = self.view.services()
                         serviceTime = services[service['content']].service_time
@@ -1299,7 +1299,7 @@ class StrictestDeadlineFirst(Strategy):
             return
 
         if self.debug:
-            print ("\nEvent\n time: " + repr(time) + " receiver  " + repr(receiver) + " service " + repr(service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(deadline) + " status " + repr(status))
+            print(("\nEvent\n time: " + repr(time) + " receiver  " + repr(receiver) + " service " + repr(service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(deadline) + " status " + repr(status)))
 
         # SDF  
         if status == RESPONSE: 
@@ -1330,7 +1330,7 @@ class StrictestDeadlineFirst(Strategy):
             delay = self.view.link_delay(node, next_node)
             self.controller.add_event(time+delay, receiver, service, labels, next_node, flow_id, deadline, rtt_delay, RESPONSE)
             if (node != source and time + path_delay > deadline):
-                print ("Error in SDF strategy: Request missed its deadline\nResponse at receiver at time: " + str(time+path_delay) + " deadline: " + str(deadline))
+                print(("Error in SDF strategy: Request missed its deadline\nResponse at receiver at time: " + str(time+path_delay) + " deadline: " + str(deadline)))
                 task.print_task()
                 #raise ValueError("This should not happen: a task missed its deadline after being executed at an edge node.")
             
@@ -1343,7 +1343,7 @@ class StrictestDeadlineFirst(Strategy):
             delay = self.view.path_delay(node, next_node)
             deadline_metric = (deadline - time - rtt_delay - compSpot.services[service['content']].service_time)/deadline
             if self.debug:
-                print ("Deadline metric: " + repr(deadline_metric))
+                print(("Deadline metric: " + repr(deadline_metric)))
             if self.view.has_service(node, service):
                 if self.debug:
                     print ("Calling admit_task")
@@ -1357,18 +1357,18 @@ class StrictestDeadlineFirst(Strategy):
                     if deadline_metric > 0:
                         self.cand_deadline_metric[node][service['content']] += deadline_metric
                     if self.debug:
-                        print ("Pass upstream to node: " + repr(next_node))
+                        print(("Pass upstream to node: " + repr(next_node)))
                 else:
                     if deadline_metric > 0:
                         self.deadline_metric[node][service['content']] += deadline_metric
             else: #Not running the service
                 compSpot.missed_requests[service['content']] += 1
                 if self.debug:
-                    print ("Not running the service: Pass upstream to node: " + repr(next_node))
+                    print(("Not running the service: Pass upstream to node: " + repr(next_node)))
                 rtt_delay += delay*2
                 self.controller.add_event(time+delay, receiver, service, labels, next_node, flow_id, deadline, rtt_delay, REQUEST)
                 if deadline_metric > 0:
                     self.cand_deadline_metric[node][service['content']] += deadline_metric
         else:
-            print ("Error: unrecognised status value : " + repr(status))
+            print(("Error: unrecognised status value : " + repr(status)))
 

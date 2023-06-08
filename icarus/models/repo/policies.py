@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import division
+
 
 import time
 from collections import deque, defaultdict

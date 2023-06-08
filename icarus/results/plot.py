@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Plot results read from a result set
 """
-from __future__ import division
+
 import os
 import collections
 
@@ -178,7 +178,7 @@ def plot_lines(resultset, desc, filename, plotdir):
             raise ValueError('ymetrics, ycondnames and ycondvals must have the same length')
         # yvals is basically the list of values that differentiate each line
         # it is used for legends and styles mainly
-        yvals = ycondvals if len(set(ymetrics)) == 1 else zip(ymetrics, ycondvals)
+        yvals = ycondvals if len(set(ymetrics)) == 1 else list(zip(ymetrics, ycondvals))
     else:
         yvals = ymetrics
     plot_args = desc['plot_args'] if 'plot_args' in desc else {}
@@ -357,7 +357,7 @@ def plot_bar_chart(resultset, desc, filename, plotdir):
             raise ValueError('ymetrics, ycondnames and ycondvals must have the same length')
         # yvals is basically the list of values that differentiate each bar
         # it is used for legends and styles mainly
-        yvals = ycondvals if len(set(ymetrics)) == 1 else zip(ymetrics, ycondvals)
+        yvals = ycondvals if len(set(ymetrics)) == 1 else list(zip(ymetrics, ycondvals))
     else:
         yvals = ymetrics
     placement = desc['placement'] if 'placement' in desc else 'grouped'
@@ -560,7 +560,7 @@ def plot_cdf(resultset, desc, filename, plotdir):
             raise ValueError('ymetrics, ycondnames and ycondvals must have the same length')
         # yvals is basically the list of values that differentiate each line
         # it is used for legends and styles mainly
-        yvals = ycondvals if len(set(ymetrics)) == 1 else zip(ymetrics, ycondvals)
+        yvals = ycondvals if len(set(ymetrics)) == 1 else list(zip(ymetrics, ycondvals))
     else:
         yvals = ymetrics
     x_min = np.infty

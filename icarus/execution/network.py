@@ -142,7 +142,7 @@ class NetworkView(object):
             raise ValueError('The model argument must be an instance of '
                              'NetworkModel')
         self.model = model
-        for node in model.compSpot.keys():
+        for node in list(model.compSpot.keys()):
             model.compSpot[node].view = self
             model.compSpot[node].node = node
 
@@ -842,7 +842,7 @@ class NetworkView(object):
             with caches. Otherwise it is a dict mapping nodes with a cache
             and their size.
         """
-        return {v: c.maxlen for v, c in self.model.cache.items()} if size \
+        return {v: c.maxlen for v, c in list(self.model.cache.items())} if size \
             else list(self.model.cache.keys())
 
     def storage_nodes(self, size=False):
@@ -1146,7 +1146,7 @@ class NetworkModel(object):
                     extra_types = []
             # get the depth of the tree
             if stack_name == 'router' or stack_name == 'source':
-                if 'depth' in self.topology[node].keys():
+                if 'depth' in list(self.topology[node].keys()):
                     depth = self.topology.nodes[node]['depth']
                     if depth > self.topology_depth:
                         self.topology_depth = depth
@@ -1161,7 +1161,7 @@ class NetworkModel(object):
                 if 'service_size' in stack_props:
                     self.service_size[node] = stack_props['service_size']
                 #  A "leaf" or EDGE node, with some of the information and limited resources
-                if 'source' and 'router' in extra_types and stack_props.has_key('contents'):
+                if 'source' and 'router' in extra_types and 'contents' in stack_props:
                     self.contents[node] = stack_props['contents']
                     # print("contents[0] is: ", contents[0], " and its type is: ", type(contents[0]))
                     # TODO: IMPORTANT QUESTION: do sources need to have EDRs or not...?
@@ -1176,14 +1176,14 @@ class NetworkModel(object):
                                 for label in self.contents[node][c]['labels']:
                                     self.all_node_labels[node].update([label])
 
-                            self.source_node[node] = self.contents[node].keys()
+                            self.source_node[node] = list(self.contents[node].keys())
                             for content in self.contents[node]:
-                                if self.content_source.has_key(content):
+                                if content in self.content_source:
                                     self.content_source[content].append(node)
                                 else:
                                     self.content_source[content] = [node]
 
-                            if not self.node_labels.has_key(node):
+                            if node not in self.node_labels:
                                 self.node_labels[node] = Counter()
                             for label in self.all_node_labels[node]:
                                 self.node_labels[node].update({label:self.all_node_labels[node][label]})
@@ -1199,7 +1199,7 @@ class NetworkModel(object):
                                 self.replication_hops[self.contents[node][content]] = 1
                                 # content = hash(content)
                                 # set(self.content_source[content]).add(node)
-                                if self.content_source.has_key(content):
+                                if content in self.content_source:
                                     self.content_source[content].append(node)
                                 else:
                                     self.content_source[content] = [node]
@@ -1207,7 +1207,7 @@ class NetworkModel(object):
                 self.storageSize[node] = float('inf')
                 self.comp_size[node] = float('inf')
                 self.service_size[node] = float('inf')
-                if stack_props and stack_props.has_key('contents'):
+                if stack_props and 'contents' in stack_props:
                     self.contents[node] = stack_props['contents']
                     k = list(self.contents[node].keys())[0]
                     if type(self.contents[node][k]) is dict:
@@ -1216,14 +1216,14 @@ class NetworkModel(object):
                             for label in self.contents[node][c]['labels']:
                                 self.all_node_labels[node].update([label])
 
-                        self.source_node[node] = self.contents[node].keys()
+                        self.source_node[node] = list(self.contents[node].keys())
                         for content in self.contents[node]:
-                            if self.content_source.has_key(content):
+                            if content in self.content_source:
                                 self.content_source[content].append(node)
                             else:
                                 self.content_source[content] = [node]
 
-                        if self.node_labels.has_key(node):
+                        if node in self.node_labels:
                             self.node_labels[node].update(self.all_node_labels[node])
                         else:
                             self.node_labels[node] = Counter()
@@ -1240,12 +1240,12 @@ class NetworkModel(object):
                             self.replication_hops[self.contents[node][content]] = 1
                             # content = hash(content)
                             # set(self.content_source[content]).add(node)
-                            if self.content_source.has_key(content):
+                            if content in self.content_source:
                                 self.content_source[content].append(node)
                             else:
                                 self.content_source[content] = [node]
 
-        if any(c < 1 for c in cache_size.values()):
+        if any(c < 1 for c in list(cache_size.values())):
             logger.warn('Some content caches have size equal to 0. '
                         'I am setting them to 1 and run the experiment anyway')
             for node in cache_size:
@@ -1253,10 +1253,10 @@ class NetworkModel(object):
                     cache_size[node] = 1
 
         policy_name = cache_policy['name']
-        policy_args = {k: v for k, v in cache_policy.items() if k != 'name'}
+        policy_args = {k: v for k, v in list(cache_policy.items()) if k != 'name'}
         if repo_policy is not None:
             repo_policy_name = repo_policy['name']
-            repo_policy_args = {k: v for k, v in repo_policy.items() if k != 'name'}
+            repo_policy_args = {k: v for k, v in list(repo_policy.items()) if k != 'name'}
 
         # The actual cache objects storing the content
         self.cache = {node: CACHE_POLICY[policy_name](cache_size[node], **policy_args)
@@ -1352,7 +1352,7 @@ class NetworkModel(object):
                     for node in topology.nodes_iter():
                         for egress, ingress in topology.edges_iter():
                             # print str(ingress) + " " + str(egress)
-                            if ingress in node_to_delay.keys() and egress not in node_to_delay.keys():
+                            if ingress in list(node_to_delay.keys()) and egress not in list(node_to_delay.keys()):
                                 node_to_delay[egress] = node_to_delay[ingress] + topology.edge[ingress][egress]['delay']
                                 node_to_services[egress] = []
                                 service_indx = 0
@@ -1364,7 +1364,7 @@ class NetworkModel(object):
                 for ap in topology.graph['receivers']:
                     node_to_services = ap_node_to_services[ap]
                     node_to_delay = ap_node_to_delay[ap]
-                    for node, services in node_to_services.items():
+                    for node, services in list(node_to_services.items()):
                         s = str(ap) + "," + str(node)  # + "," + str(node_to_delay[node])
                         for serv in services:
                             s += "," + str(serv)
@@ -1646,7 +1646,7 @@ class NetworkController(object):
             self.model.request_labels[s] = Counter()
         for label in service_request['labels']:
             self.model.request_labels[s].update([label])
-            if not self.model.request_labels_nodes.has_key(label):
+            if label not in self.model.request_labels_nodes:
                 self.model.request_labels_nodes[label] = Counter()
             self.model.request_labels_nodes[label].update([s])
 

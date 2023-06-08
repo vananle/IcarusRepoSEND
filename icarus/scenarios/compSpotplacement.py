@@ -2,7 +2,7 @@
 """Implements computational spot placement strategies
 """
 
-from __future__ import division
+
 import networkx as nx
 
 from icarus.util import iround
@@ -49,8 +49,8 @@ def uniform_computation_placement(topology, computation_budget, service_budget, 
     """
 
     icr_candidates = topology.graph['icr_candidates']
-    print("Computation budget: " + repr(computation_budget))
-    print("Service budget: " + repr(service_budget))
+    print(("Computation budget: " + repr(computation_budget)))
+    print(("Service budget: " + repr(service_budget)))
     cache_size = iround(computation_budget/(len(icr_candidates)))
     service_size = iround(service_budget/(len(icr_candidates)))
     #root = [v for v in icr_candidates if topology.node[v]['depth'] == 0][0]
@@ -73,8 +73,8 @@ def uniform_computation_cache_repo_placement(topology, computation_budget, servi
     """
 
     icr_candidates = topology.graph['icr_candidates']
-    print("Computation budget: " + repr(computation_budget))
-    print("Service budget: " + repr(service_budget))
+    print(("Computation budget: " + repr(computation_budget)))
+    print(("Service budget: " + repr(service_budget)))
     cache_size = iround(computation_budget / (len(icr_candidates)))
     service_size = iround(service_budget / (len(icr_candidates)))
     # root = [v for v in icr_candidates if topology.node[v]['depth'] == 0][0]

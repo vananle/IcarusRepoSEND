@@ -199,7 +199,7 @@ class TestClusteredHashroutingCachePlacement(unittest.TestCase):
                             cache_budget, n_clusters, 'cluster_const')
         clusters = self.topo.graph['clusters']
         self.assertEqual(n_clusters, len(clusters))
-        self.assertEquals(len(self.topo.graph['icr_candidates']), sum(len(c) for c in clusters))
+        self.assertEqual(len(self.topo.graph['icr_candidates']), sum(len(c) for c in clusters))
         for c in clusters:
             if 0 in c:
                 self.assertSetEqual(set([0, 1, 2]), c)
@@ -215,7 +215,7 @@ class TestClusteredHashroutingCachePlacement(unittest.TestCase):
                             cache_budget, n_clusters, 'node_const')
         clusters = self.topo.graph['clusters']
         self.assertEqual(n_clusters, len(clusters))
-        self.assertEquals(len(self.topo.graph['icr_candidates']), sum(len(c) for c in clusters))
+        self.assertEqual(len(self.topo.graph['icr_candidates']), sum(len(c) for c in clusters))
         for c in clusters:
             if 0 in c:
                 self.assertSetEqual(set([0, 1, 2]), c)

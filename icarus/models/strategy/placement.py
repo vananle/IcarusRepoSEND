@@ -92,7 +92,7 @@ class OptimalPlacementAndScheduling(Strategy):
                 node = int(parent)
                 rtt_delay = 2*view.path_delay(ap, parent)
                 if self.debug:
-                    print ("RTT delay from " + str(ap) + " to " + str(parent) + " is: " + str(rtt_delay))
+                    print(("RTT delay from " + str(ap) + " to " + str(parent) + " is: " + str(rtt_delay)))
                 service_indx = 0
                 for s in view.services():
                     if s.deadline > rtt_delay + s.service_time:
@@ -191,11 +191,11 @@ class OptimalPlacementAndScheduling(Strategy):
 
     def finalizeResults(self):
         for group in range(self.G):
-            print ('Group '+str(group))
+            print(('Group '+str(group)))
             for service in range(self.S):
-                print ('\tService: '+str(service))
+                print(('\tService: '+str(service)))
                 for node in range(self.H):
-                    print ('\t\t\tnode: '+str(node)+', rate: '+str(self.x[group,service].value[node]))
+                    print(('\t\t\tnode: '+str(node)+', rate: '+str(self.x[group,service].value[node])))
     
     def compute_optimal_placement_schedule(self):
         """
@@ -262,7 +262,7 @@ class OptimalPlacementAndScheduling(Strategy):
                     continue
                 for service in range(0, self.view.num_services()):
                     if cs.numberOfVMInstances[service] > 0:
-                        print ("Node: " + str(node) + " has " + str(cs.numberOfVMInstances[service]) + " instance of " + str(service))
+                        print(("Node: " + str(node) + " has " + str(cs.numberOfVMInstances[service]) + " instance of " + str(service)))
 
     def initialise_metrics(self):
         """Initialise counts and metrics between periods of optimized solution computations
@@ -312,7 +312,7 @@ class OptimalPlacementAndScheduling(Strategy):
         service = content
         source = self.view.content_source(service)
         if self.debug:
-            print ("\nEvent\n time: " + repr(time) + " receiver  " + repr(receiver) + " service " + repr(service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(deadline) + " status " + repr(status)) 
+            print(("\nEvent\n time: " + repr(time) + " receiver  " + repr(receiver) + " service " + repr(service) + " node " + repr(node) + " flow_id " + repr(flow_id) + " deadline " + repr(deadline) + " status " + repr(status))) 
         
         if time - self.last_replacement > self.replacement_interval:
             self.controller.replacement_interval_over(flow_id, self.replacement_interval, time)
@@ -351,7 +351,7 @@ class OptimalPlacementAndScheduling(Strategy):
                 self.controller.add_event(newTask.completionTime, newTask.receiver, newTask.service, compSpot.node, newTask.flow_id, newTask.expiry, newTask.rtt_delay, TASK_COMPLETE) 
                 self.controller.execute_service(newTask.flow_id, newTask.service, compSpot.node, time, compSpot.is_cloud)
                 if self.debug:
-                    print (str(time) + ". flow_id: " + str(flow_id) + " is being executed and to complete at: " + str(newTask.completionTime))
+                    print((str(time) + ". flow_id: " + str(flow_id) + " is being executed and to complete at: " + str(newTask.completionTime)))
                     newTask.print_task()
 
         elif status == TASK_COMPLETE:
@@ -370,7 +370,7 @@ class OptimalPlacementAndScheduling(Strategy):
 
             self.controller.end_session(True, time, flow_id) 
             if self.debug:
-                print (str(time) + ". response for flow_id: " + str(flow_id) + " reached the receiver at time: " + str(time) + " deadline: " + str(deadline))
+                print((str(time) + ". response for flow_id: " + str(flow_id) + " reached the receiver at time: " + str(time) + " deadline: " + str(deadline)))
             return
         else:
             print("This should not happen in Coordinated")

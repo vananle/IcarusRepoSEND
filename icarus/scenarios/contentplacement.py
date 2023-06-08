@@ -29,7 +29,7 @@ def apply_content_placement(placement, topology):
     topology : Topology
         The topology
     """
-    for v, contents in placement.items():
+    for v, contents in list(placement.items()):
         topology.nodes[v]['stack'][1].update(contents = contents)
 
 def apply_service_association(association, data):
@@ -43,7 +43,7 @@ def apply_service_association(association, data):
     types:
     :return:
     """
-    for service_type, contents in association.items():
+    for service_type, contents in list(association.items()):
         for c in contents:
             if service_type not in data[c]['service_type']:
                 data[c].update(service_type=service_type)
@@ -60,7 +60,7 @@ def apply_labels_association(association, data):
     types:
     :return:
     """
-    for label, contents in association.items():
+    for label, contents in list(association.items()):
         for c in contents:
             if label not in data[c]['labels']:
                 data[c]['labels'].append(label)
@@ -171,7 +171,7 @@ def weighted_content_placement(topology, contents, source_weights, seed=None):
     """
     random.seed(seed)
     norm_factor = float(sum(source_weights.values()))
-    source_pdf = dict((k, v / norm_factor) for k, v in source_weights.items())
+    source_pdf = dict((k, v / norm_factor) for k, v in list(source_weights.items()))
     content_placement = collections.defaultdict(set)
     for c in contents:
         content_placement[random_from_pdf(source_pdf)].add(c)
@@ -234,15 +234,15 @@ def weighted_repo_content_placement(topology, contents, freshness_per, shelf_lif
     #  OR the other way around, distributing sources according to label weights
     if types_weights is not None:
         types_labels_norm_factor = float(sum(types_weights.values()))
-        types_labels_pdf = dict((k, v / types_labels_norm_factor) for k, v in types_weights.items())
+        types_labels_pdf = dict((k, v / types_labels_norm_factor) for k, v in list(types_weights.items()))
     topics_labels_norm_factor = float(sum(topics_weights.values()))
     service_labels_norm_factor = float(sum(service_weights.values()))
     # TODO: Think about a way to randomise, but still maintain a certain
     #  distribution among the users that receive data with certain labels.
     #  Maybe associate the pdf with labels, rather than contents, SOMEHOW!
-    source_pdf = dict((k, v / norm_factor) for k, v in source_weights.items())
-    topics_labels_pdf = dict((k, v / topics_labels_norm_factor) for k, v in topics_weights.items())
-    service_labels_pdf = dict((k, v / service_labels_norm_factor) for k, v in service_weights.items())
+    source_pdf = dict((k, v / norm_factor) for k, v in list(source_weights.items()))
+    topics_labels_pdf = dict((k, v / topics_labels_norm_factor) for k, v in list(topics_weights.items()))
+    service_labels_pdf = dict((k, v / service_labels_norm_factor) for k, v in list(service_weights.items()))
     service_association = collections.defaultdict(set)
     labels_association = collections.defaultdict(set)
     content_placement = collections.defaultdict(set)
@@ -253,7 +253,7 @@ def weighted_repo_content_placement(topology, contents, freshness_per, shelf_lif
     for c in contents:
         alter = False
         if freshness_per is not None:
-            if placed_data.has_key(contents[c]['content']):
+            if contents[c]['content'] in placed_data:
                 placed_data[contents[c]['content']].update(freshness_per=freshness_per)
             else:
                 placed_data[contents[c]['content']] = dict()
@@ -286,7 +286,7 @@ def weighted_repo_content_placement(topology, contents, freshness_per, shelf_lif
         rand = random_from_pdf(source_pdf)
         if not content_placement[rand]:
             content_placement[rand] = dict()
-        if content_placement[rand].has_key(d):
+        if d in content_placement[rand]:
             content_placement[rand][d].update(placed_data[d])
         else:
             content_placement[rand][d] = dict()

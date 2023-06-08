@@ -4,7 +4,7 @@ import collections
 import copy
 import json
 try:
-    import cPickle as pickle
+    import pickle as pickle
 except ImportError:
     import pickle
 from icarus.util import Tree

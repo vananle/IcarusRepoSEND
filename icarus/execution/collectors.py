@@ -16,7 +16,7 @@ TODO: Create collectors for the different feedback mechanisms, which can then
     CREATE COLLECTOR METHOD FOR RECORDING ALL INCOMING REQUESTS AND ANOTHER FOR
     RECORDING ALL DATA STORAGE/ENTRIES - REFER TO NETWORK.PY
 """
-from __future__ import division
+
 import collections
 
 from icarus.registry import register_data_collector
@@ -341,10 +341,10 @@ class LinkLoadCollector(DataCollector):
                                   self.content_size * self.cont_count[link]) / duration)
                           for link in used_links)
         link_loads_int = dict((link, load)
-                              for link, load in link_loads.items()
+                              for link, load in list(link_loads.items())
                               if self.view.link_type(*link) == 'internal')
         link_loads_ext = dict((link, load)
-                              for link, load in link_loads.items()
+                              for link, load in list(link_loads.items())
                               if self.view.link_type(*link) == 'external')
         mean_load_int = sum(link_loads_int.values()) / len(link_loads_int) \
             if len(link_loads_int) > 0 else 0
@@ -437,14 +437,14 @@ class LatencyCollector(DataCollector):
             self.satrate_times[timestamp] = 0.0
         else:
             self.satrate_times[timestamp] = self.n_satisfied_interval / self.interval_sess_count
-        print ("Number of requests in interval: " + repr(self.interval_sess_count))
+        print(("Number of requests in interval: " + repr(self.interval_sess_count)))
 
         self.instantiations_times[timestamp] = self.n_instantiations_interval
         self.n_instantiations_interval = 0
 
         total_idle_time = 0.0
         total_cores = 0  #  total number of cores in the network
-        for node, cs in self.css.items():
+        for node, cs in list(self.css.items()):
             if cs.is_cloud:
                 continue
 
@@ -454,7 +454,7 @@ class LatencyCollector(DataCollector):
 
             total_cores += cs.numOfCores
 
-            if node not in self.node_idle_times.keys():
+            if node not in list(self.node_idle_times.keys()):
                 self.node_idle_times[node] = []
 
             self.node_idle_times[node].append(idle_time)
@@ -535,14 +535,14 @@ class LatencyCollector(DataCollector):
                 self.deadline_metric_interval += self.flow_deadline[flow_id] - timestamp
 
             service = self.flow_service[flow_id]
-            if service['content'] not in self.service_requests.keys():
+            if service['content'] not in list(self.service_requests.keys()):
                 self.service_requests[service['content']] = 1
                 self.service_satisfied[service['content']] = 0
             else:
                 self.service_requests[service['content']] += 1
 
             if sat:
-                if service['content'] in self.service_satisfied.keys():
+                if service['content'] in list(self.service_satisfied.keys()):
                     self.service_satisfied[service['content']] += 1
                 else:
                     self.service_satisfied[service['content']] = 1
@@ -632,7 +632,7 @@ class LatencyCollector(DataCollector):
         per_label_node_storage = {}
         per_label_node_requests = {}
         # res.write(str(100*self.n_satisfied/self.sess_count) + " " + str(self.n_satisfied) + " " + str(self.sess_count) + ": \n")
-        for service in self.service_requests.keys():
+        for service in list(self.service_requests.keys()):
             per_service_sats[service] = 1.0 * self.service_satisfied[service] / self.service_requests[service]
             res.write(str(100 * self.service_satisfied[service] / self.service_requests[service]) + ", ")
         res.write("\n")
@@ -698,13 +698,13 @@ class LatencyCollector(DataCollector):
         results['CLOUD_SAT_TIMES'] = self.cloud_sat_times
         results['INSTANTIATION_OVERHEAD'] = self.instantiations_times
 
-        print "Printing Sat. rate times:"
+        print("Printing Sat. rate times:")
         for key in sorted(self.satrate_times):
-            print (repr(key) + " " + repr(self.satrate_times[key]))
+            print((repr(key) + " " + repr(self.satrate_times[key])))
 
-        print "Printing Idle times:"
+        print("Printing Idle times:")
         for key in sorted(self.idle_times):
-            print (repr(key) + " " + repr(self.idle_times[key]))
+            print((repr(key) + " " + repr(self.idle_times[key])))
         # results['VMS_PER_SERVICE'] = self.vms_per_service
         res.close()
 
@@ -793,14 +793,14 @@ class RepoStatsLatencyCollector(DataCollector):
             self.satrate_times[timestamp] = 0.0
         else:
             self.satrate_times[timestamp] = self.n_satisfied_interval / self.interval_sess_count
-        print ("Number of requests in interval: " + repr(self.interval_sess_count))
+        print(("Number of requests in interval: " + repr(self.interval_sess_count)))
 
         self.instantiations_times[timestamp] = self.n_instantiations_interval
         self.n_instantiations_interval = 0
 
         total_idle_time = 0.0
         total_cores = 0  #  total number of cores in the network
-        for node, cs in self.css.items():
+        for node, cs in list(self.css.items()):
             if cs.is_cloud:
                 continue
 
@@ -810,7 +810,7 @@ class RepoStatsLatencyCollector(DataCollector):
 
             total_cores += cs.numOfCores
 
-            if node not in self.node_idle_times.keys():
+            if node not in list(self.node_idle_times.keys()):
                 self.node_idle_times[node] = []
 
             self.node_idle_times[node].append(idle_time)
@@ -891,14 +891,14 @@ class RepoStatsLatencyCollector(DataCollector):
                 self.deadline_metric_interval += self.flow_deadline[flow_id] - timestamp
 
             service = self.flow_service[flow_id]
-            if service['content'] not in self.service_requests.keys():
+            if service['content'] not in list(self.service_requests.keys()):
                 self.service_requests[service['content']] = 1
                 self.service_satisfied[service['content']] = 0
             else:
                 self.service_requests[service['content']] += 1
 
             if sat:
-                if service['content'] in self.service_satisfied.keys():
+                if service['content'] in list(self.service_satisfied.keys()):
                     self.service_satisfied[service['content']] += 1
                 else:
                     self.service_satisfied[service['content']] = 1
@@ -1008,7 +1008,7 @@ class RepoStatsLatencyCollector(DataCollector):
         per_node_overtime= {}
         incoming_bw = {}
         # res.write(str(100*self.n_satisfied/self.sess_count) + " " + str(self.n_satisfied) + " " + str(self.sess_count) + ": \n")
-        for service in self.service_requests.keys():
+        for service in list(self.service_requests.keys()):
             per_service_sats[service] = 1.0 * self.service_satisfied[service] / self.service_requests[service]
             res.write(str(100 * self.service_satisfied[service] / self.service_requests[service]) + ", ")
         res.write("\n")
@@ -1097,13 +1097,13 @@ class RepoStatsLatencyCollector(DataCollector):
         results['CLOUD_SAT_TIMES'] = self.cloud_sat_times
         results['INSTANTIATION_OVERHEAD'] = self.instantiations_times
 
-        print "Printing Sat. rate times:"
+        print("Printing Sat. rate times:")
         for key in sorted(self.satrate_times):
-            print (repr(key) + " " + repr(self.satrate_times[key]))
+            print((repr(key) + " " + repr(self.satrate_times[key])))
 
-        print "Printing Idle times:"
+        print("Printing Idle times:")
         for key in sorted(self.idle_times):
-            print (repr(key) + " " + repr(self.idle_times[key]))
+            print((repr(key) + " " + repr(self.idle_times[key])))
         # results['VMS_PER_SERVICE'] = self.vms_per_service
         res.close()
 

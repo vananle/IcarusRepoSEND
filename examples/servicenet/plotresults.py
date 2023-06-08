@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Plot results read from a result set
 """
-from __future__ import division
+
 import os
 import argparse
 import collections
@@ -119,7 +119,7 @@ def plot_cache_hits_vs_alpha(resultset, topology, cache_size, alpha_range, strat
     desc = {}
     desc['title'] = 'Cache hit ratio: T=%s C=%s' % (topology, cache_size)
     desc['ylabel'] = 'Cache hit ratio'
-    desc['xlabel'] = u'Content distribution \u03b1'
+    desc['xlabel'] = 'Content distribution \u03b1'
     desc['xparam'] = ('workload', 'alpha')
     desc['xvals'] = alpha_range
     desc['filter'] = {'topology': {'name': topology},
@@ -141,7 +141,7 @@ def plot_cache_hits_vs_cache_size(resultset, topology, alpha, cache_size_range, 
     if 'NO_CACHE' in strategies:
         strategies.remove('NO_CACHE')
     desc['title'] = 'Cache hit ratio: T=%s A=%s' % (topology, alpha)
-    desc['xlabel'] = u'Cache to population ratio'
+    desc['xlabel'] = 'Cache to population ratio'
     desc['ylabel'] = 'Cache hit ratio'
     desc['xscale'] = 'log'
     desc['xparam'] = ('cache_placement','network_cache')
@@ -163,7 +163,7 @@ def plot_cache_hits_vs_cache_size(resultset, topology, alpha, cache_size_range, 
 def plot_link_load_vs_alpha(resultset, topology, cache_size, alpha_range, strategies, plotdir):
     desc = {}
     desc['title'] = 'Internal link load: T=%s C=%s' % (topology, cache_size)
-    desc['xlabel'] = u'Content distribution \u03b1'
+    desc['xlabel'] = 'Content distribution \u03b1'
     desc['ylabel'] = 'Internal link load'
     desc['xparam'] = ('workload', 'alpha')
     desc['xvals'] = alpha_range
@@ -206,7 +206,7 @@ def plot_link_load_vs_cache_size(resultset, topology, alpha, cache_size_range, s
 def plot_latency_vs_alpha(resultset, topology, cache_size, alpha_range, strategies, plotdir):
     desc = {}
     desc['title'] = 'Latency: T=%s C=%s' % (topology, cache_size)
-    desc['xlabel'] = u'Content distribution \u03b1'
+    desc['xlabel'] = 'Content distribution \u03b1'
     desc['ylabel'] = 'Latency (ms)'
     desc['xparam'] = ('workload', 'alpha')
     desc['xvals'] = alpha_range
@@ -316,35 +316,35 @@ def searchDictMultipleCat(lst, category_list, attr_value_pairs, num_pairs, colle
     result = None
     for l in lst:
         num_match = 0
-        for key, val in l[0].items():
+        for key, val in list(l[0].items()):
             #print key + '-and-' + category + '-\n'
             if key in category_list:
                 if (isinstance(val, dict)):
-                    for key1, val1 in val.items():
-                        for key2, val2 in attr_value_pairs.items():
+                    for key1, val1 in list(val.items()):
+                        for key2, val2 in list(attr_value_pairs.items()):
                             if key1 == key2 and val1 == val2:
                                 num_match = num_match + 1
                     if num_match == num_pairs:
                         result = l[1]
                         break
                 else:
-                    print 'Something is wrong with the search for attr-value pairs\n'
+                    print('Something is wrong with the search for attr-value pairs\n')
                     return None
 
         if result is not None:
             break
     
     if result is None:
-        print 'Error searched attribute, value pairs:\n' 
-        for k, v in attr_value_pairs.items():
-            print '[ ' + repr(k) + ' , ' + repr(v) + ' ]  '
-        print 'is not found, returning none\n'
+        print('Error searched attribute, value pairs:\n') 
+        for k, v in list(attr_value_pairs.items()):
+            print('[ ' + repr(k) + ' , ' + repr(v) + ' ]  ')
+        print('is not found, returning none\n')
         return None
     
     found = None
-    for key, val in result.items():
+    for key, val in list(result.items()):
         if key == collector:
-            for key1, val1 in val.items():
+            for key1, val1 in list(val.items()):
                 if key1 == subtype:
                     found = val1
                     break
@@ -352,7 +352,7 @@ def searchDictMultipleCat(lst, category_list, attr_value_pairs, num_pairs, colle
                 break
 
     if found is None:
-        print 'Error searched collector, subtype ' + repr(collector) + ',' + repr(subtype) + 'is not found\n'
+        print('Error searched collector, subtype ' + repr(collector) + ',' + repr(subtype) + 'is not found\n')
 
     return found
 
@@ -367,11 +367,11 @@ def searchDictMultipleCat1(lst, category_list, attr_value_list, num_pairs, colle
     result = None
     for l in lst:
         num_match = 0
-        for key, val in l[0].items():
+        for key, val in list(l[0].items()):
             #print key + '-and-' + category + '-\n'
             if key in category_list:
                 if (isinstance(val, dict)):
-                    for key1, val1 in val.items():
+                    for key1, val1 in list(val.items()):
                         for arr in attr_value_list:
                             key2 = arr[0]
                             val2 = arr[1]
@@ -381,25 +381,25 @@ def searchDictMultipleCat1(lst, category_list, attr_value_list, num_pairs, colle
                         result = l[1]
                         break
                 else:
-                    print 'Something is wrong with the search for attr-value pairs\n'
+                    print('Something is wrong with the search for attr-value pairs\n')
                     return None
 
         if result is not None:
             break
     
     if result is None:
-        print 'Error searched attribute, value pairs:\n' 
+        print('Error searched attribute, value pairs:\n') 
         for arr in attr_value_list:
             k = arr[0]
             v = arr[1]
-            print '[ ' + repr(k) + ' , ' + repr(v) + ' ]  '
-        print 'is not found, returning none\n'
+            print('[ ' + repr(k) + ' , ' + repr(v) + ' ]  ')
+        print('is not found, returning none\n')
         return None
     
     found = None
-    for key, val in result.items():
+    for key, val in list(result.items()):
         if key == collector:
-            for key1, val1 in val.items():
+            for key1, val1 in list(val.items()):
                 if key1 == subtype:
                     found = val1
                     break
@@ -407,7 +407,7 @@ def searchDictMultipleCat1(lst, category_list, attr_value_list, num_pairs, colle
                 break
 
     if found is None:
-        print 'Error searched collector, subtype ' + repr(collector) + ',' + repr(subtype) + 'is not found\n'
+        print('Error searched collector, subtype ' + repr(collector) + ',' + repr(subtype) + 'is not found\n')
 
     return found
 
@@ -421,35 +421,35 @@ def searchDict(lst, category, attr_value_pairs, num_pairs, collector, subtype):
     """
     result = None
     for l in lst:
-        for key, val in l[0].items():
+        for key, val in list(l[0].items()):
             #print key + '-and-' + category + '-\n'
             if key == category:
                 if (isinstance(val, dict)):
                     num_match = 0
-                    for key1, val1 in val.items():
-                        for key2, val2 in attr_value_pairs.items():
+                    for key1, val1 in list(val.items()):
+                        for key2, val2 in list(attr_value_pairs.items()):
                             if key1 == key2 and val1 == val2:
                                 num_match = num_match + 1
                     if num_match == num_pairs:
                         result = l[1]
                         break
                 else:
-                    print 'Something is wrong with the search for attr-value pairs\n'
+                    print('Something is wrong with the search for attr-value pairs\n')
                     return None
         if result is not None:
             break
     
     if result is None:
-        print 'Error searched attribute, value pairs:\n' 
-        for k, v in attr_value_pairs.items():
-            print '[ ' + repr(k) + ' , ' + repr(v) + ' ]  '
-        print 'is not found, returning none\n'
+        print('Error searched attribute, value pairs:\n') 
+        for k, v in list(attr_value_pairs.items()):
+            print('[ ' + repr(k) + ' , ' + repr(v) + ' ]  ')
+        print('is not found, returning none\n')
         return None
     
     found = None
-    for key, val in result.items():
+    for key, val in list(result.items()):
         if key == collector:
-            for key1, val1 in val.items():
+            for key1, val1 in list(val.items()):
                 if key1 == subtype:
                     found = val1
                     break
@@ -457,7 +457,7 @@ def searchDict(lst, category, attr_value_pairs, num_pairs, collector, subtype):
                 break
 
     if found is None:
-        print 'Error searched collector, subtype ' + repr(collector) + ',' + repr(subtype) + 'is not found\n'
+        print('Error searched collector, subtype ' + repr(collector) + ',' + repr(subtype) + 'is not found\n')
 
     return found
 
@@ -668,14 +668,14 @@ def print_budget_experiment(lst):
 
 def printTree(tree, d = 0):
     if (tree == None or len(tree) == 0):
-        print "\t" * d, "-"
+        print("\t" * d, "-")
     else:
-        for key, val in tree.items():
+        for key, val in list(tree.items()):
             if (isinstance(val, dict)):
-                print "\t" * d, key
+                print("\t" * d, key)
                 printTree(val, d+1)
             else:
-                print "\t" * d, key, str(val)
+                print("\t" * d, key, str(val))
 
 def run(config, results, plotdir):
     """Run the plot script
@@ -694,9 +694,9 @@ def run(config, results, plotdir):
     lst = resultset.dump()
     f = open("raw_results.txt", "w")
     for l in lst:
-        print 'PARAMETERS:\n'
+        print('PARAMETERS:\n')
         printTree(l[0])
-        print 'RESULTS:\n'
+        print('RESULTS:\n')
         printTree(l[1])
 
         f.write('PARAMETERS:\n')
